@@ -32,7 +32,6 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryPar
 import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.R18ParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Movie;
@@ -77,7 +76,7 @@ public class Main {
 			@SuppressWarnings("static-access")
 			Option scrape = OptionBuilder.withArgName("ScraperName FilePath").hasArgs(2)
 			        .withDescription("Scrapes and writes metadata of the file located at <FilePath> with type of scraper specified by <ScraperName>.\n" + "Valid ScraperNames are: \n"
-			                + "data18webcontent, data18, excaliburfilms, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus, javlibrary, r18, actionjav.\n"
+			                + "data18webcontent, data18, excaliburfilms, themoviedatabase, iafd, dmm, 1000giri, 1pondo, aventertainment, caribbeancom, caribbeancompremium, heyzo, kin8tengoku, mytokyohot, tokyohot, javbus, javlibrary, actionjav.\n"
 			                + "Any settings.xml file preference values will be taken into account when scraping.")
 			        .create("scrape");
 
@@ -310,9 +309,6 @@ public class Main {
 				break;
 			case "javlibrary":
 				parsingProfile = new JavLibraryParsingProfile();
-				break;
-			case "r18":
-				parsingProfile = new R18ParsingProfile();
 				break;
 			case "actionjav":
 				parsingProfile = new ActionJavParsingProfile();
