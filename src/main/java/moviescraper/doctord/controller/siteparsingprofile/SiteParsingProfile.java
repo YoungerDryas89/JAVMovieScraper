@@ -214,21 +214,18 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 
 		}
-		String fileNameNoExtensionNoDiscNumber = stripDiscNumber(fileNameNoExtension);
-		String[] splitFileName = fileNameNoExtensionNoDiscNumber.split(" ");
-		String lastWord = "";
-		if (firstWordOfFileIsID && splitFileName.length > 0)
-			lastWord = splitFileName[0];
-		else
-			lastWord = splitFileName[splitFileName.length - 1];
+		Pattern avGeneralIdextract = Pattern.compile("(?<id>(?<series>(:?[0-9]+)?[A-Za-z]+)-(?<number>[0-9]+))");
 
-		//Some people like to enclose the ID number in parenthesis or brackets like this (ABC-123) or this [ABC-123] so this gets rid of that
-		//TODO: Maybe consolidate these lines of code using a single REGEX?
-		lastWord = lastWord.replace("(", "");
-		lastWord = lastWord.replace(")", "");
-		lastWord = lastWord.replace("[", "");
-		lastWord = lastWord.replace("]", "");
-		return lastWord;
+		Matcher match = avGeneralIdextract.matcher(file.getName());
+		String id = null;
+		if(match.find()){
+			assert(match.group("id") != null);
+			assert(match.group("series") != null);
+			assert(match.group("number") != null);
+
+			id = match.group("id");
+		}
+		return id;
 	}
 
 	public static String stripDiscNumber(String fileNameNoExtension) {
