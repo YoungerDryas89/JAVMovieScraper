@@ -344,6 +344,9 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").last();
 					String idFromSearchResult = currentDivVideoLink.select("span").first().text();
 					String currentLink = videoLinksElements.attr("href");
+					if(!currentLink.startsWith("http")){
+						currentLink = "https:" + currentLink;
+					}
 					String currentLabel = idFromSearchResult + " " + videoLinksElements.text();
 					String currentThumb = currentDivVideoLink.select("img").first().attr("src");
 
