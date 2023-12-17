@@ -107,11 +107,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public Title scrapeTitle() {
 		Element titleElement = document.select("[property=og:title]").first();
 		// run a google translate on the japanese title
-		if (doGoogleTranslation) {
+		// FIXME: Broken
+		/*if (doGoogleTranslation) {
 			return new Title(TranslateString.translateStringJapaneseToEnglish(titleElement.attr("content").toString()));
 		} else {
 			return new Title(titleElement.attr("content").toString());
-		}
+		}*/
+		return new Title(titleElement.attr("content"));
 	}
 
 	@Override
@@ -130,12 +132,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Override
 	public Set scrapeSet() {
+		// FIXME: Broken
 		Element setElement = document.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
 		if (setElement == null)
 			return Set.BLANK_SET;
-		else if (doGoogleTranslation) {
+		/*else if (doGoogleTranslation) {
 			return new Set(TranslateString.translateStringJapaneseToEnglish(setElement.text()));
-		} else
+		} */else
 			return new Set(setElement.text());
 	}
 
@@ -195,10 +198,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			//video rental mode if it didnt find a match using above method
 			plotElement = document.select("tbody .mg-b20.lh4").first();
 		}
-		if (doGoogleTranslation) {
+		/*if (doGoogleTranslation) {
 			return new Plot(TranslateString.translateStringJapaneseToEnglish(plotElement.text()));
 		} else
-			return new Plot(plotElement.text());
+			return new Plot(plotElement.text());*/
+		return new Plot(plotElement.text());
 	}
 
 	@Override
@@ -410,14 +414,16 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 					// we didn't know of anything hand picked for genres, just use
 					// google translate
-					if (potentialBetterTranslation.equals("")) {
+					// FIXME: Broken
+					/*if (potentialBetterTranslation.equals("")) {
 						genres.add(new Genre(TranslateString.translateStringJapaneseToEnglish(genreElement.text())));
 					}
 					// Cool, we got something we want to use instead for our genre,
 					// let's use that
 					else {
 						genres.add(new Genre(potentialBetterTranslation));
-					}
+					}*/
+					genres.add(new Genre(potentialBetterTranslation));
 				}
 			}
 		}
@@ -560,10 +566,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				// the name wrong on
 				String actressNameEnglish = betterActressTranslation(actressNameHiragana, actressID);
 				boolean didWeManuallyOverrideActress = false;
-				if (actressNameEnglish.equals("") && doGoogleTranslation) {
+				// FIXME: Broken
+				/*if (actressNameEnglish.equals("") && doGoogleTranslation) {
 					actressNameEnglish = TranslateString.translateJapanesePersonNameToRomaji(actressNameHiragana);
 				} else
-					didWeManuallyOverrideActress = true;
+					didWeManuallyOverrideActress = true;*/
 
 				//use the difference between the two strings to determine which is the better one. The google translate shouldn't be that many characters away from the thumbnail name, or it's garbage
 				//unless the thumbnail name was the generic "Nowprinting" one, in which case use the google translate
@@ -609,8 +616,9 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			String actorName = currentNameOnlyActor.text().trim();
 			//for some reason, they sometimes list the age of the person after their name, so let's get rid of that
 			actorName = actorName.replaceFirst("\\([0-9]{2}\\)", "");
-			if (doGoogleTranslation)
-				actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
+			// FIXME: Broken
+			/*if (doGoogleTranslation)
+				actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);*/
 			actorList.add(new Actor(actorName, "", null));
 		}
 
@@ -622,10 +630,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		ArrayList<Director> directors = new ArrayList<>();
 		Element directorElement = document.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
 		if (directorElement != null && directorElement.hasText()) {
-			if (doGoogleTranslation)
+			// FIXME: Broken
+			/*if (doGoogleTranslation)
 				directors.add(new Director(TranslateString.translateStringJapaneseToEnglish(directorElement.text()), null));
 			else
-				directors.add(new Director(directorElement.text(), null));
+				directors.add(new Director(directorElement.text(), null));*/
+			directors.add(new Director(directorElement.text(), null));
 		}
 		return directors;
 	}
@@ -634,10 +644,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("td:containsOwn(メーカー：) ~ td").first();
 		if (studioElement != null) {
-			if (doGoogleTranslation)
+			/*if (doGoogleTranslation)
 				return new Studio(TranslateString.translateStringJapaneseToEnglish(studioElement.text()));
 			else
-				return new Studio(studioElement.text());
+				return new Studio(studioElement.text());*/
+			return new Studio(studioElement.text());
 		} else
 			return Studio.BLANK_STUDIO;
 	}

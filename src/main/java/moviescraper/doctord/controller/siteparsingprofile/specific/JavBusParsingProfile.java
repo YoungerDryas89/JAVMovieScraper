@@ -87,8 +87,9 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			if (titleText.contains(" "))
 				titleText = titleText.substring(titleText.indexOf(" "), titleText.length());
 			//Translate the element using google translate if needed
-			if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(titleText))
-				titleText = TranslateString.translateStringJapaneseToEnglish(titleText);
+			// FIXME: Broken
+			/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(titleText))
+				titleText = TranslateString.translateStringJapaneseToEnglish(titleText);*/
 			return new Title(titleText);
 		} else
 			return new Title("");
@@ -122,9 +123,10 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		Element setElement = document.select("span.header:containsOwn(" + seriesWord + ") ~ a").first();
 		if (setElement != null && setElement.text().length() > 0) {
 			String setText = setElement.text();
-			if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(setText)) {
+			// FIXME: Broken
+			/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(setText)) {
 				setText = TranslateString.translateStringJapaneseToEnglish(setText);
-			}
+			}*/
 			return new Set(setText);
 		}
 		return Set.BLANK_SET;
@@ -258,9 +260,10 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 				String genreText = genreElement.text();
 				if (genreElement.text().length() > 0) {
 					//some genre elements are untranslated, even on the english site, so we need to do it ourselves
-					if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(genreText)) {
+					// FIXME: Broken
+					/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(genreText)) {
 						genreText = TranslateString.translateStringJapaneseToEnglish(genreText);
-					}
+					}*/
 					genreList.add(new Genre(WordUtils.capitalize(genreText)));
 				}
 			}
@@ -277,8 +280,9 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 				Thumb thumbnail = null;
 				String actorName = currentActor.attr("title");
 				//Sometimes for whatever reason the english page still has the name in japanaese, so I will translate it myself
-				if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(actorName))
-					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);
+				// FIXME: Broken
+				/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(actorName))
+					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);*/
 				String actorImage = currentActor.attr("src");
 				if (actorImage != null && !actorImage.contains("printing.gif") && fileExistsAtURL(actorImage)) {
 

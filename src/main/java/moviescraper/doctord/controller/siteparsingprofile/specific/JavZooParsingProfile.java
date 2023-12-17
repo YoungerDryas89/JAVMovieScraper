@@ -72,11 +72,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 				titleElementText = titleElementText.replaceFirst(Pattern.quote("- "), "");
 			}
 
-			//sometimes title is not translated to english
-			if (document.location().contains("/en/"))
-				if (JapaneseCharacter.containsJapaneseLetter(titleElementText))
-					return new Title(TranslateString.translateStringJapaneseToEnglish(titleElementText));
-
+			// TODO: Add Japanese to Romaji or English translation code
 			return new Title(titleElementText);
 		} else
 			return new Title("");

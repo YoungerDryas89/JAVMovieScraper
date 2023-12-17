@@ -82,8 +82,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 			Element setElement = japaneseDocument.select("div.movie-info dl dt:contains(シリーズ:) ~ dd a").first();
 			if (setElement != null) {
 				String setElementTranslatedText = setElement.text().trim();
-				if (getScrapingLanguage() == Language.ENGLISH)
-					setElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(setElement.text().trim());
+				// FIXME: Broken
+				/*if (getScrapingLanguage() == Language.ENGLISH)
+					setElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(setElement.text().trim());*/
 				if (setElementTranslatedText != null && setElementTranslatedText.length() > 0)
 					return new Set(setElementTranslatedText);
 			}
@@ -493,8 +494,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 			Element studioElement = japaneseDocument.select("div.movie-info dl dt:contains(スタジオ:) ~ dd a").first();
 			if (studioElement != null) {
 				String studioElementText = studioElement.text().trim();
-				if (getScrapingLanguage() == Language.ENGLISH)
-					TranslateString.translateStringJapaneseToEnglish(studioElement.text().trim());
+				// FIXME: Broken
+				/*if (getScrapingLanguage() == Language.ENGLISH)
+					TranslateString.translateStringJapaneseToEnglish(studioElement.text().trim());*/
 				if (studioElementText != null && studioElementText.length() > 0)
 					return new Studio(studioElementText);
 			}
