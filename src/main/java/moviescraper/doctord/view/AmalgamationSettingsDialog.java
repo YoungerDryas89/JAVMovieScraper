@@ -86,7 +86,7 @@ public class AmalgamationSettingsDialog {
 		panelLayoutManager.setVgap(layoutVerticalGap);
 		this.panel = new JPanel(panelLayoutManager);
 		this.amalgamationPreferences = amalgamationPreferences;
-		this.amalgamationPreferencesOriginal = (AllAmalgamationOrderingPreferences) UtilityFunctions.cloneObject(this.amalgamationPreferences);
+		this.amalgamationPreferencesOriginal = new AllAmalgamationOrderingPreferences(this.amalgamationPreferences);
 
 		panelHeaderSpecificFieldAmalgamationPreference = new JLabel("Specific Field", SwingConstants.CENTER);
 

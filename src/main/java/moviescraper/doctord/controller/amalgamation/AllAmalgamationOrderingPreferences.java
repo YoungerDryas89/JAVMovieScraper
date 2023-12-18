@@ -1,13 +1,10 @@
 package moviescraper.doctord.controller.amalgamation;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.cedarsoftware.util.io.JsonIoException;
 import com.cedarsoftware.util.io.JsonReader;
@@ -32,6 +29,10 @@ public class AllAmalgamationOrderingPreferences {
 
 	public AllAmalgamationOrderingPreferences() {
 		allAmalgamationOrderingPreferences = new Hashtable<>();
+	}
+
+	public AllAmalgamationOrderingPreferences(AllAmalgamationOrderingPreferences other){
+		allAmalgamationOrderingPreferences = other.allAmalgamationOrderingPreferences.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	@Override
