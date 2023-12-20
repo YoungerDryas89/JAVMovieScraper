@@ -204,6 +204,9 @@ public class KodiXmlMovieBean {
 
 	private static XStream getXMLSerializer() {
 		XStream xstream = new XStream(new DomDriver("UTF-8"));
+		xstream.allowTypesByWildcard(new String[] {
+				"moviescraper.doctord.controller.xmlserialization.*"
+		});
 		xstream.omitField(Thumb.class, "thumbImage");
 		xstream.alias("movie", KodiXmlMovieBean.class);
 		xstream.alias("thumb", Thumb.class);
