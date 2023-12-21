@@ -18,4 +18,14 @@ module moviescraper.doctord {
     requires xstream;
     requires java.sql;
     exports moviescraper.doctord;
+    exports moviescraper.doctord.controller.amalgamation;
+    exports moviescraper.doctord.controller.siteparsingprofile;
+    exports moviescraper.doctord.controller.siteparsingprofile.specific;
+    exports moviescraper.doctord.model.dataitem;
+    opens moviescraper.doctord.controller.amalgamation to json.io, xstream;
+    opens moviescraper.doctord.controller.siteparsingprofile to xstream;
+    opens moviescraper.doctord.controller.siteparsingprofile.specific to xstream;
+    opens moviescraper.doctord.model.preferences to xstream;
+    opens moviescraper.doctord.model.dataitem to xstream;
+    opens moviescraper.doctord.controller.xmlserialization to xstream;
 }
