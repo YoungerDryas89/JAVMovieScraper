@@ -10,6 +10,8 @@ import com.cedarsoftware.util.io.JsonIoException;
 import com.cedarsoftware.util.io.JsonReader;
 import com.cedarsoftware.util.io.JsonWriter;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
@@ -21,14 +23,29 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryPar
 import moviescraper.doctord.controller.siteparsingprofile.specific.JavZooParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.SquarePlusParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
+import org.apache.commons.io.IOUtils;
 
 public class AllAmalgamationOrderingPreferences {
 
 	Map<ScraperGroupName, ScraperGroupAmalgamationPreference> allAmalgamationOrderingPreferences;
-	private static final String settingsFileName = "AmalgamationSettings.json";
+	private static final String settingsFileName = "AmalgamationSettings.xml";
+	private XStream xstream;
 
 	public AllAmalgamationOrderingPreferences() {
 		allAmalgamationOrderingPreferences = new Hashtable<>();
+		xstream = new XStream(new DomDriver());
+		xstream.allowTypesByWildcard(
+				new String[]{
+						"moviescraper.doctord.controller.amalgamation.*",
+						"moviescraper.doctord.controller.siteparsingprofile.*",
+						"moviescraper.doctord.model.preferences.Settings.*",
+						"moviescraper.doctord.model.dataitem.*",
+						"moviescraper.doctord.controller.siteparsingprofile.specific.*"
+				}
+		);
+		xstream.alias("ScraperGroupAmalgamationPreferences", ScraperGroupAmalgamationPreference.class);
+		xstream.alias("ScraperGroupName", ScraperGroupName.class);
+		xstream.alias("OrderingSettings", AllAmalgamationOrderingPreferences.class);
 	}
 
 	public AllAmalgamationOrderingPreferences(AllAmalgamationOrderingPreferences other){
@@ -61,20 +78,18 @@ public class AllAmalgamationOrderingPreferences {
 		allAmalgamationOrderingPreferences.put(scraperGroupName, pref);
 	}
 
-	public AllAmalgamationOrderingPreferences initializeValuesFromPreferenceFile() {
+	public void initializeValuesFromPreferenceFile() {
 
 		File inputFile = new File(settingsFileName);
 		if (!inputFile.exists()) {
 			boolean saveToDisk = true;
 			initializeDefaultPreferences(saveToDisk);
 			System.out.println("No file existed for amalgamation preferences. Used default preferences.");
-			return this;
 		} else {
-			try (InputStream inputFromFile = new FileInputStream(settingsFileName); JsonReader jr = new JsonReader(inputFromFile);) {
-
-				AllAmalgamationOrderingPreferences jsonObject = (AllAmalgamationOrderingPreferences) jr.readObject();
-				//System.out.println("Read in amalgamation preferences from " + settingsFileName);
-				return jsonObject;
+			try (FileInputStream inputFromFile = new FileInputStream(settingsFileName);) {
+				var data = IOUtils.toString(inputFromFile, "UTF-8");
+				if(!data.isEmpty())
+					allAmalgamationOrderingPreferences = (Map<ScraperGroupName, ScraperGroupAmalgamationPreference>) xstream.fromXML(data);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (JsonIoException e) {
@@ -85,12 +100,12 @@ public class AllAmalgamationOrderingPreferences {
 				e.printStackTrace();
 			}
 		}
-		return this;
 	}
 
 	public void saveToPreferencesFile() {
-		try (FileOutputStream outputStream = new FileOutputStream(settingsFileName); JsonWriter jw = new JsonWriter(outputStream);) {
-			jw.write(this);
+		try (FileOutputStream writer = new FileOutputStream(settingsFileName)) {
+			var data = xstream.toXML(allAmalgamationOrderingPreferences);
+			writer.write(data.getBytes());
 			System.out.println("Saved amalgamation preferences to " + settingsFileName);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
