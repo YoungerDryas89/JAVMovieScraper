@@ -26,7 +26,6 @@ import org.junit.Test;
 public class AvEntertainmentParsingProfileTest {
 
 	static AvEntertainmentParsingProfile profile;
-	static File file = new File("C:/temp/SKY-120.mkv");
 
 	@BeforeClass
 	public static void initialize() {
@@ -39,18 +38,15 @@ public class AvEntertainmentParsingProfileTest {
 	@Test
 	public void testSearchResult() throws IOException {
 		SearchResult[] results = profile.getSearchResults("http://www.aventertainments.com/ppv/ppv_studioproducts.aspx?StudioID=185&languageID=1&VODTypeID=1");
-		//		for (SearchResult sr : results) {
-		//			TestTokyoHotParsingProfile.showImage(sr.getLabel(), sr.getPreviewImage().getThumbImage());
-		//		}
-		assertTrue("There should be 40 results.", results.length == 40);
+		assertEquals("There should be 40 results.", results.length, 40);
 	}
 
 	@Test
 	public void testActors() {
 		ArrayList<Actor> scrapeActors = profile.scrapeActors();
-		assertTrue("There should be 1 Actor", scrapeActors.size() == 1);
-		assertEquals("Wrong actor name", "Yume Mizuki", scrapeActors.get(0).getName());
-		assertEquals("Wrong actor picture", "https://imgs.aventertainments.com/ActressImage/LargeImage/mizuki_yume.jpg", scrapeActors.get(0).getThumb().getThumbURL().toString());
+		assertEquals(scrapeActors.size(), 1);
+		assertEquals("Yume Mizuki", scrapeActors.get(0).getName());
+		assertEquals( "https://imgs02.aventertainments.com/ActressImage/LargeImage/mizuki_yume.webp", scrapeActors.get(0).getThumb().getThumbURL().toString());
 	}
 
 	@Test
@@ -63,8 +59,8 @@ public class AvEntertainmentParsingProfileTest {
 	public void testGenres() {
 		ArrayList<Genre> genres = profile.scrapeGenres();
 		System.out.println("genreList for AvEntertainment = " + genres);
+		assertTrue(genres.contains(new Genre("Uncensored")));
 		assertTrue(genres.contains(new Genre("Drama")));
-		assertTrue(genres.contains(new Genre("Editor's Pick")));
 	}
 
 	@Test
@@ -95,7 +91,7 @@ public class AvEntertainmentParsingProfileTest {
 	public void testPosters() throws IOException {
 		Thumb[] posters = profile.scrapePosters();
 		assertTrue("Wrong count of posters", posters.length == 1);
-		assertEquals("Wrong poster", "https://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster", "https://imgs02.aventertainments.com/new/bigcover/dvd1pt-154.webp", posters[0].getThumbURL().toString());
 		//TestingHelper.showImage("posters", posters[0].getThumbImage());
 	}
 
@@ -104,7 +100,7 @@ public class AvEntertainmentParsingProfileTest {
 		Thumb[] fanart = profile.scrapeFanart();
 		assertTrue("There should be 1 Fanart.", fanart.length == 1);
 
-		assertEquals("Wrong Fanart", "https://imgs.aventertainments.com/new/bigcover/dvd1pt-154.jpg", fanart[0].getThumbURL().toString());
+		assertEquals("Wrong Fanart", "https://imgs02.aventertainments.com/new/bigcover/dvd1pt-154.webp", fanart[0].getThumbURL().toString());
 		//TestingHelper.showImage("Fanart", fanart[0].getThumbImage());
 	}
 

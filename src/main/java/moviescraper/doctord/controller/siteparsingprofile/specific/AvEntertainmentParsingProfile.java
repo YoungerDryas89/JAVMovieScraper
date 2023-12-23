@@ -10,9 +10,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
-
+import static java.util.stream.Collectors.toList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -47,12 +48,24 @@ import moviescraper.doctord.model.dataitem.Year;
 public class AvEntertainmentParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final SimpleDateFormat avEntertainmentReleaseDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+	final static String getResultsByDiv = "//div[contains(concat(' ', normalize-space(@class), ' '), \" shop-product-wrap \")]/div";
+	final static String getThumbnail = ".//div[@class=\"single-slider-product__image\"]/a/img[@class=\"img-fluid\"]";
+	final static String getTitlePageUrl = ".//div[@class=\"single-slider-product__image\"]/a";
+	final static String getTitleFromSearchPage = ".//div[@class=\"single-slider-product__content\"]//a";
+
+	final static String getStars = ".//h4[text()=\"Starring\"]//following-sibling::span/*";
+	//final static String getActressImage = "//div[contains(concat(' ', normalize-space(@class), ' '), \"list-view-product\")]//img/@src";
+	final static String getActressImage = "//div[contains(concat(' ', normalize-space(@class), ' '), ' single-slider-product--list-view__image ')]/img";
+	final static String getTitle = "//div[contains(concat(' ', normalize-space(@class), ' '), ' col-sm-12 ')]/div[@class='section-title']/h3";
+	final static String getReleaseDate = "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-info-block-rev ')]/div/span[text()='Date']/following-sibling::span";
+	final static String getRuntime = "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-info-block-rev ')]/div/span[text()='Play Time']/following-sibling::span";
+	final static String getPoster = "//div[@id='PlayerCover']//img";
+	final static String getProductDetailsArea = "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-details-area ')]/div/div[2]/div[1]/div[3]";
 
 	@Override
 	public Title scrapeTitle() {
-		Elements elements = document.select("#mini-tabet h2");
-		String title = elements.first().childNode(0).toString().trim();
-		return new Title(title);
+		Elements elements = document.selectXpath(getTitle);
+		return new Title(elements.text());
 	}
 
 	@Override
@@ -67,7 +80,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Set scrapeSet() {
-		String set = getMovieData("Series", "シリーズ");
+		String set = getMovieData("Series", "シリーズ").get(0).text();
 		return new Set(set);
 	}
 
@@ -84,10 +97,9 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 
-		Elements elements = document.select("div[id=titlebox] ul li:contains(Release Date:), div[id=titlebox] ul li:contains(発売日:)");
+		Elements elements = document.selectXpath(getReleaseDate);
 		if (elements != null) {
-			String releaseDateText = elements.first().ownText();
-			return new ReleaseDate(releaseDateText, avEntertainmentReleaseDateFormat);
+			return new ReleaseDate(elements.text().split(" ")[0], avEntertainmentReleaseDateFormat);
 		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 
@@ -121,29 +133,17 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	@Override
 	public Runtime scrapeRuntime() {
 		String runtime = "";
-
-		Elements elements = document.select("div[id=titlebox] ul li");
-		for (Element element : elements) {
-			if (element.childNodeSize() == 3) {
-				if (element.text().startsWith("Play time") || element.text().startsWith("収録時間")) {
-					String data = element.childNode(2).toString();
-					Pattern pattern = Pattern.compile("\\d+");
-					Matcher matcher = pattern.matcher(data);
-					if (matcher.find()) {
-						runtime = matcher.group();
-						break;
-					}
-				}
-			}
-		}
-		return new Runtime(runtime);
+		Elements elements = document.selectXpath(getRuntime);
+		runtime = elements.text().split(" ")[1];
+		return new Runtime(runtime.substring(0, runtime.length()-4));
 	}
 
 	@Override
 	public Thumb[] scrapePosters() {
-		List<Thumb> thumbs = new ArrayList<>();
-		Thumb[] fanart = scrapeFanart();
-		if (fanart.length > 0) {
+		//List<Thumb> thumbs = new ArrayList<>();
+		//Thumb[] fanart = scrapeFanart();
+		// TODO: Fix AvEntertainment's scrapePosters()
+		/*if (fanart.length > 0) {
 			try {
 				BufferedImage read = ImageIO.read(fanart[0].getThumbURL());
 				if (read != null) {
@@ -153,27 +153,21 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		return thumbs.toArray(new Thumb[thumbs.size()]);
+		}*/
+		//return thumbs.toArray(new Thumb[thumbs.size()]);
+		return scrapeFanart();
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
 		List<Thumb> thumbs = new ArrayList<>();
-		Elements elements = document.select("li.ppvs.magnify a");
-		if (elements.size() > 0) {
-			Element first = elements.first();
-			String attr = first.attr("onclick");
-			String temp = "imagefile=";
-			Pattern pattern = Pattern.compile(temp + "http.*jpg");
-			Matcher matcher = pattern.matcher(attr);
-			if (matcher.find()) {
-				String url = matcher.group().substring(temp.length());
-				try {
-					thumbs.add(new Thumb(url));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+		Elements elements = document.selectXpath(getPoster);
+
+		if(!elements.isEmpty()) {
+			try {
+				thumbs.add(new Thumb(elements.attr("src")));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
 		}
 		return thumbs.toArray(new Thumb[thumbs.size()]);
@@ -214,19 +208,19 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
-		ArrayList<Genre> list = new ArrayList<>();
-		Elements elements = document.select("div[id=detailbox] ul ol a");
-		for (Element element : elements) {
-			String genre = element.childNode(0).toString();
-			if (!genre.equals("Sample Movie") && !genre.contains("(DVD)"))
-				list.add(new Genre(genre));
+		// TODO: Add Japanese word for category
+		var categories = getMovieData("Category", "");
+		ArrayList<Genre> genres = new ArrayList<>();
+		for (Element element : categories) {
+			if(element != null)
+				genres.add(new Genre(element.text()));
 		}
-		return list;
+		return genres;
 	}
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		Elements elements = document.select("ul li a[href~=ActressDetail]");
+		Elements elements = document.selectXpath(getStars);
 		ArrayList<Actor> list = new ArrayList<>();
 		if (elements != null) {
 			for (Element element : elements) {
@@ -235,10 +229,9 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 				Thumb thumb = null;
 				try {
 					Document actorDoc = Jsoup.connect(href).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-					Element first = actorDoc.select("ul img[src~=ActressImage]").first();
-					if (first != null) {
-						String thumbURL = first.attr("src");
-						thumb = new Thumb(thumbURL);
+					var url = actorDoc.selectXpath(getActressImage).attr("src");
+					if (!url.isEmpty()) {
+						thumb = new Thumb(url);
 					}
 					list.add(new Actor(name, null, thumb));
 				} catch (IOException e) {
@@ -258,24 +251,25 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	@Override
 	public Studio scrapeStudio() {
-		String studio = getMovieData("Studio", "スタジオ");
+		String studio = getMovieData("Studio", "スタジオ").get(0).text();
 		return new Studio(studio);
 	}
 
-	private String getMovieData(String category, String japaneseWordForCategory) {
-		Elements elements = document.select("div[id=titlebox] ul li");
-		for (Element element : elements) {
-			Element span = element.select("span").first();
-			if (span != null) {
-				String cat = span.childNode(0).toString();
-				if (cat.startsWith(category) || cat.startsWith(japaneseWordForCategory)) {
-					Element first = element.select("a").first();
-					String text = first.childNode(0).toString();
-					return text;
+	private List<Element> getMovieData(String category, String japaneseWordForCategory) {
+		var elements = document.selectXpath(getProductDetailsArea).first();
+		List<Element> returnElements = new ArrayList<Element>();
+		if(elements != null) {
+			for (Element element : elements.children()) {
+				Elements span = element.select("span");
+				if (span != null || !span.isEmpty()) {
+					String cat = span.first().childNode(0).toString();
+					if (cat.startsWith(category) || (cat.startsWith(japaneseWordForCategory) && !japaneseWordForCategory.isEmpty())) {
+						returnElements.addAll(span.last().children().stream().collect(Collectors.toList()));
+					}
 				}
 			}
 		}
-		return "";
+		return returnElements;
 	}
 
 	@Override
@@ -289,34 +283,15 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 		List<SearchResult> list = new ArrayList<>();
-		Elements elements = doc.select(".PPV-TOP");
+		Elements elements = doc.selectXpath(getResultsByDiv);
 
 		for (Element e : elements) {
-			String href = e.attr("href");
-			String label = e.siblingElements().get(e.siblingIndex()).text();
-			Elements selectThumb = e.select("img");
+			String href = e.selectXpath(getTitlePageUrl).attr("href");
+			String label = e.selectXpath(getTitleFromSearchPage).text();
+			String thumnailUrl = e.selectXpath(getThumbnail).attr("href");
 			Thumb thumb = null;
-			for (Element thumbElement : selectThumb) {
-				String attr = thumbElement.attr("src");
-				if (attr.startsWith("http://imgs.aventertainments.com/product_images")) {
-					thumb = new Thumb(attr);
-				}
-			}
-			list.add(new SearchResult(href, label, thumb));
-		}
-		elements = doc.select(".list-cover");
-		for (Element e : elements) {
-			Element root = e.parent().parent().parent();
-			String href = root.select(":nth-child(1) a").get(1).attr("href");
-			String label = root.select(":nth-child(1) a").get(1).text();
-			Elements selectThumb = e.select("img");
-			Thumb thumb = null;
-			for (Element thumbElement : selectThumb) {
-				String attr = thumbElement.attr("src");
-				if (attr.startsWith("http://imgs.aventertainments.com/product_images") || attr.startsWith("http://imgs.aventertainments.com/new/jacket_images/")
-				        || attr.startsWith("http://imgs.aventertainments.com/archive/jacket_images/")) {
-					thumb = new Thumb(attr);
-				}
+			if(thumnailUrl.startsWith("https://imgs02.aventertainments.com")){
+				thumb = new Thumb(thumnailUrl);
 			}
 			list.add(new SearchResult(href, label, thumb));
 		}
