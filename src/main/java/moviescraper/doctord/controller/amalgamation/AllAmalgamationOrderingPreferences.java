@@ -46,6 +46,8 @@ public class AllAmalgamationOrderingPreferences {
 		xstream.alias("ScraperGroupAmalgamationPreferences", ScraperGroupAmalgamationPreference.class);
 		xstream.alias("ScraperGroupName", ScraperGroupName.class);
 		xstream.alias("OrderingSettings", AllAmalgamationOrderingPreferences.class);
+
+		initializeValuesFromPreferenceFile();
 	}
 
 	public AllAmalgamationOrderingPreferences(AllAmalgamationOrderingPreferences other){

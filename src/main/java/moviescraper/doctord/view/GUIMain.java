@@ -68,7 +68,7 @@ public class GUIMain {
 	private File defaultHomeDirectory;
 	private MoviescraperPreferences preferences;
 	private GuiSettings guiSettings;
-	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
+	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
 	//scraped movies
 	public List<Movie> movieToWriteToDiskList;
@@ -163,7 +163,7 @@ public class GUIMain {
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
 
-		reinitializeAmalgamationPreferencesFromFile();
+		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 
 		setCurrentlySelectedNfoFileList(new ArrayList<File>());
 		setCurrentlySelectedMovieFileList(new ArrayList<File>());
