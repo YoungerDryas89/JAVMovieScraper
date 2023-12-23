@@ -331,6 +331,7 @@ public class Thumb extends MovieDataItem {
 			//        HttpURLConnection.setInstanceFollowRedirects(false)
 			HttpURLConnection con = (HttpURLConnection) new URL(URLName).openConnection();
 			con.setRequestMethod("HEAD");
+			con.setInstanceFollowRedirects(true);
 			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 		} catch (Exception e) {
 			e.printStackTrace();
