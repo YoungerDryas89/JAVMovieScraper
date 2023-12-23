@@ -152,6 +152,8 @@
                 <version>3.8.0</version>
                 <configuration>
                     <release>11</release>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>

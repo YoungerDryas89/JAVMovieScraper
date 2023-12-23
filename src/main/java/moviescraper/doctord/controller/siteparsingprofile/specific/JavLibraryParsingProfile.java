@@ -58,6 +58,10 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	private String overrideURLJavLibrary;
 	private static DitzyHeadlessBrowser browser;
 
+	/*
+		TODO: Check if images redirect to 'https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg' aka 'this image does not exist' url
+	 */
+
 	private static final SimpleDateFormat javLibraryReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
 	@Override
