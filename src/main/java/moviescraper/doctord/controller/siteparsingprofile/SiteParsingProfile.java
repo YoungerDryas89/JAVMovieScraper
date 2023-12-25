@@ -363,7 +363,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	}
 
 	protected static boolean fileExistsAtURL(String URLName) {
-		return fileExistsAtURL(URLName, false);
+		return fileExistsAtURL(URLName, true);
 	}
 
 	protected static boolean fileExistsAtURL(String URLName, Boolean allow_redirects) {
@@ -380,7 +380,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			if (!allow_redirects) {
 				return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 			} else {
-				return (con.getResponseCode() == HttpURLConnection.HTTP_OK || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP);
+				return (con.getResponseCode() == HttpURLConnection.HTTP_OK || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP || con.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM);
 			}
 		} catch (SocketTimeoutException e) {
 			// Non-existing DMM trailers usually time out
