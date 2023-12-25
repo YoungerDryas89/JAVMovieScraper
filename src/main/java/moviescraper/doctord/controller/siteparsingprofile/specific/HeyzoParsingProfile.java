@@ -159,7 +159,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 				int minutes = Integer.parseInt(runtimeTextSplit[1]);
 				int totalMinutes = (hours * 60) + minutes;
 				if (totalMinutes > 0)
-					return new Runtime(new Integer(totalMinutes).toString());
+					return new Runtime(Integer.valueOf(totalMinutes).toString());
 			}
 		}
 		return Runtime.BLANK_RUNTIME;
@@ -231,7 +231,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
-		Elements genreElements = document.select(".movieInfo a[href*=/listpages/category");
+		Elements genreElements = document.select(".movieInfo a[href*=/listpages/category]");
 		if (genreElements != null) {
 			for (Element currentGenre : genreElements) {
 				if (currentGenre.text().trim().length() > 0)
@@ -243,7 +243,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public ArrayList<Actor> scrapeActors() {
-		Elements actorElements = document.select(".movieInfo a[href*=/listpages/actor");
+		Elements actorElements = document.selectXpath("//td[text()='Actress(es)']/following-sibling::td/a");
 		ArrayList<Actor> actorList = new ArrayList<>();
 		for (Element currentActor : actorElements) {
 			String actorName = currentActor.text().trim();
