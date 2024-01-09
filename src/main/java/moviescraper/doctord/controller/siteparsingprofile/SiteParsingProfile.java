@@ -120,6 +120,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private SearchResult overridenSearchResult;
 
+	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S]?(?<number>[0-9]+))");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
@@ -214,10 +216,15 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 
 		}
-		Pattern avGeneralIdextract = Pattern.compile("(?<id>(?<series>(:?[0-9]+)?[A-Za-z]+)-(?<number>[0-9]+))");
-
-		Matcher match = avGeneralIdextract.matcher(file.getName());
+		Matcher match = TokyoHotPattern.matcher(fileNameNoExtension);
 		String id = null;
+		if(match.find()){
+			assert(match.group("productId") != null);
+			id = match.group("productId");
+			return id;
+		}
+
+		match = avGeneralIdextract.matcher(fileNameNoExtension);
 		if(match.find()){
 			assert(match.group("id") != null);
 			assert(match.group("series") != null);
