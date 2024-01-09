@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -131,7 +132,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	@Override
 	public Plot scrapePlot() {
 		Elements elements = docSite.select("tr td[align=left]");
-		if (elements.size() > 0) {
+		if (!elements.isEmpty()) {
 			String ownText = elements.get(0).childNode(0).childNode(0).toString().trim();
 			return new Plot(ownText);
 		}
@@ -165,10 +166,11 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public Thumb[] scrapePosters() {
+		List<Thumb> thumbs = new ArrayList<>();
 		try {
-			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getImageLink(searchString) + "_v.jpg");
-			return thumbs;
+			Elements imageElement = document.selectXpath("//video[@class='fp-engine']");
+			Thumb thumb = new Thumb(imageElement.attr("poster"));
+			return thumbs.toArray(new Thumb[thumbs.size()]);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -240,33 +242,9 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
-
-		if (fileID != null) {
-			try {
-				Document doc = Jsoup.connect("http://cdn.www.tokyo-hot.com/igs/").userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-				Elements select = doc.select("tr td a");
-				String foundLink = null;
-				for (Element element : select) {
-					String link = element.attr("href");
-					if (link.startsWith(fileID)) {
-						foundLink = link;
-						break;
-					}
-				}
-				if (foundLink == null) {
-					System.out.println("Found no Link for TokyoHot");
-					return null;
-				}
-				id = foundLink.replace("/", "");
-				imageLink = getImageLink(id);
-				siteLink = getSiteLink(id);
-
-				return siteLink;
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		String url = "https://www.tokyo-hot.com/product/?q=";
+		if(!fileID.isEmpty()){
+			return url + fileID;
 		}
 		return null;
 
@@ -274,6 +252,7 @@ public class TokyoHotParsingProfile extends SiteParsingProfile implements Specif
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
+		List<SearchResult> results = new ArrayList<>();
 		SearchResult searchResult = new SearchResult(searchString, searchString);
 		SearchResult[] sr = { searchResult };
 		return sr;
