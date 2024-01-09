@@ -8,7 +8,7 @@ module moviescraper.doctord {
     requires org.jsoup;
     requires imgscalr.lib;
     requires json.io;
-    requires forms;
+    requires jgoodies.forms;
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.commons.csv;

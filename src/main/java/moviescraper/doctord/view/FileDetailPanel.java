@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.jgoodies.forms.layout.FormSpecs;
 import moviescraper.doctord.controller.EditGenresAction;
 import moviescraper.doctord.controller.EditTagsAction;
 import moviescraper.doctord.model.Movie;
@@ -38,7 +39,6 @@ import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.AbstractFileDetailPanelEditGUI.Operation;
 import moviescraper.doctord.view.renderer.ActressListRenderer;
-import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
@@ -115,40 +115,40 @@ public class FileDetailPanel extends JPanel {
 		this.guiMain = gui;
 		JPanel fileDetailsPanel = this;
 
-		FormLayout formLayout = new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC, // 1 - empty space
-		        FormFactory.DEFAULT_COLSPEC, //2 - label for each of the form items
-		        FormFactory.RELATED_GAP_COLSPEC, //3 - empty space
+		FormLayout formLayout = new FormLayout(new ColumnSpec[] { FormSpecs.RELATED_GAP_COLSPEC, // 1 - empty space
+		        FormSpecs.DEFAULT_COLSPEC, //2 - label for each of the form items
+		        FormSpecs.RELATED_GAP_COLSPEC, //3 - empty space
 		        ColumnSpec.decode("fill:pref:grow"), // 4 - Form text items
-		        FormFactory.RELATED_GAP_COLSPEC, //5 - empty space
-		        FormFactory.DEFAULT_COLSPEC, // 6 - artwork panel
-		        FormFactory.RELATED_GAP_COLSPEC,//7 - empty space
-		}, new RowSpec[] { FormFactory.RELATED_GAP_ROWSPEC, //1 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
-		        FormFactory.RELATED_GAP_ROWSPEC, //3  - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //4 - File Path
-		        FormFactory.RELATED_GAP_ROWSPEC, //5 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //6 - Title
-		        FormFactory.RELATED_GAP_ROWSPEC, //7 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //8 - original title
-		        FormFactory.RELATED_GAP_ROWSPEC, //9 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //10 - Year
-		        FormFactory.RELATED_GAP_ROWSPEC, //11 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //12 - Release Date
-		        FormFactory.RELATED_GAP_ROWSPEC, //13 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //14 - ID
-		        FormFactory.RELATED_GAP_ROWSPEC, //15 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //16 - Studio
-		        FormFactory.RELATED_GAP_ROWSPEC, //17 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //18 - Movie set
-		        FormFactory.RELATED_GAP_ROWSPEC, //19 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //20 - Plot
-		        FormFactory.RELATED_GAP_ROWSPEC, //21 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //22 - genres
-		        FormFactory.RELATED_GAP_ROWSPEC, //23 - empty space
-		        FormFactory.DEFAULT_ROWSPEC, //24 - tags
-		        FormFactory.RELATED_GAP_ROWSPEC, //25 - empty space
+		        FormSpecs.RELATED_GAP_COLSPEC, //5 - empty space
+		        FormSpecs.DEFAULT_COLSPEC, // 6 - artwork panel
+		        FormSpecs.RELATED_GAP_COLSPEC,//7 - empty space
+		}, new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, //1 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //2 - navigation buttons and artwork panel
+		        FormSpecs.RELATED_GAP_ROWSPEC, //3  - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //4 - File Path
+		        FormSpecs.RELATED_GAP_ROWSPEC, //5 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //6 - Title
+		        FormSpecs.RELATED_GAP_ROWSPEC, //7 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //8 - original title
+		        FormSpecs.RELATED_GAP_ROWSPEC, //9 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //10 - Year
+		        FormSpecs.RELATED_GAP_ROWSPEC, //11 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //12 - Release Date
+		        FormSpecs.RELATED_GAP_ROWSPEC, //13 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //14 - ID
+		        FormSpecs.RELATED_GAP_ROWSPEC, //15 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //16 - Studio
+		        FormSpecs.RELATED_GAP_ROWSPEC, //17 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //18 - Movie set
+		        FormSpecs.RELATED_GAP_ROWSPEC, //19 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //20 - Plot
+		        FormSpecs.RELATED_GAP_ROWSPEC, //21 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //22 - genres
+		        FormSpecs.RELATED_GAP_ROWSPEC, //23 - empty space
+		        FormSpecs.DEFAULT_ROWSPEC, //24 - tags
+		        FormSpecs.RELATED_GAP_ROWSPEC, //25 - empty space
 		        RowSpec.decode("fill:pref:grow"), //26 - actors
-		        FormFactory.RELATED_GAP_ROWSPEC//27 - empty space
+		        FormSpecs.RELATED_GAP_ROWSPEC//27 - empty space
 		});
 
 		fileDetailsPanel.setLayout(formLayout);

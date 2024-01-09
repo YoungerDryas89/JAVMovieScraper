@@ -77,8 +77,8 @@
         </dependency>
         <dependency>
             <groupId>com.jgoodies</groupId>
-            <artifactId>forms</artifactId>
-            <version>1.3.0</version>
+            <artifactId>jgoodies-forms</artifactId>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>io.jsondb</groupId>
