@@ -33,7 +33,6 @@ import moviescraper.doctord.controller.siteparsingprofile.specific.Kin8tengokuPa
 import moviescraper.doctord.controller.siteparsingprofile.specific.MyTokyoHotParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.OnePondoParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TokyoHotParsingProfile;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 import moviescraper.doctord.view.GUIMain;
@@ -288,9 +287,6 @@ public class Main {
 				break;
 			case "mytokyohot":
 				parsingProfile = new MyTokyoHotParsingProfile();
-				break;
-			case "tokyohot":
-				parsingProfile = new TokyoHotParsingProfile();
 				break;
 			case "iafd":
 				parsingProfile = new IAFDParsingProfile();
