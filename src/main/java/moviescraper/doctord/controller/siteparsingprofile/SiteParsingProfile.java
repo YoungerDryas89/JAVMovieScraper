@@ -121,7 +121,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	private SearchResult overridenSearchResult;
 
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S]?(?<number>[0-9]+))");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
