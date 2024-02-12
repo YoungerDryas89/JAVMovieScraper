@@ -164,7 +164,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 				//we don't care about seconds
 
 				int totalMinutes = (hours * 60) + minutes;
-				return new Runtime(new Integer(totalMinutes).toString());
+				return new Runtime(Integer.valueOf(totalMinutes).toString());
 			}
 		}
 		return Runtime.BLANK_RUNTIME;
