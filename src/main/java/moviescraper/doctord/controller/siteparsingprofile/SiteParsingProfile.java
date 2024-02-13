@@ -120,6 +120,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private SearchResult overridenSearchResult;
 
+	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d+[_-](:?001)?(:?-1PON)?)");
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
 	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3}|\\d{4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
 	/**
