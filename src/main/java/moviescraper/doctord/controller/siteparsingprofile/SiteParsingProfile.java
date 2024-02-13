@@ -217,8 +217,15 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 
 		}
-		Matcher match = TokyoHotPattern.matcher(fileNameNoExtension);
+
+		Matcher match = OnePondoPattern.matcher(fileNameNoExtension);
 		String id = null;
+		if(match.find()){
+			assert (match.group("id") != null);
+			id = match.group("id");
+			return id;
+		}
+		match = TokyoHotPattern.matcher(fileNameNoExtension);
 		if(match.find()){
 			assert(match.group("productId") != null);
 			id = match.group("productId");
