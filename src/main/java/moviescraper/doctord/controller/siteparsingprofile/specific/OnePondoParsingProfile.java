@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import org.apache.commons.io.FilenameUtils;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON;
@@ -51,7 +52,11 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public Title scrapeTitle() {
 		JSONObject pageJSON = getMovieJSON();
-		return new Title(pageJSON.getString("Title"));
+		if (scrapingLanguage == Language.ENGLISH) {
+			return new Title(pageJSON.getString("TitleEn"));
+		} else {
+			return new Title(pageJSON.getString("Title"));
+		}
 	}
 
 	@Override
@@ -112,8 +117,12 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 
 	@Override
 	public Plot scrapePlot() {
-		//This site has no plot for movies
-		return Plot.BLANK_PLOT;
+		var json = getMovieJSON();
+		if(scrapingLanguage == Language.ENGLISH){
+			return new Plot(json.getString("DescEn"));
+		} else {
+			return new Plot(json.getString("Desc"));
+		}
 	}
 
 	@Override
