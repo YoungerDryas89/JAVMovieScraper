@@ -165,16 +165,16 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 			String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
 			String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
 			String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
-			if (SiteParsingProfile.fileExistsAtURL(bannerURL))
+			if (SiteParsingProfile.fileExistsAtURL(bannerURL, false))
 				thumbList.add(new Thumb(bannerURL));
-			if (SiteParsingProfile.fileExistsAtURL(popupOneURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupOneURL, false))
 				thumbList.add(new Thumb(popupOneURL));
-			if (SiteParsingProfile.fileExistsAtURL(popupTwoURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupTwoURL, false))
 				thumbList.add(new Thumb(popupTwoURL));
-			if (SiteParsingProfile.fileExistsAtURL(popupThreeURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupThreeURL, false))
 				thumbList.add(new Thumb(popupThreeURL));
 			//combine the two background images together to make the fanart if we are on a page that has split things into two images
-			if (SiteParsingProfile.fileExistsAtURL(backgroundURLOne) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo)) {
+			if (SiteParsingProfile.fileExistsAtURL(backgroundURLOne, false) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo, false)) {
 				try {
 					/*
 					 * BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
@@ -193,9 +193,9 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 					thumbList.add(new Thumb(backgroundURLTwo));
 				}
 
-			} else if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo))
+			} else if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo, false))
 				thumbList.add(new Thumb(backgroundURLTwo));
-			if (SiteParsingProfile.fileExistsAtURL(popupFourURL))
+			if (SiteParsingProfile.fileExistsAtURL(popupFourURL, false))
 				thumbList.add(new Thumb(popupFourURL));
 			return thumbList.toArray(new Thumb[thumbList.size()]);
 
