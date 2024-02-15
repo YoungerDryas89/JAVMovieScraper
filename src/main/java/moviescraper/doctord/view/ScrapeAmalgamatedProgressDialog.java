@@ -175,6 +175,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 
 		JPanel individualScrapeProgressPanel = createScraperProgressPanel();
 		overallPanel.add(individualScrapeProgressPanel, BorderLayout.CENTER);
+                this.setMinimumSize(new Dimension(50, 100));
 		this.pack();
 	}
 
