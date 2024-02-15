@@ -459,6 +459,11 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
+	public String createSearchStringFromId(String id){
+		return null;
+	}
+
+	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		//System.out.println("Trying to scrape with URL = " + searchString);
 		if (useSiteSearch) {

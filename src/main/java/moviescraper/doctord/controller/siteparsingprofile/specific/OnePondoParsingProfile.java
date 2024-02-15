@@ -267,17 +267,17 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileID = findIDTagFromFile(file);
-		if (fileID == null)
-			return null;
-		fileID = fileID.toLowerCase();
-
-		if (fileID != null) {
-			return "https://www.1pondo.tv/dyn/phpauto/movie_details/movie_id/" + fileID + ".json";
-		}
-
-		return null;
+		return createSearchStringFromId(findIDTagFromFile(file));
 	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            Id = Id.toLowerCase();
+            if (Id == null)
+		return null;
+
+            return "https://www.1pondo.tv/dyn/phpauto/movie_details/movie_id/" + Id + ".json";
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

@@ -292,8 +292,16 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 		if (fileID != null) {
 
-			englishPage = "http://en.heyzo.com/moviepages/" + fileID + "/index.html";
-			japanesePage = "http://www.heyzo.com/moviepages/" + fileID + "/index.html";
+			
+		}
+
+		return null;
+	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            englishPage = "http://en.heyzo.com/moviepages/" + Id + "/index.html";
+			japanesePage = "http://www.heyzo.com/moviepages/" + Id + "/index.html";
 			try {
 				japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			} catch (IOException e) {
@@ -305,10 +313,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 			} else {
 				return japanesePage;
 			}
-		}
-
-		return null;
-	}
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

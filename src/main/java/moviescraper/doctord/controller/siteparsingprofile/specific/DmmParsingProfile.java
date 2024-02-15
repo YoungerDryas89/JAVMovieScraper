@@ -656,13 +656,16 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-		//System.out.println("fileNameNoExtension in DMM: " + fileNameNoExtension);
+		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+	}
+
+	@Override
+	public String createSearchStringFromId(String Id) {
 		URLCodec codec = new URLCodec();
 		try {
-			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
+			String EncodedId = codec.encode(Id);
 			//System.out.println("FileNameUrlencode = " + fileNameURLEncoded);
-			return "https://www.dmm.co.jp/search/=/searchstr=" + fileNameURLEncoded + "/";
+			return "https://www.dmm.co.jp/search/=/searchstr=" + EncodedId + "/";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

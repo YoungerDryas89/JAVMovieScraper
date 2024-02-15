@@ -514,6 +514,11 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	@Override
+	public String createSearchStringFromId(String id) {
+		return null;
+	}
+
+	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		SearchResult[] googleResults = getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
 		//Remove any parts of the URL after .html - for some reason this sometimes happens and messes up the scrape

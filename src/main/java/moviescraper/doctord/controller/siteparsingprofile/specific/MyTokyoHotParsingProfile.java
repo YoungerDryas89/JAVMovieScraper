@@ -281,16 +281,18 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public String createSearchString(File file) {
-		scrapedMovieFile = file;
-		String fileID = findIDTagFromFile(file);
-		if (fileID == null)
-			return null;
-		fileID = fileID.toLowerCase();
-		if (fileID == null)
-			return null;
-		String searchURL = "https://my.tokyo-hot.com/product/?q=" + fileID + "&x=0&y=0";
-		return searchURL;
+            scrapedMovieFile = file;
+            return createSearchStringFromId(findIDTagFromFile(file));
 	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            Id = Id.toLowerCase();
+            if (Id == null)
+		return null;
+
+            return "https://my.tokyo-hot.com/product/?q=" + Id + "&x=0&y=0";
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

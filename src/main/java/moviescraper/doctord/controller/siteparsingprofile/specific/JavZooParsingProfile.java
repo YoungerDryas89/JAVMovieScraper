@@ -310,12 +310,14 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-
-		//return fileNameNoExtension;
-		URLCodec codec = new URLCodec();
+		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            URLCodec codec = new URLCodec();
 		try {
-			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
+			String fileNameURLEncoded = codec.encode(Id);
 			//			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
 			String searchTerm = "http://avmoo.online/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
 
@@ -326,7 +328,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 			e.printStackTrace();
 		}
 		return null;
-	}
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

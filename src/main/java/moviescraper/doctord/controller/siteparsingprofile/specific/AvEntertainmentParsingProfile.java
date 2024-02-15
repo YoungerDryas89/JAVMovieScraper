@@ -275,9 +275,9 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-		return getSearchString(fileNameNoExtension);
+		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
+
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
@@ -298,11 +298,12 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return list.toArray(new SearchResult[list.size()]);
 	}
 
-	private String getSearchString(String id) {
+	@Override
+	public String createSearchStringFromId(String Id) {
 		String languageID = "1";
 		if (getScrapingLanguage() == Language.JAPANESE)
 			languageID = "2";
-		return "http://www.aventertainments.com/search_Products.aspx?languageID=" + languageID + "&dept_id=29&keyword=" + id + "&searchby=item_no";
+		return "http://www.aventertainments.com/search_Products.aspx?languageID=" + languageID + "&dept_id=29&keyword=" + Id + "&searchby=item_no";
 	}
 
 	@Override

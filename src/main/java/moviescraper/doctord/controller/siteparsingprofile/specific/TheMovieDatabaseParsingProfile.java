@@ -407,6 +407,11 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		}
 		return null;
 	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            return null;
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

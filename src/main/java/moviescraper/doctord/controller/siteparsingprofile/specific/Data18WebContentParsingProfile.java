@@ -529,6 +529,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	}
 
 	@Override
+	public String createSearchStringFromId(String Id){
+		return null;
+	}
+
+	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		//we're searching for new file, reset the scraped posters
 		System.out.println("searchString = " + searchString);

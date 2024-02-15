@@ -203,11 +203,15 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		id = findID(FilenameUtils.getName(file.getName()));
-		if (id != null && !id.isEmpty())
-			return "http://en.kin8tengoku.com/" + id + "/pht/shosai.htm";
-		return id;
+		return createSearchStringFromId(findID(FilenameUtils.getName(file.getName())));
 	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            if (id != null && !id.isEmpty())
+			return "http://en.kin8tengoku.com/" + id + "/pht/shosai.htm";
+            return id;
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

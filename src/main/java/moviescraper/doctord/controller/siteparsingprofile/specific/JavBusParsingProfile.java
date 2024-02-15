@@ -322,11 +322,14 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-
-		URLCodec codec = new URLCodec();
+		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            URLCodec codec = new URLCodec();
 		try {
-			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
+			String fileNameURLEncoded = codec.encode(Id);
 			String searchTerm = "http://www.javbus.com/" + getUrlLanguageToUse() + "/search/" + fileNameURLEncoded;
 			return searchTerm;
 
@@ -335,7 +338,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			e.printStackTrace();
 		}
 		return null;
-	}
+        }
 
 	private String getUrlLanguageToUse() {
 		String urlLanguageToUse = (scrapingLanguage == Language.ENGLISH) ? urlLanguageEnglish : urlLanguageJapanese;

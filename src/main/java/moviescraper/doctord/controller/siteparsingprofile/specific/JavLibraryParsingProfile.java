@@ -369,12 +369,14 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-
-		//return fileNameNoExtension;
-		URLCodec codec = new URLCodec();
+                return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+	}
+        
+        @Override
+        public String createSearchStringFromId(String id){
+            URLCodec codec = new URLCodec();
 		try {
-			String fileNameURLEncoded = codec.encode(fileNameNoExtension);
+			String fileNameURLEncoded = codec.encode(id);
 			String searchTerm = "http://www.javlibrary.com/" + siteLanguageToScrape + "/vl_searchbyid.php?keyword=" + fileNameURLEncoded;
 
 			return searchTerm;
@@ -384,8 +386,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			e.printStackTrace();
 		}
 		return null;
-
-	}
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

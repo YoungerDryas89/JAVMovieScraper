@@ -311,6 +311,11 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		}
 		return FilenameUtils.getBaseName(file.getName());
 	}
+        
+        @Override
+        public String createSearchStringFromId(String Id){
+            return null;
+        }
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {

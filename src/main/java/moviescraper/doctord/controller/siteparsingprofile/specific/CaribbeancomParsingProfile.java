@@ -280,8 +280,13 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		this.id = findIDTagFromFile(file);
-		String englishPage = "http://en.caribbeancom.com/eng/moviepages/" + id + "/index.html";
-		return englishPage;
+		return createSearchStringFromId(this.id);
+	}
+
+	@Override
+	public String createSearchStringFromId(String id) {
+		return "http://en.caribbeancom.com/eng/moviepages/" + id + "/index.html";
+
 	}
 
 	@Override

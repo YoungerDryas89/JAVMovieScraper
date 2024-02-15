@@ -352,6 +352,11 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
 	@Override
+	public String createSearchStringFromId(String id) {
+		return null;
+	}
+
+	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		System.out.println(searchString);
 		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).referrer("https://www.excaliburfilms.com").get();
