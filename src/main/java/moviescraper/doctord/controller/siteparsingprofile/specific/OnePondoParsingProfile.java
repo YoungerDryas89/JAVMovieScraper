@@ -259,7 +259,12 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>(1);
 		JSONObject pageJSON = getMovieJSON();
-		JSONArray actors = pageJSON.getJSONArray("ActressesEn");
+		JSONArray actors;
+		if(scrapingLanguage == Language.ENGLISH) {
+			 actors = pageJSON.getJSONArray("ActressesEn");
+		} else {
+			actors = pageJSON.getJSONArray("ActressesJa");
+		}
 		for (Object actor : actors) {
 			actorList.add(new Actor((String) actor, "", null));
 		}
