@@ -143,15 +143,40 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		try {
-			thumbList.add(new Thumb(pageJSON.getString("ThumbHigh")));
-			thumbList.add(new Thumb(pageJSON.getString("MovieThumb")));
-			thumbList.add(new Thumb(pageJSON.getString("ThumbUltra")));
-			thumbList.add(new Thumb(pageJSON.getString("ThumbMed")));
-			return thumbList.toArray(new Thumb[thumbList.size()]);
+			// Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
+			var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
+			if (fileExistsAtURL(jacketURL, false)) {
+				thumbList.add(new Thumb(jacketURL));
+				return thumbList.toArray(new Thumb[thumbList.size()]);
+			} else {
+				String[] thumbnailJsonNodes = {
+						"ThumbUltra",
+						"ThumbHigh",
+						"ThumbMed",
+						"ThumbLow"
+				};
+				// Iterate and make sure no duplicates get added
+				for (var elem : thumbnailJsonNodes) {
+					var url = pageJSON.getString(elem);
+					if(!thumbList.isEmpty()) {
+						for (var thumb : thumbList) {
+							if (!url.equals(thumb.getThumbURL().toString()) && !url.isEmpty()) {
+								thumbList.add(new Thumb(url));
+							}
+						}
+					} else {
+						thumbList.add(new Thumb(url));
+					}
+				}
+
+				return thumbList.toArray(new Thumb[thumbList.size()]);
+
+			}
 		} catch (MalformedURLException ex) {
 			Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return new Thumb[0];
+
 	}
 
 	@Override
