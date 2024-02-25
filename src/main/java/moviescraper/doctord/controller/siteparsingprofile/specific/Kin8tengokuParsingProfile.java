@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -40,7 +41,14 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public Title scrapeTitle() {
-		return new Title("Kin8tengoku" + "-" + id);
+		var scrapedTitle = document.select(".sub_title_vip");
+		if(scrapedTitle.isEmpty()){
+			scrapedTitle = document.select(".sub_title");
+		}
+		if(scrapedTitle != null && !scrapedTitle.isEmpty()){
+			return new Title(scrapedTitle.first().text());
+		}
+		return new Title();
 	}
 
 	@Override
@@ -128,8 +136,9 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public Thumb[] scrapePosters() {
 		try {
+			String Id = findID(scrapedMovieFile.getName());
 			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getThumbURL(id, 1));
+			thumbs[0] = new Thumb(getThumbURL(Id, 1));
 			return thumbs;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -163,7 +172,7 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	@Override
 	public ID scrapeID() {
-		return new ID(id);
+		return new ID("KIN8-" + findID(scrapedMovieFile.getName()));
 	}
 
 	@Override
@@ -205,20 +214,19 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findID(FilenameUtils.getName(file.getName())));
 	}
-        
-        @Override
-        public String createSearchStringFromId(String Id){
-            if (id != null && !id.isEmpty())
-			return "http://en.kin8tengoku.com/" + id + "/pht/shosai.htm";
-            return id;
-        }
+
+	@Override
+	public String createSearchStringFromId(String Id) {
+		if (Id != null && !Id.isEmpty())
+			return getDomain() + Id + "/pht/shosai.htm";
+		return Id;
+	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		String thumb = getThumbURL(findID(searchString));
 		SearchResult searchResult = new SearchResult(searchString, "ID :" + findID(searchString), new Thumb(thumb));
-		SearchResult[] results = { searchResult };
-		return results;
+		return new SearchResult[]{searchResult};
 	}
 
 	public static String findID(String searchString) {
@@ -236,7 +244,20 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	public String getThumbURL(String id, int number) {
-		return "http://en.kin8tengoku.com/" + id + "/pht/" + number + ".jpg";
+		//return getDomain() + id + "/pht/" + number + ".jpg";
+		if(scrapingLanguage == Language.ENGLISH){
+			return getDomain() + id + "/pht/" + "main_en.jpg";
+		} else {
+			return getDomain() + id + "/pht/" + number + ".jpg";
+		}
+	}
+
+	private String getDomain(){
+		if(scrapingLanguage == Language.ENGLISH){
+			return "https://en.kin8tengoku.com/";
+		} else {
+			return "https://kin8tengoku.com/";
+		}
 	}
 
 	@Override
