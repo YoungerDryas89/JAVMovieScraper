@@ -3,6 +3,7 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	 */
 	private void initializeJapaneseDocument() {
 		if (document != null && japaneseDocument == null) {
-			String url = document.baseUri().replaceFirst(Pattern.quote("lang=en"), Pattern.quote("lang=ja"));
+			String url = document.baseUri().replaceAll("\\?lang=en", "?lang=ja");
 			japaneseDocument = SiteParsingProfile.downloadDocumentFromURLString(url);
 		}
 	}
@@ -69,6 +70,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		if (getScrapingLanguage() == Language.ENGLISH)
 			titleElement = document.select("div.pagetitle").first();
 		else if (getScrapingLanguage() == Language.JAPANESE) {
+			// TODO: If japanese is the user chosen scraping language, then `document` shouldn't have the English version loaded in by default
 			initializeJapaneseDocument();
 			titleElement = japaneseDocument.select("div.pagetitle").first();
 		}
