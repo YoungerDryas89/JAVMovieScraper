@@ -34,13 +34,13 @@ public class Kin8tengokuParsingProfileTest {
 	@Test
 	public void testSearchString() {
 		String searchString = profile.createSearchString(file);
-		assertEquals("Wrong searchString.", "http://en.kin8tengoku.com/1000/pht/shosai.htm", searchString);
+		assertEquals("Wrong searchString.", "https://en.kin8tengoku.com/1000/pht/shosai.htm", searchString);
 	}
 
 	@Test
 	public void testTitle(){
 		var title = profile.scrapeTitle();
-		assertEquals("Beautiful Gina Gerson VOL1 / Gina Gerson", title.toString(), "Beautiful Gina Gerson VOL1 / Gina Gerson");
+		assertEquals("Expected: Beautiful Gina Gerson VOL1 / Gina Gerson", title.getTitle(), "Beautiful Gina Gerson VOL1 / Gina Gerson");
 	}
 
 	@Test
