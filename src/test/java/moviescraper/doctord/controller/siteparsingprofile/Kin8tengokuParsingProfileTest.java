@@ -38,6 +38,12 @@ public class Kin8tengokuParsingProfileTest {
 	}
 
 	@Test
+	public void testTitle(){
+		var title = profile.scrapeTitle();
+		assertEquals("Beautiful Gina Gerson VOL1 / Gina Gerson", title.toString(), "Beautiful Gina Gerson VOL1 / Gina Gerson");
+	}
+
+	@Test
 	public void findID() {
 		String id = Kin8tengokuParsingProfile.findID(file.getName());
 		assertEquals("Found Wrong ID", "1000", id);
@@ -71,7 +77,7 @@ public class Kin8tengokuParsingProfileTest {
 	@Test
 	public void testGenre() {
 		ArrayList<Genre> genres = profile.scrapeGenres();
-		assertTrue("There should be 9 genres.", genres.size() == 10);
+		assertTrue("There should be 9 genres.", genres.size() == 11);
 
 		assertEquals("First Genre not found", true, genres.contains(new Genre("Costume Play")));
 		assertEquals("Second Genre not found", true, genres.contains(new Genre("Shower Room")));
