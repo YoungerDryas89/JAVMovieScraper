@@ -170,20 +170,16 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		String scrapedId = scrapeID().getId();
 		try {
-			//gallery links
-			for (int i = 1; i <= 21; i++) {
-				String potentialGalleryImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/0" + String.format("%02d", i) + ".jpg";
-				String potentialGalleryPreviewImageURL = "http://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/thumbnail_0" + String.format("%02d", i) + ".jpg";
-				if (SiteParsingProfile.fileExistsAtURL(potentialGalleryImageURL)) {
-					Thumb thumbToAdd = new Thumb(potentialGalleryImageURL);
-					thumbToAdd.setPreviewURL(new URL(potentialGalleryPreviewImageURL));
-					thumbList.add(thumbToAdd);
-
+			if(SiteParsingProfile.fileExistsAtURL("https://en.heyzo.com/contents/3000/" + scrapedId + "/images/player_thumbnail_en.jpg")) {
+				Thumb cover = new Thumb("https://en.heyzo.com/contents/3000/" + scrapedId +"/images/player_thumbnail_en.jpg");
+				thumbList.add(cover);
+			} else {
+				//If for whatever reason the above^ image is not available use some fan art as a thumbnail
+				if(SiteParsingProfile.fileExistsAtURL("https://https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/001.jpg")){
+					Thumb fanartSubstitute = new Thumb("https://https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/001.jpg");
+					thumbList.add(fanartSubstitute);
 				}
 			}
-			//image that is the preview of the trailer
-			Thumb trailerPreviewThumb = new Thumb("http://www.heyzo.com/contents/3000/" + scrapedId + "/images/player_thumbnail_450.jpg");
-			thumbList.add(trailerPreviewThumb);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return thumbList.toArray(new Thumb[thumbList.size()]);
@@ -195,15 +191,31 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public Trailer scrapeTrailer() {
 		String scrapedId = scrapeID().getId();
-		String trailerURL = "http://sample.heyzo.com/contents/3000/" + scrapedId + "/heyzo_hd_0194_sample.mp4";
+		String trailerURL = "https://sample.heyzo.com/contents/3000/" + scrapedId + "/heyzo_hd_0194_sample.mp4";
 		if (SiteParsingProfile.fileExistsAtURL(trailerURL))
 			return new Trailer(trailerURL);
 		return Trailer.BLANK_TRAILER;
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+	public Thumb[] scrapeFanart()  {
+		ArrayList<Thumb> thumbList = new ArrayList<Thumb>();
+		try {
+			var scrapedId = scrapeID().getId();
+			for (int i = 1; i <= 21; i++) {
+				String potentialGalleryImageURL = "https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/0" + String.format("%02d", i) + ".jpg";
+				String potentialGalleryPreviewImageURL = "https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/thumbnail_0" + String.format("%02d", i) + ".jpg";
+				if (SiteParsingProfile.fileExistsAtURL(potentialGalleryImageURL)) {
+					Thumb thumbToAdd = new Thumb(potentialGalleryImageURL);
+					thumbToAdd.setPreviewURL(new URL(potentialGalleryPreviewImageURL));
+					thumbList.add(thumbToAdd);
+
+				}
+			}
+		} catch (MalformedURLException e){
+			System.err.println(e.getMessage());
+		}
+		return thumbList.toArray(new Thumb[thumbList.size()]);
 	}
 
 	@Override
@@ -290,30 +302,29 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();
 
-		if (fileID != null) {
-
-			
+		if (fileID != null && !fileID.isEmpty()) {
+			return createSearchStringFromId(fileID);
 		}
 
 		return null;
 	}
-        
-        @Override
-        public String createSearchStringFromId(String Id){
-            englishPage = "http://en.heyzo.com/moviepages/" + Id + "/index.html";
-			japanesePage = "http://www.heyzo.com/moviepages/" + Id + "/index.html";
-			try {
-				japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (scrapingLanguage == Language.ENGLISH) {
-				return englishPage;
-			} else {
-				return japanesePage;
-			}
-        }
+
+	@Override
+	public String createSearchStringFromId(String Id) {
+		englishPage = "https://en.heyzo.com/moviepages/" + Id + "/index.html";
+		japanesePage = "https://www.heyzo.com/moviepages/" + Id + "/index.html";
+		try {
+			japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (scrapingLanguage == Language.ENGLISH) {
+			return englishPage;
+		} else {
+			return japanesePage;
+		}
+	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
