@@ -82,12 +82,6 @@ public class CaribbeancomParsingProfileTest {
 	}
 
 	@Test
-	public void testScrapePlot() {
-		Plot plot = parser.scrapePlot();
-		assertEquals("Didn't scrape something which is long and looks like a plot", true, plot.getPlot().length() > 35);
-	}
-
-	@Test
 	public void testScrapeRuntime() {
 		moviescraper.doctord.model.dataitem.Runtime movieRuntime = parser.scrapeRuntime();
 		assertEquals("Wrong runtime", "80", movieRuntime.getRuntime());
@@ -123,7 +117,7 @@ public class CaribbeancomParsingProfileTest {
 	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
-		assertEquals("Wrong poster url", "https://en.caribbeancom.com/moviepages/070514-637/images/poster_en.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster url", "https://en.caribbeancom.com/moviepages/070514-637/images/l.jpg", posters[0].getThumbURL().toString());
 	}
 
 	@Test

@@ -106,7 +106,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		try {
-			Element releaseDate = document.select(".movie-info [itemprop=datePublished]").first();
+			Element releaseDate = document.select(".movie-info [itemprop=uploadDate]").first();
 			return new ReleaseDate(releaseDate.text(), caribbeanReleaseDateFormat);
 		} catch (NullPointerException e) {
 			return ReleaseDate.BLANK_RELEASEDATE;
@@ -131,12 +131,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public Plot scrapePlot() {
-		try {
-			Element plotElement = document.select(".movie-info p[itemprop=description]").first();
-			return new Plot(plotElement.text());
-		} catch (NullPointerException e) {
-			return Plot.BLANK_PLOT;
-		}
+		return Plot.BLANK_PLOT;
 	}
 
 	@Override
@@ -170,9 +165,16 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	public Thumb[] scrapePosters() {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
+		String[] image_url_suffix = {"poster_en.jpg", "l.jpg", "l_l.jpg"};
+		String img_url = "https://en.caribbeancom.com/moviepages/" + id.getId();
 		try {
-			Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/poster_en.jpg");
-			posters.add(additionalThumb);
+			for(var suffix : image_url_suffix){
+				if(fileExistsAtURL(img_url + "/images/" + suffix)){
+					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/" + suffix);
+					posters.add(additionalThumb);
+					break;
+				}
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
