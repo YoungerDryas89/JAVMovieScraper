@@ -45,7 +45,7 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		if(scrapedTitle.isEmpty()){
 			scrapedTitle = document.select(".sub_title");
 		}
-		if(scrapedTitle != null && !scrapedTitle.isEmpty()){
+		if(!scrapedTitle.isEmpty()){
 			return new Title(scrapedTitle.first().text());
 		}
 		return new Title();

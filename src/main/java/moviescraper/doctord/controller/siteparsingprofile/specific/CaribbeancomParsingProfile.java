@@ -165,6 +165,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	public Thumb[] scrapePosters() {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
+		// I tried getting the URL through extracting it directly, but what I would get in the scraper would not be
+		// consistent with my web browser; dunno why yey, but I chose to do this instead
 		String[] image_url_suffix = {"poster_en.jpg", "l.jpg", "l_l.jpg"};
 		String img_url = "https://en.caribbeancom.com/moviepages/" + id.getId();
 		try {
