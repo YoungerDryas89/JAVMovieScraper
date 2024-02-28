@@ -120,6 +120,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private SearchResult overridenSearchResult;
 
+	final static Pattern FC2Pattern = Pattern.compile("(i?)(:?FC2-PPV)[-_\\s](?<id>(\\d+))");
 	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d+[_-](:?001)?(:?-1PON)?)");
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
 	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3}|\\d{4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
@@ -217,9 +218,15 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 
 		}
-
-		Matcher match = OnePondoPattern.matcher(fileNameNoExtension);
 		String id = null;
+		Matcher match = FC2Pattern.matcher(fileNameNoExtension);
+		if(match.find()){
+			assert (match.group("id") != null);
+			id = match.group("id");
+			return "FC2-PPV-" + id;
+		}
+
+		match = OnePondoPattern.matcher(fileNameNoExtension);
 		if(match.find()){
 			assert (match.group("id") != null);
 			id = match.group("id");
