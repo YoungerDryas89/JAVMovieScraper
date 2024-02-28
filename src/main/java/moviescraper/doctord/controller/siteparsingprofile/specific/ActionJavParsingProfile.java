@@ -172,6 +172,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	}
 	@Override
 	public Thumb[] scrapePosters() {
+		// TODO: Find a way around 403 forbidden
 		try {
 			var posterElement = document.select("div.bg-white:nth-child(2) > div:nth-child(1) > center:nth-child(1) > a:nth-child(1) > img:nth-child(1)");
 			var thumb = new Thumb(posterElement.first().attr("src"));
