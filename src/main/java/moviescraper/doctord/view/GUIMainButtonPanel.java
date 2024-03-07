@@ -203,8 +203,16 @@ public class GUIMainButtonPanel extends JPanel {
 		btnRefreshDirectory.setIcon(initializeImageIcon("Refresh"));
 		btnRefreshDirectory.setToolTipText("Refresh current directory");
 
+		JButton btnSortDirectory = new JButton();
+		btnSortDirectory.setIcon(initializeImageIcon("Sort"));
+		btnSortDirectory.setToolTipText("Sort the current directory");
+
+		JPopupMenu popupMenu = new JPopupMenu();
+
+
 		directoryOperationsButtons.add(btnBrowseDirectory);
 		directoryOperationsButtons.add(btnUpDirectory);
+		directoryOperationsButtons.add(btnSortDirectory);
 		directoryOperationsButtons.add(btnRefreshDirectory);
 
 		add(directoryOperationsButtons);

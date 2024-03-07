@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
+import moviescraper.doctord.controller.DirectorySort;
 import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.controller.amalgamation.AllAmalgamationOrderingPreferences;
 import moviescraper.doctord.model.IconCache;
@@ -105,6 +106,8 @@ public class GUIMain {
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
+	private DirectorySort sortSetting = DirectorySort.DateModified;
+	private Boolean sortAsAscending = false;
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
@@ -453,14 +456,37 @@ public class GUIMain {
 
 					return 1;
 				}
-				// Alphabetic order otherwise
 				else {
+					switch(sortSetting){
+						case Alphabetically:
+						{
+							if(sortAsAscending)
+								return file1.compareTo(file2);
+							else
+								return file2.compareTo(file1);
+						}
+						default:
+						case DateModified:
+						{
+							if(sortAsAscending)
+								return Long.compare(file1.lastModified(), file2.lastModified());
+							else
+								return Long.compare(file2.lastModified(), file1.lastModified());
+						}
+						case Size:
+						{
+							if(sortAsAscending)
+								return Long.compare(file1.length(), file2.length());
+							else
+								return Long.compare(file2.length(), file1.length());
+						}
+					}
 
-					return file1.compareTo(file2);
 				}
 			}
 		};
-		Arrays.sort(sortedList, comp);
+        assert sortedList != null;
+        Arrays.sort(sortedList, comp);
 		return sortedList;
 	}
 
@@ -503,7 +529,7 @@ public class GUIMain {
 			getFileList().setCellRenderer(new FileRenderer(!vertical));
 
 			if (!vertical) {
-				getFileList().setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
+				getFileList().setLayoutOrientation(JList.HORIZONTAL_WRAP);
 				getFileList().setVisibleRowCount(-1);
 			} else {
 				getFileList().setVisibleRowCount(9);
@@ -721,6 +747,22 @@ public class GUIMain {
 	public void disableFileWrite() {
 		menuBar.disableWriteFile();
 		buttonPanel.disableWriteFile();
+	}
+
+	public DirectorySort getSortSetting(){
+		return this.sortSetting;
+	}
+
+	public void setSortSetting(DirectorySort sort){
+		this.sortSetting = sort;
+	}
+
+	public Boolean getSortAsAscending(){
+		return this.sortAsAscending;
+	}
+
+	public void setSortAsAscending(boolean state){
+		this.sortAsAscending = state;
 	}
 
 }
