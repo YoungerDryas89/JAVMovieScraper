@@ -765,4 +765,8 @@ public class GUIMain {
 		this.sortAsAscending = state;
 	}
 
+	public void updateFileList(){
+		updateFileListModel(getCurrentlySelectedDirectoryList(), true);
+	}
+
 }
