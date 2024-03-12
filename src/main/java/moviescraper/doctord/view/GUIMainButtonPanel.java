@@ -189,31 +189,13 @@ public class GUIMainButtonPanel extends JPanel {
 		btnSortDirectory.setIcon(initializeImageIcon("Sort"));
 		btnSortDirectory.setToolTipText("Sort the current directory");
 
-		JPopupMenu sortPopupMenu = new JPopupMenu();
-
+		SortPopupMenu sortPopupMenu = new SortPopupMenu(guiMain);
 		btnSortDirectory.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sortPopupMenu.show(btnSortDirectory, 0, btnSortDirectory.getHeight());
 			}
 		});
-
-		ActionListener sortPopupMenuListener = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				var act = ((JMenuItem) e.getSource()).getAction();
-				if(act != chosenSort){
-					chosenSort.putValue(Action.SMALL_ICON, null);
-					chosenSort = act;
-					chosenSort.putValue(Action.SMALL_ICON, SortPopupMenu.dotIcon);
-
-				}
-			}
-		};
-
-		sortPopupMenu.add(new DirectorySoryOptionAction("Title", DirectorySort.Alphabetically, guiMain)).addActionListener(sortPopupMenuListener);
-		sortPopupMenu.add(new DirectorySoryOptionAction("Date Modified", DirectorySort.DateModified, guiMain)).addActionListener(sortPopupMenuListener);
-		sortPopupMenu.add(new DirectorySoryOptionAction("Size", DirectorySort.Size, guiMain)).addActionListener(sortPopupMenuListener);
 
 
 		directoryOperationsButtons.add(btnBrowseDirectory);

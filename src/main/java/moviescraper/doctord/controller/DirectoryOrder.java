@@ -1,13 +1,12 @@
 package moviescraper.doctord.controller;
 
-public enum DirectorySort {
-    Alphabetically(0),
-    DateModified(1),
-    Size(2);
+public enum DirectoryOrder {
+    Ascending(3),
+    Descending(4);
 
     final int value;
 
-    DirectorySort(int i) {
+    DirectoryOrder(int i ){
         this.value = i;
     }
 
@@ -17,10 +16,9 @@ public enum DirectorySort {
 
     public String symbolToString(){
         return switch (value) {
+            case 3 -> "Ascending";
+            case 4 -> "Descending";
             default -> throw new IllegalStateException("Unexpected value: " + value);
-            case 0 -> "Title";
-            case 1 -> "Date Modified";
-            case 2 -> "Size";
         };
     }
 
