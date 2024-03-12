@@ -12,27 +12,9 @@ import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
-import javax.swing.MenuElement;
-import javax.swing.UIManager;
+import javax.swing.*;
 
-import moviescraper.doctord.controller.BrowseDirectoryAction;
-import moviescraper.doctord.controller.FileNameCleanupAction;
-import moviescraper.doctord.controller.MoveToNewFolderAction;
-import moviescraper.doctord.controller.OpenFileAction;
-import moviescraper.doctord.controller.PlayMovieAction;
-import moviescraper.doctord.controller.RefreshDirectoryAction;
-import moviescraper.doctord.controller.UpDirectoryAction;
-import moviescraper.doctord.controller.WriteFileDataAction;
+import moviescraper.doctord.controller.*;
 import moviescraper.doctord.controller.amalgamation.ScrapeAmalgamatedAction;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileItem;
@@ -203,8 +185,22 @@ public class GUIMainButtonPanel extends JPanel {
 		btnRefreshDirectory.setIcon(initializeImageIcon("Refresh"));
 		btnRefreshDirectory.setToolTipText("Refresh current directory");
 
+		JButton btnSortDirectory = new JButton();
+		btnSortDirectory.setIcon(initializeImageIcon("Sort"));
+		btnSortDirectory.setToolTipText("Sort the current directory");
+
+		SortPopupMenu sortPopupMenu = new SortPopupMenu(guiMain);
+		btnSortDirectory.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sortPopupMenu.show(btnSortDirectory, 0, btnSortDirectory.getHeight());
+			}
+		});
+
+
 		directoryOperationsButtons.add(btnBrowseDirectory);
 		directoryOperationsButtons.add(btnUpDirectory);
+		directoryOperationsButtons.add(btnSortDirectory);
 		directoryOperationsButtons.add(btnRefreshDirectory);
 
 		add(directoryOperationsButtons);
