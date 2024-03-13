@@ -1,6 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
-import moviescraper.doctord.controller.siteparsingprofile.specific.JavZooParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.AvMooParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
@@ -17,18 +17,17 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AvMooParsingProfileTests {
     public static File targetFile = new File("/mnt/Mercury/media/pictures/nsfw/straight/Videos/Japanese Adult Video/STARS/STARS-867.mp4");
-    private final JavZooParsingProfile parser = new JavZooParsingProfile();
-    private static JavZooParsingProfile profile;
+    private final AvMooParsingProfile parser = new AvMooParsingProfile();
+    private static AvMooParsingProfile profile;
 
     @BeforeClass
     public static void initialize() throws IOException{
-        profile = new JavZooParsingProfile();
+        profile = new AvMooParsingProfile();
         SearchResult[] results = profile.getSearchResults(profile.createSearchString(targetFile));
         assertEquals(1, results.length);
         String url = results[0].getUrlPath();

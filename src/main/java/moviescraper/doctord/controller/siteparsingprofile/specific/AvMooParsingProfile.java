@@ -17,7 +17,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import moviescraper.doctord.controller.languagetranslation.JapaneseCharacter;
-import moviescraper.doctord.controller.languagetranslation.TranslateString;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -41,7 +40,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
-public class JavZooParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class AvMooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final String siteLanguageToScrape = "en";
 
@@ -52,11 +51,11 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 		return groupNames;
 	}
 
-	public JavZooParsingProfile(Document doc) {
+	public AvMooParsingProfile(Document doc) {
 		super(doc);
 	}
 
-	public JavZooParsingProfile() {
+	public AvMooParsingProfile() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -101,7 +100,7 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 					return new OriginalTitle(titleElementText);
 
 				Document japaneseDoc = Jsoup.connect(japaneseUrl).timeout(CONNECTION_TIMEOUT_VALUE).get();
-				JavZooParsingProfile spp = new JavZooParsingProfile(japaneseDoc);
+				AvMooParsingProfile spp = new AvMooParsingProfile(japaneseDoc);
 				return spp.scrapeOriginalTitle();
 			}
 		} catch (IOException e) {
@@ -153,31 +152,31 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Top250 scrapeTop250() {
-		// This type of info doesn't exist on JavZoo
+		// This type of info doesn't exist on AvMoo
 		return Top250.BLANK_TOP250;
 	}
 
 	@Override
 	public Votes scrapeVotes() {
-		//This type of info doesn't exist on JavZoo
+		//This type of info doesn't exist on AvMoo
 		return Votes.BLANK_VOTES;
 	}
 
 	@Override
 	public Outline scrapeOutline() {
-		//This type of info doesn't exist on JavZoo
+		//This type of info doesn't exist on AvMoo
 		return Outline.BLANK_OUTLINE;
 	}
 
 	@Override
 	public Plot scrapePlot() {
-		//This type of info doesn't exist on JavZoo
+		//This type of info doesn't exist on AvMoo
 		return Plot.BLANK_PLOT;
 	}
 
 	@Override
 	public Tagline scrapeTagline() {
-		//This type of info doesn't exist on JavZoo
+		//This type of info doesn't exist on AvMoo
 		return Tagline.BLANK_TAGLINE;
 	}
 
@@ -388,17 +387,17 @@ public class JavZooParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public String toString() {
-		return "JavZoo";
+		return "AvMoo";
 	}
 
 	@Override
 	public SiteParsingProfile newInstance() {
-		return new JavZooParsingProfile();
+		return new AvMooParsingProfile();
 	}
 
 	@Override
 	public String getParserName() {
-		return "JavZoo";
+		return "AvMoo";
 	}
 
 }
