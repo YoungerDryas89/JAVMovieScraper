@@ -45,8 +45,8 @@ public class HeyzoParsingProfileTest {
 	@Test
 	public void testFindID() {
 		@SuppressWarnings("static-access")
-		String id = profile.findIDTagFromFile(file);
-		assertEquals("Found Wrong ID", "0194", id);
+		var id = profile.findIDTagFromFile(file);
+		assertEquals("Found Wrong ID", "0194", id.getId());
 	}
 
 	//@Test

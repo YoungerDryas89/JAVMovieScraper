@@ -42,9 +42,9 @@ public class OnePondoParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
+		var findIDTagFromFile = parser.findIDTagFromFile(file);
 		System.out.println(findIDTagFromFile);
-		assertEquals(findIDTagFromFile, "061314_826");
+		assertEquals(findIDTagFromFile.getId(), "061314_826");
 	}
 
 	@Test

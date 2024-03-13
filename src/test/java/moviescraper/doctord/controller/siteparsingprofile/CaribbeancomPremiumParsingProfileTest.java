@@ -49,8 +49,8 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
-		assertEquals(findIDTagFromFile, "122716_008");
+		var findIDTagFromFile = parser.findIDTagFromFile(file);
+		assertEquals(findIDTagFromFile.getId(), "122716_008");
 	}
 
 	@Test

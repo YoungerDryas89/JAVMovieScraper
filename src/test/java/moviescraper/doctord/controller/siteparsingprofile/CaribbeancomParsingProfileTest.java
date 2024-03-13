@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import moviescraper.doctord.controller.languagetranslation.Language;
 
 import moviescraper.doctord.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.SpecificProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.dataitem.Genre;
@@ -47,8 +48,8 @@ public class CaribbeancomParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
-		assertEquals(findIDTagFromFile, "070514-637");
+		var findIDTagFromFile = parser.findIDTagFromFile(file);
+		assertEquals(findIDTagFromFile.getId(), "070514-637");
 	}
 
 	@Test

@@ -47,8 +47,8 @@ public class MyTokyoHotParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file);
-		assertEquals(findIDTagFromFile, "n0754");
+		var foundId = parser.findIDTagFromFile(file);
+		assertEquals(foundId.getId(), "n0754");
 	}
 
 	@Test

@@ -300,10 +300,10 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileID = findIDTagFromFile(file).toLowerCase();
+		var fileID = findIDTagFromFile(file);
 
-		if (fileID != null && !fileID.isEmpty()) {
-			return createSearchStringFromId(fileID);
+		if (fileID != null && !fileID.getId().isEmpty()) {
+			return createSearchStringFromId(fileID.getFullname());
 		}
 
 		return null;
@@ -331,20 +331,6 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		SearchResult searchResult = new SearchResult(searchString);
 		SearchResult[] searchResultArray = { searchResult };
 		return searchResultArray;
-	}
-
-	public static String findIDTagFromFile(File file) {
-		return findIDTag(FilenameUtils.getName(file.getName()));
-	}
-
-	public static String findIDTag(String fileName) {
-		Pattern pattern = Pattern.compile("[0-9]{4}");
-		Matcher matcher = pattern.matcher(fileName);
-		if (matcher.find()) {
-			String searchString = matcher.group();
-			return searchString;
-		}
-		return null;
 	}
 
 	@Override

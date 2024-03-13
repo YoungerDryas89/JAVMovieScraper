@@ -656,7 +656,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+		return createSearchStringFromId(findIDTagFromFile(file).getFullname());
 	}
 
 	@Override

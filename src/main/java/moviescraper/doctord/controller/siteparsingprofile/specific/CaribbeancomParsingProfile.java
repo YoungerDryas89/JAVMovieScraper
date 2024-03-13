@@ -283,7 +283,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		this.id = findIDTagFromFile(file);
+		var id = findIDTagFromFile(file);
+		this.id = id.getFullname();
 		return createSearchStringFromId(this.id);
 	}
 
@@ -299,20 +300,6 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		SearchResult[] results = { englishPage };
 		initializeJapaneseDocument();
 		return results;
-	}
-
-	public static String findIDTagFromFile(File file) {
-		return findIDTag(FilenameUtils.getName(file.getName()));
-	}
-
-	public static String findIDTag(String fileName) {
-		Pattern pattern = Pattern.compile("[0-9]{6}-[0-9]{3}");
-		Matcher matcher = pattern.matcher(fileName);
-		if (matcher.find()) {
-			String searchString = matcher.group();
-			return searchString;
-		}
-		return null;
 	}
 
 	@Override

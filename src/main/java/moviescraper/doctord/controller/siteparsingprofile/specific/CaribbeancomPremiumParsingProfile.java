@@ -509,7 +509,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
+		var fileNameNoExtension = findIDTagFromFile(file).getFullname();
 		return fileNameNoExtension;
 	}
 

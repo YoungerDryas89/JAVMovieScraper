@@ -245,7 +245,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	public ID scrapeID() {
 		JSONObject pageJSON = getMovieJSON();
 		String movieID = pageJSON.getString("MovieID");
-		return new ID(movieID);
+		return new ID("1pondo", movieID, "1pondo-" +  movieID);
 	}
 
 	@Override
@@ -297,7 +297,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		return createSearchStringFromId(findIDTagFromFile(file));
+		return createSearchStringFromId(findIDTagFromFile(file).getId());
 	}
         
         @Override
@@ -315,20 +315,6 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		searchResult.setJSONSearchResult(true);
 		SearchResult[] searchResultArray = { searchResult };
 		return searchResultArray;
-	}
-
-	public static String findIDTagFromFile(File file) {
-		return findIDTag(FilenameUtils.getName(file.getName()));
-	}
-
-	public static String findIDTag(String fileName) {
-		Pattern pattern = Pattern.compile("[0-9]{6}_[0-9]{3}");
-		Matcher matcher = pattern.matcher(fileName);
-		if (matcher.find()) {
-			String searchString = matcher.group();
-			return searchString;
-		}
-		return null;
 	}
 
 	@Override

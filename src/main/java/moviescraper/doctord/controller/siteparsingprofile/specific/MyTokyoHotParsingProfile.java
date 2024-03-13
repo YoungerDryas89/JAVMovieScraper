@@ -284,7 +284,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public String createSearchString(File file) {
             scrapedMovieFile = file;
-            return createSearchStringFromId(findIDTagFromFile(file));
+            return createSearchStringFromId(findIDTagFromFile(file).getFullname());
 	}
         
         @Override
@@ -326,10 +326,6 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 				indexNum++;
 			}
 		return searchResults;
-	}
-
-	public static String findIDTagFromFile(File file) {
-		return findIDTag(FilenameUtils.getName(file.getName()));
 	}
 
 	public static String findIDTag(String fileName) {

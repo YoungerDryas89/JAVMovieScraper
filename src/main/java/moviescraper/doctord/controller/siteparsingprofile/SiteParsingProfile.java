@@ -120,10 +120,10 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private SearchResult overridenSearchResult;
 
-	final static Pattern FC2Pattern = Pattern.compile("(i?)(:?FC2-PPV)[-_\\s](?<id>(\\d+))");
-	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d+[_-](:?001)?(:?-1PON)?)");
-	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3}|\\d{4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
+	final static Pattern tokyoHotOnlyProductId = Pattern.compile("(?i)[^A-Za-z-_](?<number>[nk]\\d{4})");
+	final static Pattern uncensoredAVExtractPattern = Pattern.compile("(?i)(?<id>(?<series>(carib|caribeancom|caribeancom premium|1pondo|10musume|tokyo-?hot|fc2-?ppv))[-_\\s](?<num>(\\d{6}(?:[-_\\s]?\\d{1,3})?|[kn]\\d+)))");
+	final static Pattern getUncensoredAVExtractBehindPattern = Pattern.compile("(?i)(?<id>(?<number>\\d{6}(?:[_-]\\d{1,3})?)[-_\\\\s](?<series>carib-?|10mu|1pon|10musume|1pondo|Caribeancom|caribeancom premium))");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3,4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
@@ -191,19 +191,48 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return overridenSearchResult;
 	}
 
+	public static ID findIDTagFromString(String title) {
+		String id = null;
+		ID returnId = new ID();
+
+		var match = tokyoHotOnlyProductId.matcher(title);
+		if(match.find()){
+			returnId.setSeries("Tokyo-Hot");
+			returnId.setId(match.group("number"));
+			returnId.setFullname(match.group("number"));
+			return returnId;
+		}
+
+		match = uncensoredAVExtractPattern.matcher(title);
+		if(!match.find()){
+			match = getUncensoredAVExtractBehindPattern.matcher(title);
+			if(!match.find()) {
+				match = avGeneralIdextract.matcher(title);
+			}
+		}
+
+		assert(match.group("id") != null);
+		assert(match.group("number") != null);
+		assert(match.group("series") != null);
+
+		returnId.setId(match.group("number"));
+		returnId.setSeries(match.group("series"));
+		returnId.setFullname(match.group("id"));
+		return returnId;
+	}
+
 	/**
 	 * Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
 	 * The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
 	 * ends with something like CD1 or Disc 1
 	 * So this filename "My Movie ABC-123 CD1" would return the id as ABC-123
 	 * This filename "My Movie ABC-123" would return the id as ABC-123
-	 * 
-	 * @param file - file to find the ID tag from
-	 * @param firstWordOfFileIsID - if true, just uses the first word in the file (seperated by space) as the ID number
-	 * otherwise use the method described above
+	 *
+	 * @param file - title to find the ID tag from
 	 * @return
 	 */
-	public static String findIDTagFromFile(File file, boolean firstWordOfFileIsID) {
+	public static ID findIDTagFromFile(File file){
+
 		String fileNameNoExtension;
 		if (file.isDirectory()) {
 			fileNameNoExtension = file.getName();
@@ -212,42 +241,13 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		if (file.getPath().endsWith(".nfo")) {
 			try {
 				Movie movie = Movie.createMovieFromNfo(file);
-				return movie.getId().getId();
+				return movie.getId();
 			} catch (IOException ex) {
 				System.out.println("Cannot load this file as nfo. Try from filename");
 			}
 
 		}
-		String id = null;
-		Matcher match = FC2Pattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			id = match.group("id");
-			return "FC2-PPV-" + id;
-		}
-
-		match = OnePondoPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			id = match.group("id");
-			return id;
-		}
-		match = TokyoHotPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert(match.group("productId") != null);
-			id = match.group("productId");
-			return id;
-		}
-
-		match = avGeneralIdextract.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert(match.group("id") != null);
-			assert(match.group("series") != null);
-			assert(match.group("number") != null);
-
-			id = match.group("id");
-		}
-		return id;
+		return findIDTagFromString(fileNameNoExtension);
 	}
 
 	public static String stripDiscNumber(String fileNameNoExtension) {
