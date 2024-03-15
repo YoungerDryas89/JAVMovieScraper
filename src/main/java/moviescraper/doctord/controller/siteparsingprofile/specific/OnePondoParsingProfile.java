@@ -144,7 +144,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		JSONObject pageJSON = getMovieJSON();
 		try {
 			// Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
-			var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
+			var jacketURL = "https://" +  getDomain() +"/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
 			if (fileExistsAtURL(jacketURL, false)) {
 				thumbList.add(new Thumb(jacketURL));
 				return thumbList.toArray(new Thumb[thumbList.size()]);
@@ -287,7 +287,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public Trailer scrapeTrailer() {
 		ID movieID = scrapeID();
-		String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
+		String potentialTrailerURL = "http://" + getTrailerDomain() + "/moviepages/" + movieID.getId() + "/sample/sample.avi";
 		if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
 			return new Trailer(potentialTrailerURL);
 		else
@@ -306,7 +306,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
             if (Id == null)
 		return null;
 
-            return "https://www.1pondo.tv/dyn/phpauto/movie_details/movie_id/" + Id + ".json";
+            return "https://" + getDomain() + "/dyn/phpauto/movie_details/movie_id/" + Id + ".json";
         }
 
 	@Override
@@ -334,6 +334,14 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public SiteParsingProfile newInstance() {
 		return new OnePondoParsingProfile();
+	}
+
+	public String getDomain(){
+		return "www.1pondo.tv";
+	}
+
+	public String getTrailerDomain() {
+		return "smovie.1pondo.tv";
 	}
 
 }
