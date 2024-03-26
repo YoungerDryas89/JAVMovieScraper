@@ -62,6 +62,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	final static String getPoster = "//div[@id='PlayerCover']//img";
 	final static String getProductDetailsArea = "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-details-area ')]/div/div[2]/div[1]/div[3]";
 
+	final static String getFanArtTable = ".gallery-block > div:nth-child(1) > div:nth-child(2)";
+
 	@Override
 	public Title scrapeTitle() {
 		Elements elements = document.selectXpath(getTitle);
@@ -135,7 +137,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		String runtime = "";
 		Elements elements = document.selectXpath(getRuntime);
 		runtime = elements.text().split(" ")[1];
-		return new Runtime(runtime.substring(0, runtime.length()-4));
+		return new Runtime(runtime);
 	}
 
 	@Override
@@ -154,22 +156,31 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 				e.printStackTrace();
 			}
 		}*/
-		//return thumbs.toArray(new Thumb[thumbs.size()]);
-		return scrapeFanart();
+		var poster_elem_string = "span.grid-gallery > a:nth-child(1)";
+		var elem = document.select(poster_elem_string).first();
+		List<Thumb> returnList = new ArrayList<Thumb>();
+		try{
+			Thumb thumb = new Thumb(elem.attr("href"));
+			returnList.add(thumb);
+		} catch (MalformedURLException e){
+			System.err.println(e.getMessage());
+		}
+		return returnList.toArray(new Thumb[returnList.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
 		List<Thumb> thumbs = new ArrayList<>();
-		Elements elements = document.selectXpath(getPoster);
-
-		if(!elements.isEmpty()) {
+		Elements elements = document.select(getFanArtTable).first().children();
+		for(var image_element : elements){
+			var url = image_element.firstElementChild().attr("href");
 			try {
-				thumbs.add(new Thumb(elements.attr("src")));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				thumbs.add(new Thumb(url));
+			}catch (MalformedURLException e){
+				System.err.println(e.getMessage());
 			}
 		}
+
 		return thumbs.toArray(new Thumb[thumbs.size()]);
 	}
 
