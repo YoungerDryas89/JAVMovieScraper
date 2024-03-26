@@ -121,9 +121,9 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	private SearchResult overridenSearchResult;
 
 	final static Pattern tokyoHotOnlyProductId = Pattern.compile("(?i)[^A-Za-z-_](?<number>[nk]\\d{4})");
-	final static Pattern uncensoredAVExtractPattern = Pattern.compile("(?i)(?<id>(?<series>(carib|caribeancom|caribeancom premium|1pondo|10musume|tokyo-?hot|fc2-?ppv))[-_\\s](?<num>(\\d{6}(?:[-_\\s]?\\d{1,3})?|[kn]\\d+)))");
-	final static Pattern getUncensoredAVExtractBehindPattern = Pattern.compile("(?i)(?<id>(?<number>\\d{6}(?:[_-]\\d{1,3})?)[-_\\\\s](?<series>carib-?|10mu|1pon|10musume|1pondo|Caribeancom|caribeancom premium))");
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3,4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
+	final static Pattern uncensoredAVExtractPattern = Pattern.compile("(?i)(?<id>(?<series>carib|caribeancom|caribeancom premium|1pondo|10musume|tokyo-?hot|fc2-ppv)[-_\\s](?<number>(\\d{6}(?:[-_\\s]?\\d{1,3})?|[kn]\\d+)))");
+	final static Pattern getUncensoredAVExtractBehindPattern = Pattern.compile("(?i)(?<id>(?<number>\\d{6}(?:[_-]\\d{1,3})?)[-_\\\\s](?<series>carib|10mu|1pon|10musume|1pondo|Caribeancom|caribeancom premium))");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?:hhd800\\.com@)?-?(?<id>(?<series>[A-Za-z]+)[-_\\s\\S\\+]?(?<number>\\d{2,4}))");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
@@ -197,27 +197,43 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 		var match = tokyoHotOnlyProductId.matcher(title);
 		if(match.find()){
-			returnId.setSeries("Tokyo-Hot");
-			returnId.setId(match.group("number"));
-			returnId.setFullname(match.group("number"));
+			//returnId.setSeries("Tokyo-Hot");
+			returnId.setId(match.group("id"));
+			//returnId.setFullname(match.group("number"));
 			return returnId;
 		}
 
 		match = uncensoredAVExtractPattern.matcher(title);
-		if(!match.find()){
-			match = getUncensoredAVExtractBehindPattern.matcher(title);
-			if(!match.find()) {
-				match = avGeneralIdextract.matcher(title);
-			}
+		if(match.find()){
+			assert (match.group("series") != null);
+			assert (match.group("number") != null);
+			returnId.setId(match.group("id"));
+			return returnId;
+		}
+
+		match = getUncensoredAVExtractBehindPattern.matcher(title);
+		if(match.find()) {
+			assert (match.group("series") != null);
+			assert (match.group("number") != null);
+			returnId.setId(match.group("id"));
+			return returnId;
+		}
+
+		match = avGeneralIdextract.matcher(title);
+		if(match.find()){
+			assert(match.group("id") != null);
+			assert (match.group("series") != null);
+			assert (match.group("number") != null);
+			returnId.setId(match.group("id"));
 		}
 
 		assert(match.group("id") != null);
 		assert(match.group("number") != null);
 		assert(match.group("series") != null);
 
-		returnId.setId(match.group("number"));
-		returnId.setSeries(match.group("series"));
-		returnId.setFullname(match.group("id"));
+		returnId.setId(match.group("id"));
+		//returnId.setSeries(match.group("series"));
+		//returnId.setFullname(match.group("id"));
 		return returnId;
 	}
 
@@ -231,7 +247,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 * @param file - title to find the ID tag from
 	 * @return
 	 */
-	public static ID findIDTagFromFile(File file){
+	public static ID findIDTagFromFile(File file, Boolean compat){
 
 		String fileNameNoExtension;
 		if (file.isDirectory()) {
