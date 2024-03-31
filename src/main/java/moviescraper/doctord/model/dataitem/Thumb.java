@@ -166,6 +166,12 @@ public class Thumb extends MovieDataItem {
 		BufferedImage tempImage;
 		int width = originalImage.getWidth();
 		int height = originalImage.getHeight();
+
+		// Images with this small width are already cropped.
+		if(width == 564 && height == 800){
+			return originalImage;
+		}
+
 		int croppedWidth = (int) (width / 2.11);
 
 		//Presets
