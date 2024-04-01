@@ -120,10 +120,10 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private SearchResult overridenSearchResult;
 
-	final static Pattern FC2Pattern = Pattern.compile("(i?)(:?FC2-PPV)[-_\\s](?<id>(\\d+))");
-	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d+[_-](:?001)?(:?-1PON)?)");
-	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>n\\d+)");
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(:?hhd800\\.com@)?-?(?<id>(?<series>(:?\\d{3}|\\d{4})?(:?[0-9]+)?[A-Za-z]+)[-_\\s\\S\\+]?(?<number>[0-9]+))");
+	final static Pattern FC2Pattern = Pattern.compile("(?i)(:?FC2-PPV)[-_\\s](?<id>(\\d{7}))");
+	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d{6}[_-]\\d{1,3}?(:?-1PON)?)");
+	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>[nk]\\d{4})");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?:hhd800\\.com@)?-?(?<id>(?<series>[A-Za-z]+)[-_\\s\\S\\+]?(?<number>\\d{2,4}))");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
