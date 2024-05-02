@@ -4,14 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.scraper.FirefoxBrowser;
+import moviescraper.doctord.scraper.HeadlessBrowser;
+import moviescraper.doctord.scraper.HeadlessBrowserSingle;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +43,6 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.scraper.DitzyHeadlessBrowser;
-import moviescraper.doctord.scraper.DitzyHeadlessBrowserSingle;
 
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -56,7 +54,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
-	private static DitzyHeadlessBrowser browser;
+	private final HeadlessBrowser hbInstance = HeadlessBrowserSingle.instance();
 
 	/*
 		TODO: Check if images redirect to 'https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg' aka 'this image does not exist' url
@@ -78,7 +76,13 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public Document downloadDocument(SearchResult searchResult) {
 		try {
-			return browser.get(new URL(searchResult.getUrlPath()));
+			var resultURL = new URL(searchResult.getUrlPath());
+
+			if(Objects.equals(hbInstance.currentURL(), resultURL)){
+				return hbInstance.getPageSource();
+			} else {
+				return hbInstance.get(resultURL);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -94,20 +98,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	public JavLibraryParsingProfile() {
-		browserConfigure();
 		siteLanguageToScrape = determineLanguageToUse();
-	}
-
-	private void browserConfigure() {
-		if (browser == null) {
-			MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
-			browser = DitzyHeadlessBrowserSingle.getBrowser();
-			try {
-				browser.configure();
-			} catch (IOException ex) {
-				Logger.getLogger(JavLibraryParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
 	}
 
 	private String determineLanguageToUse() {
@@ -316,7 +307,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 				String currentAlias = aliasElement.text().trim();
 				//we might need to reverse the alias name from lastname, firstname to firstname lastname, if we're scraping in english and
 				//we specify in options
-				if (reverseAsianNameInEnglish && siteLanguageToScrape == englishLanguageCode && currentAlias.contains(" "))
+				if (reverseAsianNameInEnglish && Objects.equals(siteLanguageToScrape, englishLanguageCode) && currentAlias.contains(" "))
 					currentAlias = StringUtils.reverseDelimited(currentAlias, ' ');
 				aliasNames[i] = currentAlias;
 				i++;
@@ -395,9 +386,10 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + siteLanguageToScrape);
 
 		try {
-			Document doc = browser.get(new URL(searchString));
+			Document doc = hbInstance.get(new URL(searchString));
+
 			//The search found the page directly
-			if (doc.baseUri().contains("/?v=")) {
+			if (hbInstance.currentURL().toString().contains("/?v=")) {
 				String linkTitle = doc.title().replaceAll(Pattern.quote(" - JAVLibrary"), "");
 				Element posterElement = doc.select("img#video_jacket_img").first();
 				//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview
