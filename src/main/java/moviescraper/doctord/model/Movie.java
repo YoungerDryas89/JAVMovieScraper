@@ -774,16 +774,18 @@ public class Movie {
 			int levDistanceOfCurrentMatch = 999999; // just some super high number
 			String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 
+			System.out.println(searchResults.length);
+
 			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 			for (int i = 0; i < searchResults.length; i++) {
 				String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
 				String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
 				//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-				if (urltoMatch.contains(idFromMovieFileToMatch)) {
+				if (urltoMatch.contains(idFromMovieFileToMatch) || (searchResults.length < 2)) {
 					//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
 					//and update the variables accordingly so we know what our best match so far is
 					int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-					if (candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch) {
+					if ((candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch) ) {
 						levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
 						searchResultNumberToUse = i;
 					}
