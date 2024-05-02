@@ -113,6 +113,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	protected File scrapedMovieFile;
 
 	private ImageIcon profileIcon;
+	protected static DetermineMovie dproperties = new DetermineMovie();
 
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult
@@ -218,6 +219,12 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 
 		}
+
+		var result = dproperties.determineIdFromTitle(fileNameNoExtension);
+		if(result != null){
+			return result.getKey() + "-" + result.getValue();
+		}
+
 		String id = null;
 		Matcher match = FC2Pattern.matcher(fileNameNoExtension);
 		if(match.find()){
