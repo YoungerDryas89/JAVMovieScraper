@@ -50,10 +50,10 @@ public class DitzyHeadlessBrowser {
 		return string.toString();
 	}
 
-	private Connection connect(URL url, boolean followRedirect) throws IOException {
+	protected Connection connect(URL url, boolean followRedirect) throws IOException {
 		Connection connection = Jsoup.connect(url.toString()).userAgent(userAgent).ignoreHttpErrors(true).timeout(timeout).followRedirects(followRedirect).method(Connection.Method.GET);
 
-		connection = connection.cookies(this.cookies.getCookies(url));
+		connection = connection.cookies(this.cookies.getCookies(url)).method(Connection.Method.POST);
 
 		return connection;
 	}
@@ -73,7 +73,7 @@ public class DitzyHeadlessBrowser {
 
 		Response response = connection.execute();
 
-		if (response.cookies().size() > 0) {
+		if (!response.cookies().isEmpty()) {
 			cookies.addCookies(url.getHost(), response.cookies());
 		}
 
@@ -93,4 +93,5 @@ public class DitzyHeadlessBrowser {
 	public DitzyCookies Cookies() {
 		return this.cookies;
 	}
+
 }
