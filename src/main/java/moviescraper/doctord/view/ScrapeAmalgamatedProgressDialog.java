@@ -164,7 +164,6 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		southPanel.add(cancelButton, BorderLayout.SOUTH);
 		southPanel.add(progressBar, BorderLayout.CENTER);
 		overallPanel.add(southPanel, BorderLayout.SOUTH);
-		this.setVisible(true);
 		if (filesAreSelected()) {
 			//start scraping the first item in the selected file list, further items will be scraped once this one completes and a "AllScrapesFinished" message is received
 			scrapeWithIndex(currentFileIndexToScrape);
