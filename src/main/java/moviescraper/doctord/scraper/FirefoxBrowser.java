@@ -5,6 +5,8 @@ import org.jsoup.nodes.Document;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,6 +16,8 @@ import java.util.logging.Logger;
 
 public class FirefoxBrowser implements HeadlessBrowser {
     WebDriver webclient;
+    FirefoxOptions options;
+    DesiredCapabilities capabilities;
     private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
 
 
@@ -25,13 +29,18 @@ public class FirefoxBrowser implements HeadlessBrowser {
         if(webclient != null){
             returnUrl = new URL(webclient.getCurrentUrl());
         } else {
-            returnUrl = new URL("");
+            returnUrl = null;
         }
         return returnUrl;
     }
 
     public void initializeBrowser() {
-        webclient = new FirefoxDriver();
+        capabilities = new DesiredCapabilities();
+
+        capabilities.setCapability("marionette", false);
+        options = new FirefoxOptions();
+        options.addArguments("-headless");
+        webclient = new FirefoxDriver(options);
     }
 
     public Document getPageSource(){
