@@ -125,6 +125,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d{6}[_-]\\d{1,3}?(:?-1PON)?)");
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>[nk]\\d{4})");
 	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?:hhd800\\.com@)?-?(?<id>(?<series>[A-Za-z]+)[-_\\s\\S\\+]?(?<number>\\d{2,4}))");
+	final static Pattern kinten8gokuPattern = Pattern.compile("(?i)(?:Kin8tengoku|KIN8)[-_\\s](?<num>\\d+)");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
@@ -231,6 +232,12 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			assert (match.group("id") != null);
 			id = match.group("id");
 			return "FC2-PPV-" + id;
+		}
+
+		match = kinten8gokuPattern.matcher(fileNameNoExtension);
+		if(match.find()){
+			id = "KIN8-" + match.group("num");
+			return id;
 		}
 
 		match = OnePondoPattern.matcher(fileNameNoExtension);
