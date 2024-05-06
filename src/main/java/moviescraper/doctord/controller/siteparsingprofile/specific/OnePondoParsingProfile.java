@@ -52,11 +52,19 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public Title scrapeTitle() {
 		JSONObject pageJSON = getMovieJSON();
+        String title;
 		if (scrapingLanguage == Language.ENGLISH) {
-			return new Title(pageJSON.getString("TitleEn"));
+            if(!pageJSON.isNull("TitleEn")) {
+                title = pageJSON.getString("TitleEn");
+            } else {
+                title = pageJSON.getString("Title");
+            }
+
 		} else {
-			return new Title(pageJSON.getString("Title"));
+			title = pageJSON.getString("Title");
 		}
+
+        return new Title(title);
 	}
 
 	@Override
@@ -118,11 +126,18 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	@Override
 	public Plot scrapePlot() {
 		var json = getMovieJSON();
+        String plot;
 		if(scrapingLanguage == Language.ENGLISH){
-			return new Plot(json.getString("DescEn"));
+            if(!json.isNull("DescEn")) {
+                plot = json.getString("DescEn");
+            } else {
+                plot = json.getString("Desc");
+            }
 		} else {
-			return new Plot(json.getString("Desc"));
+			plot = json.getString("Desc");
 		}
+
+        return new Plot(plot);
 	}
 
 	@Override
@@ -261,7 +276,11 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		JSONObject pageJSON = getMovieJSON();
 		JSONArray actors;
 		if(scrapingLanguage == Language.ENGLISH) {
-			 actors = pageJSON.getJSONArray("ActressesEn");
+            if(!pageJSON.isNull("AcressesEn")) {
+                actors = pageJSON.getJSONArray("ActressesEn");
+            } else {
+                actors = pageJSON.getJSONArray("ActressesJa");
+            }
 		} else {
 			actors = pageJSON.getJSONArray("ActressesJa");
 		}
