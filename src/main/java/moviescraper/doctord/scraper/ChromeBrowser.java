@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class ChromeBrowser implements HeadlessBrowser {
     ChromeDriver driver;
-    private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
+    private final Logger LOGGER = Logger.getLogger(ChromeBrowser.class.getName());
     public ChromeBrowser(){
 
     }

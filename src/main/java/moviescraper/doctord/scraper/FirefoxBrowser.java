@@ -18,7 +18,7 @@ public class FirefoxBrowser implements HeadlessBrowser {
     WebDriver webclient;
     FirefoxOptions options;
     DesiredCapabilities capabilities;
-    private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
+    private final Logger LOGGER = Logger.getLogger(FirefoxBrowser.class.getName());
 
 
     public FirefoxBrowser(){

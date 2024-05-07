@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
+import moviescraper.doctord.controller.ApplicationSettings;
 import moviescraper.doctord.controller.DirectorySort;
 import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.controller.amalgamation.AllAmalgamationOrderingPreferences;
@@ -108,6 +109,7 @@ public class GUIMain {
 	private GUIMainButtonPanel buttonPanel;
 	private DirectorySort sortSetting = DirectorySort.DateModified;
 	private Boolean sortAsAscending = false;
+    ApplicationSettings settings = new ApplicationSettings();
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
@@ -165,6 +167,7 @@ public class GUIMain {
 
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
+        settings.initialize();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 

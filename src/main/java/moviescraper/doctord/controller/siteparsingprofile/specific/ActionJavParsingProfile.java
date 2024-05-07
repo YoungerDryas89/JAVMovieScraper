@@ -3,14 +3,14 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.scraper.HeadlessBrowser;
+import moviescraper.doctord.scraper.HeadlessBrowserSingle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -44,6 +44,23 @@ import moviescraper.doctord.model.dataitem.Year;
 public class ActionJavParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final SimpleDateFormat actionJavReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+	HeadlessBrowser hbInstance = HeadlessBrowserSingle.instance();
+
+	@Override
+	public Document downloadDocument(SearchResult searchResult){
+		try {
+			var resultURL = new URL(searchResult.getUrlPath());
+
+			if(hbInstance.currentURL() != null && hbInstance.currentURL().equals(searchResult.getUrlPath())){
+				return hbInstance.getPageSource();
+			} else {
+				return hbInstance.get(resultURL);
+			}
+		}catch (MalformedURLException e){
+			System.err.println(e.getMessage());
+		}
+        return null;
+    }
 
 	@Override
 	public Title scrapeTitle() {
