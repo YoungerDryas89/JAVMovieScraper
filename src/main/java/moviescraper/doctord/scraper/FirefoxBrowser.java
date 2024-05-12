@@ -18,7 +18,6 @@ public class FirefoxBrowser implements HeadlessBrowser {
     WebDriver webclient;
     FirefoxOptions options;
     DesiredCapabilities capabilities;
-    private final Logger LOGGER = Logger.getLogger(FirefoxBrowser.class.getName());
 
 
     public FirefoxBrowser(){
@@ -35,12 +34,11 @@ public class FirefoxBrowser implements HeadlessBrowser {
     }
 
     public void initializeBrowser() {
-        capabilities = new DesiredCapabilities();
-
-        capabilities.setCapability("marionette", false);
         options = new FirefoxOptions();
         options.addArguments("-headless");
         webclient = new FirefoxDriver(options);
+
+        System.out.println("Using browser from: " + options.getBinary());
     }
 
     public Document getPageSource(){
@@ -57,7 +55,6 @@ public class FirefoxBrowser implements HeadlessBrowser {
             initializeBrowser();
         }
 
-        LOGGER.log(Level.INFO, "Get request on {0}", url.toString());
         Document returnDoc = null;
         try {
             webclient.get(url.toString());
