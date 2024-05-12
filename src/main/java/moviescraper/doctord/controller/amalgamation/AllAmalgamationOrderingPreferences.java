@@ -37,7 +37,8 @@ public class AllAmalgamationOrderingPreferences {
 						"moviescraper.doctord.controller.siteparsingprofile.*",
 						"moviescraper.doctord.model.preferences.Settings.*",
 						"moviescraper.doctord.model.dataitem.*",
-						"moviescraper.doctord.controller.siteparsingprofile.specific.*"
+						"moviescraper.doctord.controller.siteparsingprofile.specific.*",
+                        "moviescraper.doctord.scraper.*"
 				}
 		);
 		xstream.alias("ScraperGroupAmalgamationPreferences", ScraperGroupAmalgamationPreference.class);
