@@ -2,6 +2,9 @@ package moviescraper.doctord.controller.siteparsingprofile;
 
 import java.io.File;
 import java.io.IOException;
+
+import moviescraper.doctord.scraper.FirefoxBrowser;
+import moviescraper.doctord.scraper.HeadlessBrowser;
 import org.junit.BeforeClass;
 
 import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
@@ -16,7 +19,7 @@ public class ExcaliburFilmsParsingProfileTest extends GenericParsingProfileTest 
 		expectedValueFile = new File("C:/Temp/Pirates 2/");
 
 		try {
-			actualMovie = Movie.scrapeMovie(expectedValueFile, overloadedScraper, "", false);
+			actualMovie = Movie.scrapeMovie(expectedValueFile, overloadedScraper, "", null, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

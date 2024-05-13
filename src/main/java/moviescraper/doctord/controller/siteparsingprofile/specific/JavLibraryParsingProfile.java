@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 import moviescraper.doctord.scraper.FirefoxBrowser;
 import moviescraper.doctord.scraper.HeadlessBrowser;
-import moviescraper.doctord.scraper.HeadlessBrowserSingle;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
@@ -54,8 +53,6 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
 	private String overrideURLJavLibrary;
-	private final HeadlessBrowser hbInstance = HeadlessBrowserSingle.instance();
-
 	/*
 		TODO: Check if images redirect to 'https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg' aka 'this image does not exist' url
 	 */
@@ -78,10 +75,16 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		try {
 			var resultURL = new URL(searchResult.getUrlPath());
 
-			if(Objects.equals(hbInstance.currentURL(), resultURL)){
-				return hbInstance.getPageSource();
+			if(browser == null)
+			{
+				System.err.println("Error, provided browser is unavailable or null");
 			} else {
-				return hbInstance.get(resultURL);
+
+				if (Objects.equals(browser.currentURL(), resultURL)) {
+					return browser.getPageSource();
+				} else {
+					return browser.get(resultURL);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -386,10 +389,10 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + siteLanguageToScrape);
 
 		try {
-			Document doc = hbInstance.get(new URL(searchString));
+			Document doc = browser.get(new URL(searchString));
 
 			//The search found the page directly
-			if (hbInstance.currentURL().toString().contains("/?v=")) {
+			if (browser.currentURL().toString().contains("/?v=")) {
 				String linkTitle = doc.title().replaceAll(Pattern.quote(" - JAVLibrary"), "");
 				Element posterElement = doc.select("img#video_jacket_img").first();
 				//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview

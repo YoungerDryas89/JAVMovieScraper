@@ -10,4 +10,5 @@ public interface HeadlessBrowser {
     Document getPageSource();
     Document get(URL url);
     URL currentURL() throws MalformedURLException;
+    void quit();
 }

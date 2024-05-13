@@ -50,7 +50,7 @@ public class FirefoxBrowser implements HeadlessBrowser {
         return doc;
     }
 
-    public Document get(URL url) {
+    public synchronized Document get(URL url) {
         if(webclient == null){
             initializeBrowser();
         }
@@ -66,6 +66,12 @@ public class FirefoxBrowser implements HeadlessBrowser {
             System.err.println(e.getMessage());
         }
         return returnDoc;
+    }
+
+    public void quit(){
+        if(webclient != null){
+            webclient.quit();
+        }
     }
 
 

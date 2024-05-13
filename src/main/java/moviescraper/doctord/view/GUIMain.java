@@ -1,6 +1,6 @@
 package moviescraper.doctord.view;
 
-import java.awt.EventQueue;
+import java.awt.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -10,8 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
-
-import java.awt.BorderLayout;
 
 import javax.swing.JList;
 
@@ -24,14 +22,11 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.preferences.GuiSettings;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
+import moviescraper.doctord.scraper.FirefoxBrowser;
+import moviescraper.doctord.scraper.HeadlessBrowser;
 import moviescraper.doctord.view.renderer.FileRenderer;
 
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.SystemColor;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 
 import javax.swing.UIManager;
 
@@ -41,10 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 
 import org.apache.commons.io.FilenameUtils;
@@ -108,6 +99,7 @@ public class GUIMain {
 	private GUIMainButtonPanel buttonPanel;
 	private DirectorySort sortSetting = DirectorySort.DateModified;
 	private Boolean sortAsAscending = false;
+	HeadlessBrowser browser;
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
@@ -165,6 +157,7 @@ public class GUIMain {
 
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
+		browser = new FirefoxBrowser();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 
@@ -176,7 +169,14 @@ public class GUIMain {
 		setCurrentlySelectedTrailerFileList(new ArrayList<File>());
 		currentlySelectedActorsFolderList = new ArrayList<>();
 		movieToWriteToDiskList = new ArrayList<>();
-		frmMoviescraper = new JFrame();
+		frmMoviescraper = new JFrame() {
+			protected void processWindowEvent(WindowEvent e){
+				super.processWindowEvent(e);
+				if(e.getID() == WindowEvent.WINDOW_CLOSING){
+					browser.quit();
+				}
+			}
+		};
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
@@ -767,6 +767,10 @@ public class GUIMain {
 
 	public void updateFileList(){
 		updateFileListModel(getCurrentlySelectedDirectoryList(), true);
+	}
+
+	public HeadlessBrowser browser(){
+		return this.browser;
 	}
 
 }

@@ -20,6 +20,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
+import moviescraper.doctord.scraper.HeadlessBrowser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -760,12 +761,13 @@ public class Movie {
 	 */
 
 	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException {
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, HeadlessBrowser browser, boolean useURLtoScrapeFrom) throws IOException {
 
 		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
 		if (siteToParseFrom.getDiscardResults())
 			return null;
 		String searchString = siteToParseFrom.createSearchString(movieFile);
+		siteToParseFrom.setBrowser(browser);
 		SearchResult[] searchResults = null;
 		int searchResultNumberToUse = 0;
 		//no URL was passed in so we gotta figure it ourselves
