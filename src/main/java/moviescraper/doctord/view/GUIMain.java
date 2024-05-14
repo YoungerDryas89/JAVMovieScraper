@@ -169,14 +169,14 @@ public class GUIMain {
 		setCurrentlySelectedTrailerFileList(new ArrayList<File>());
 		currentlySelectedActorsFolderList = new ArrayList<>();
 		movieToWriteToDiskList = new ArrayList<>();
-		frmMoviescraper = new JFrame() {
-			protected void processWindowEvent(WindowEvent e){
-				super.processWindowEvent(e);
-				if(e.getID() == WindowEvent.WINDOW_CLOSING){
-					browser.quit();
-				}
+		frmMoviescraper = new JFrame();
+		frmMoviescraper.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				super.windowClosing(e);
+				browser.quit();
 			}
-		};
+		});
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
