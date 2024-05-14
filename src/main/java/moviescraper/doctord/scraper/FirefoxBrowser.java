@@ -71,6 +71,7 @@ public class FirefoxBrowser implements HeadlessBrowser {
     public void quit(){
         if(webclient != null){
             webclient.quit();
+            System.out.println("Firefox driver has exited");
         }
     }
 
