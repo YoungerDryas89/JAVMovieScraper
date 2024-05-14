@@ -126,6 +126,9 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	final static Pattern FC2Pattern = Pattern.compile("(?i)(:?FC2-PPV)[-_\\s](?<id>(\\d{7}))");
 	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d{6}[_-]\\d{1,3}?(:?-1PON)?)");
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>[nk]\\d{4})");
+	final static Pattern CaribbeancomPattern = Pattern.compile("(?i)(?<id>(?<series>carib|caribbeancom(pr)?|caribbeancom premium)\\s?[-_\\s]\\s?(?<number>\\d{6}[_-]\\d{3}))");
+	final static Pattern CaribbeancomPatternReverse = Pattern.compile("(?i)(?<id>(?<number>\\d{6}[_-]\\d{3})\\s?[-_\\s]\\s?(?<series>carib(pr)?|caribbeancom(pr)?|caribbeancom premium))");
+
 	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?:hhd800\\.com@)?-?(?<id>(?<series>[A-Za-z]+)[-_\\s\\S\\+]?(?<number>\\d{2,4}))");
 	final static Pattern kinten8gokuPattern = Pattern.compile("(?i)(?:Kin8tengoku|KIN8)[-_\\s](?<num>\\d+)");
 	/**
@@ -212,6 +215,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 * @return
 	 */
 	public static String findIDTagFromFile(File file, boolean firstWordOfFileIsID) {
+		// TODO: Need something better and more specific than this function
 		String fileNameNoExtension;
 		if (file.isDirectory()) {
 			fileNameNoExtension = file.getName();
@@ -227,13 +231,37 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 		}
 
+		String id = null;
+		Matcher match = CaribbeancomPattern.matcher(fileNameNoExtension);
+		if(match.find()){
+			assert (match.group("id") != null);
+			assert (match.group("series") != null);
+			assert (match.group("number") != null);
+			if(match.group("series").contains("pr")){
+				return "caribbeancompr" + match.group("number");
+			} else {
+				return "caribbeancom-" + match.group("number");
+			}
+		}
+
+		match = CaribbeancomPatternReverse.matcher(fileNameNoExtension);
+		if(match.find()){
+			assert (match.group("id") != null);
+			assert (match.group("series") != null);
+			assert (match.group("number") != null);
+			if(match.group("series").contains("pr")){
+				return "caribbeancompr" + match.group("number");
+			} else {
+				return "caribbeancom-" + match.group("number");
+			}
+		}
+
 		var result = dproperties.determineIdFromTitle(fileNameNoExtension);
 		if(result != null){
 			return result.getKey() + "-" + result.getValue();
 		}
 
-		String id = null;
-		Matcher match = FC2Pattern.matcher(fileNameNoExtension);
+		match = FC2Pattern.matcher(fileNameNoExtension);
 		if(match.find()){
 			assert (match.group("id") != null);
 			id = match.group("id");
