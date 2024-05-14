@@ -68,7 +68,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Title scrapeTitle() {
 		// html body div#page div#main div#moviepages div.container.page-margin div.inner-container div.movie-info div.section div.heading h1
-		var title_element = document.select(title_path).first();
+		Element title_element = document.select(title_path).first();
+
+		if(title_element.text().isEmpty()){
+			// Since no title was provided in the html document, it means we must load the japanese one
+			System.out.println("English page for movie " + getIdFromUrl() + " is missing critical details; the Japanese document will fill those missing details.");
+			initializeJapaneseDocument();
+			title_element = japaneseDocument.selectFirst(title_path);
+		}
 		return new Title(title_element.text());
 	}
 
@@ -126,11 +133,11 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Plot scrapePlot() {
-		if(scrapingLanguage == Language.ENGLISH) {
+		if(japaneseDocument == null && scrapingLanguage == Language.ENGLISH) {
 			return Plot.BLANK_PLOT;
 		} else {
-			// TODO: Japanese plot
-			return Plot.BLANK_PLOT;
+			var plot = japaneseDocument.selectFirst("#moviepages > div > div.inner-container > div.movie-info > div > p").text();
+			return new Plot(plot);
 		}
 	}
 
@@ -241,7 +248,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ID scrapeID() {
-		return new ID("");
+		return new ID(getIdFromUrl());
 	}
 
 	@Override
@@ -424,14 +431,18 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Studio scrapeStudio() {
-		return new Studio("Caribbeancom Premium");
+		if(japaneseDocument != null) {
+			return new Studio("Caribbeancom Premium");
+		} else {
+			return new Studio(japaneseDocument.selectFirst("#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content > a").text());
+		}
 	}
 
 	@Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
-		return fileNameNoExtension;
+		return fileNameNoExtension.split("-")[1];
 	}
 
 	@Override
@@ -445,20 +456,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	private void initializeJapaneseDocument() {
-		if (japaneseDocument == null) {
-			String urlOfCurrentPage = document.location();
-			if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
-				//the genres are only available on the japanese version of the page
-				urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/"), "http://www.caribbeancompr.com/");
-				if (urlOfCurrentPage.length() > 1) {
-					try {
-						japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
+		var japanese_url = "https://www.caribbeancompr.com/moviepages/" + getIdFromUrl() + "/index.html";
+		try {
+			japaneseDocument = Jsoup.connect(japanese_url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
