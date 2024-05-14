@@ -50,6 +50,8 @@ import moviescraper.doctord.model.dataitem.Year;
 
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
+	// TODO: Implement also getting the japanese translation
+	// TODO: Implement scrapeOriginalTitle
 	private Document japaneseDocument;
 	private Thumb[] scrapedPosters;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
