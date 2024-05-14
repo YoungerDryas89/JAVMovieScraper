@@ -57,10 +57,18 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	private static final Pattern TRAILER_RE = Pattern.compile("(https:\\\\/\\\\/smovie.caribbeancompr.com\\\\/sample\\\\/movies\\\\/[0-9_]+\\\\/[0-9ip]+.mp4)");
 	private static final Pattern DOC_ID_RE = Pattern.compile("moviepages/([0-9_]+)/");
 
+	final String title_path = ".movie-info .section .heading h1";
+	final String release_date_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-content";
+	final String actor_path = "html body div#page div#main div#moviepages div.container.page-margin div.inner-container div.movie-info div.section ul li.movie-spec span.spec-content";
+	final String genre_path = actor_path;
+	final String duration_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content";
+	//#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content
+
 	@Override
 	public Title scrapeTitle() {
-		// Carribean.com has no more title
-		return new Title("");
+		// html body div#page div#main div#moviepages div.container.page-margin div.inner-container div.movie-info div.section div.heading h1
+		var title_element = document.select(title_path).first();
+		return new Title(title_element.text());
 	}
 
 	@Override
@@ -76,21 +84,6 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Set scrapeSet() {
-		//the studio is not on the english version of this page, so we need to go to the japanese one
-		initializeJapaneseDocument();
-		if (japaneseDocument != null) {
-			Element setElement = japaneseDocument.select("div.movie-info dl dt:contains(シリーズ:) ~ dd a").first();
-			if (setElement != null) {
-				String setElementTranslatedText = setElement.text().trim();
-				// FIXME: Broken
-				/*if (getScrapingLanguage() == Language.ENGLISH)
-					setElementTranslatedText = TranslateString.translateStringJapaneseToEnglish(setElement.text().trim());*/
-				if (setElementTranslatedText != null && setElementTranslatedText.length() > 0)
-					return new Set(setElementTranslatedText);
-			}
-
-		}
-
 		return Set.BLANK_SET;
 	}
 
@@ -107,14 +100,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		for (Element info_line : document.select("div.movie-info > dl")) {
-			Element releaseDateLabel = info_line.select("dt").first();
-			if (releaseDateLabel.text().equals("Release Date:")) {
-				Element releaseDateValue = releaseDateLabel.nextElementSibling();
-				return new ReleaseDate(releaseDateValue.text(), caribbeanReleaseDateFormat);
-			}
-		}
-		return ReleaseDate.BLANK_RELEASEDATE;
+		Element date_element = document.select(release_date_path).first();
+        assert date_element != null;
+        return new ReleaseDate(date_element.text(), caribbeanReleaseDateFormat);
 	}
 
 	@Override
@@ -137,7 +125,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Plot scrapePlot() {
-		return Plot.BLANK_PLOT;
+		if(scrapingLanguage == Language.ENGLISH) {
+			return Plot.BLANK_PLOT;
+		} else {
+			// TODO: Japanese plot
+			return Plot.BLANK_PLOT;
+		}
 	}
 
 	@Override
@@ -148,66 +141,44 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Runtime scrapeRuntime() {
-		for (Element info_line : document.select("div.movie-info > dl")) {
-			Element duration_label = info_line.select("dt").first();
-			if (duration_label.text().equals("Duration:")) {
-				Element duration_value = duration_label.nextElementSibling();
-				String[] durationSplitByTimeUnit = duration_value.text().split(":");
-				if (durationSplitByTimeUnit.length == 3) {
-					int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
-					int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-					// we don't care about seconds
+		Element duration_element = document.selectFirst(duration_path);
+		String[] durationSplitByTimeUnit = duration_element.text().split(":");
+		if (durationSplitByTimeUnit.length == 3) {
+			int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+			int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+			// we don't care about seconds
 
-					int totalMinutes = (hours * 60) + minutes;
-					return new Runtime(Integer.toString(totalMinutes));
-				}
-			}
+			int totalMinutes = (hours * 60) + minutes;
+			return new Runtime(Integer.toString(totalMinutes));
 		}
 		return Runtime.BLANK_RUNTIME;
 	}
 
 	@Override
 	public Thumb[] scrapePosters() {
+		String id = getIdFromUrl();
 		List<Thumb> posters = new LinkedList<>();
-		ID id = scrapeID();
+		String[] posterUrls = {
+				"/moviepages/"+ id +"/images/l_l.jpg",
+				"/moviepages/"+ id +"/images/poster_en.jpg"
+		};
+
 
 		try {
-			URL documentUrl = new URL(document.baseUri());
-			String baseUrl = documentUrl.getProtocol() + "://" + documentUrl.getHost();
-			String thumb_url = baseUrl + "/moviepages/" + id.getId() + "/images/l_l.jpg";
-			if (fileExistsAtURL(thumb_url)) {
-				Thumb posterThumb = new Thumb(thumb_url);
-				posterThumb.setPreviewURL(new URL(baseUrl + "/moviepages/" + id.getId() + "/images/s_main.jpg"));
-				posters.add(posterThumb);
+			for(var paths : posterUrls){
+				if(fileExistsAtURL("https://www.caribbeancompr.com" + paths)){
+					posters.add(new Thumb("https://www.caribbeancompr.com" + paths));
+				}
 			}
 		} catch (MalformedURLException ex) {
 			Logger.getLogger(CaribbeancomPremiumParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
-
-		//get the extra 3 free images they give
-
-		if (id != null) {
-			for (int i = 1; i <= 3; i++) {
-				String currentImagePath = "https://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/l/00" + i + ".jpg";
-				String currentImagePathPreview = "https://www.caribbeancompr.com/moviepages/" + id.getId() + "/images/s/00" + i + ".jpg";
-				if (fileExistsAtURL(currentImagePath)) {
-					try {
-						Thumb currentImage = new Thumb(currentImagePath);
-						currentImage.setPreviewURL(new URL(currentImagePathPreview));
-						posters.add(currentImage);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
-		return scrapedPosters;
+		return posters.toArray(new Thumb[posters.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
+		// TODO: Look at this sometime
 		//Believe it or not, the fanart (dvd cover) exists, but is normally only set as the preview of the trailer
 		//it follows a predictable URL structure though, so we can grab it anyways :)
 
@@ -239,6 +210,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
+		// TODO: Look at this sometime
 		String urlOfCurrentPage = document.location();
 		if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
 			urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "");
@@ -268,18 +240,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ID scrapeID() {
-		Matcher matcher = DOC_ID_RE.matcher(document.location());
-
-		if (matcher.find()) {
-			return new ID(matcher.group(1));
-		}
 		return new ID("");
 	}
 
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<>();
-		for (Element genreElement : document.select(".movie-info-cat").select("dd > a")) {
+		var genre_elements = document.select(genre_path).last();
+		for (Element genreElement : genre_elements.children()) {
 			genresReturned.add(new Genre(genreElement.text().trim()));
 		}
 		return genresReturned;
@@ -431,37 +399,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-
-		Element actorElement = document.select("div.movie-info tr td:contains(Starring:) ~ td a").first();
-		String urlOfCurrentPage = document.location();
-		String actorThumbURL = null;
-		if (getScrapingLanguage() == Language.ENGLISH) {
-			String actors = document.select("div.movie-info").select("dl").first().select("a").text();
-			if (actors.contains(",")) {
-				for (String actor : actors.split(",")) {
-					actorList.add(new Actor(actor, "", null));
-				}
-			} else {
-				if (!actors.isEmpty()) {
-					actorList.add(new Actor(actors, "", null));
-				}
-			}
-		} else if (getScrapingLanguage() == Language.JAPANESE) {
-			initializeJapaneseDocument();
-			Elements japaneseActors = japaneseDocument.select("div.movie-info dl dt:contains(出演:) ~ dd a");
-			if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
-				urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "http://www.caribbeancompr.com/moviepages/");
-				actorThumbURL = urlOfCurrentPage.replaceFirst(Pattern.quote("/index.html"), "/images/n.jpg");
-			}
-			for (Element japaneseActor : japaneseActors) {
-				String actorName = japaneseActor.text();
-				try {
-					actorList.add(new Actor(actorName, "", new Thumb(actorThumbURL)));
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-					actorList.add(new Actor(actorName, "", null));
-				}
-			}
+		var actor_elements = document.select(actor_path).first();
+		for(var actor_element : actor_elements.children()){
+			Actor actor = new Actor(actor_element.text(), null, null);
+			actorList.add(actor);
 		}
 		return actorList;
 	}
@@ -473,37 +414,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Trailer scrapeTrailer() {
-		for (Element script_document : document.select("script")) {
-			String script_content = script_document.html();
-			Matcher matcher = TRAILER_RE.matcher(script_content);
-
-			if (matcher.find()) {
-				String trailer_url = matcher.group(1).replace("\\", "");
-				return new Trailer(trailer_url);
-			}
+		int id_index = 5;
+		if(scrapingLanguage != Language.ENGLISH){
+			id_index = 4;
 		}
-		return Trailer.BLANK_TRAILER;
+		return new Trailer("https://smovie.caribbeancompr.com/sample/movies/"+ document.baseUri().split("/")[id_index] +"/480p.mp4");
 	}
 
 	@Override
 	public Studio scrapeStudio() {
-
-		//the studio is not on the english version of this page, so we need to go to the japanese one
-		initializeJapaneseDocument();
-		if (japaneseDocument != null) {
-			Element studioElement = japaneseDocument.select("div.movie-info dl dt:contains(スタジオ:) ~ dd a").first();
-			if (studioElement != null) {
-				String studioElementText = studioElement.text().trim();
-				// FIXME: Broken
-				/*if (getScrapingLanguage() == Language.ENGLISH)
-					TranslateString.translateStringJapaneseToEnglish(studioElement.text().trim());*/
-				if (studioElementText != null && studioElementText.length() > 0)
-					return new Studio(studioElementText);
-			}
-
-		}
-
-		return Studio.BLANK_STUDIO;
+		return new Studio("Caribbeancom Premium");
 	}
 
 	@Override
@@ -520,16 +440,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		SearchResult[] googleResults = getLinksFromGoogle(searchString, "http://en.caribbeancompr.com/eng/moviepages/");
-		//Remove any parts of the URL after .html - for some reason this sometimes happens and messes up the scrape
-		for (int i = 0; i < googleResults.length; i++) {
-			String currentUrl = googleResults[i].getUrlPath();
-			if (!currentUrl.endsWith(".html") && currentUrl.contains(".html")) {
-				String newURL = currentUrl.substring(0, currentUrl.indexOf(".html") + 5);
-				googleResults[i].setUrlPath(newURL);
-			}
-		}
-		return googleResults;
+		return new SearchResult[]{ new SearchResult("https://en.caribbeancompr.com/eng/moviepages/" + searchString + "/index.html")};
 	}
 
 	private void initializeJapaneseDocument() {
@@ -558,6 +469,15 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public SiteParsingProfile newInstance() {
 		return new CaribbeancomPremiumParsingProfile();
+	}
+
+	public String getIdFromUrl(){
+		// TODO: Implement something better than this and more broader
+		int id_index = 5;
+		if(scrapingLanguage != Language.ENGLISH){
+			id_index = 4;
+		}
+		return document.baseUri().split("/")[id_index];
 	}
 
 }

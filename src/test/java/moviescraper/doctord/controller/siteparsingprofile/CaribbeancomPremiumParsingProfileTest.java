@@ -26,8 +26,8 @@ import org.junit.Test;
 
 public class CaribbeancomPremiumParsingProfileTest {
 
-	static File file = new File("C:/Temp/Caribbeancom Premium 122716_008.avi");
-	static CaribbeancomPremiumParsingProfile parser = new CaribbeancomPremiumParsingProfile();
+	static File file = new File("C:/Temp/Caribbeancompr 122716_008.avi");
+	static CaribbeancomPremiumParsingProfile parser;
 
 	@BeforeClass
 	public static void initialize() {
@@ -35,7 +35,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 		parser.setScrapingLanguage(Language.ENGLISH);
 		String searchString = parser.createSearchString(file);
 		try {
-			SearchResult[] searchResults = parser.getSearchResults(searchString);
+			SearchResult[] searchResults = parser.getSearchResults("122716_008");
 			Document document = SiteParsingProfile.getDocument(searchResults[0]);
 			System.out.println("Scrape: " + document.location());
 			parser.setDocument(document);
@@ -49,14 +49,8 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
+		String findIDTagFromFile = parser.getIdFromUrl();
 		assertEquals(findIDTagFromFile, "122716_008");
-	}
-
-	@Test
-	public void testScrapeID() {
-		String id = parser.scrapeID().getId();
-		assertEquals("122716_008", id);
 	}
 
 	@Test
@@ -65,7 +59,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 		//this assumes translation is done. if this test fails, it could be because translation is not done or the web
 		//based translation service has changed how they do translation, so try to just see if the title is close to
 		//this one and adjust as needed to fix the test case
-		assertEquals("", title.getTitle());
+		assertEquals("Akari Asagiri, Rei Kitajima, Maki Houjou, Reiko Kobayakawa", title.getTitle());
 	}
 
 	@Test
@@ -113,7 +107,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testScrapeGenre() {
 		ArrayList<Genre> genreList = parser.scrapeGenres();
-		assertEquals("Wrong genre size", 14, genreList.size());
+		assertEquals("Wrong genre size", 16, genreList.size());
 		assertEquals("Wrong genre", "AV Idol", genreList.get(0).getGenre());
 	}
 
@@ -127,7 +121,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	public void testScrapePoster() {
 		Thumb[] posters = parser.scrapePosters();
 		assertEquals("Poster size not right", true, posters.length > 0);
-		assertEquals("Wrong poster url", "https://en.caribbeancompr.com/moviepages/122716_008/images/l_l.jpg", posters[0].getThumbURL().toString());
+		assertEquals("Wrong poster url", "https://www.caribbeancompr.com/moviepages/122716_008/images/l_l.jpg", posters[0].getThumbURL().toString());
 	}
 
 }
