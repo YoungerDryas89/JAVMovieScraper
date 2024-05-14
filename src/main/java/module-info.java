@@ -22,6 +22,7 @@ module moviescraper.doctord {
     requires dev.failsafe.core;
     requires org.seleniumhq.selenium.firefox_driver;
     requires fastjson;
+    requires org.junit.jupiter.api;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
     exports moviescraper.doctord.controller.siteparsingprofile;
