@@ -776,8 +776,10 @@ public class Movie {
 			int levDistanceOfCurrentMatch = 999999; // just some super high number
 			String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
 
-			System.out.println(searchResults.length);
-
+			if(searchResults.length == 0){
+				// TODO: Need something better and more user friendly than just simply printing this out to the console.
+				System.out.println("Oops! It looks like I couldn't find anything using the provided title.");
+			}
 			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 			for (int i = 0; i < searchResults.length; i++) {
 				String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
