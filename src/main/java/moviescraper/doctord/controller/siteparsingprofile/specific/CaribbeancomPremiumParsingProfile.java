@@ -61,10 +61,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	final String title_path = ".movie-info .section .heading h1";
 	final String release_date_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-content";
-	final String actor_path = "html body div#page div#main div#moviepages div.container.page-margin div.inner-container div.movie-info div.section ul li.movie-spec span.spec-content";
-	final String genre_path = actor_path;
+	final String actor_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(1) > span.spec-content";
+	final String genre_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(4) > span.spec-content";
 	final String duration_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content";
-	//#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content
 
 	@Override
 	public Title scrapeTitle() {
@@ -248,7 +247,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<>();
-		var genre_elements = document.select(genre_path).last();
+		var genre_elements = document.selectFirst(genre_path);
 		for (Element genreElement : genre_elements.children()) {
 			genresReturned.add(new Genre(genreElement.text().trim()));
 		}
