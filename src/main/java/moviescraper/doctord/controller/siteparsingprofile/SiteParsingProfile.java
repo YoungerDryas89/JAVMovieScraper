@@ -238,7 +238,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			assert (match.group("series") != null);
 			assert (match.group("number") != null);
 			if(match.group("series").contains("pr")){
-				return "caribbeancompr" + match.group("number");
+				return "caribbeancompr-" + match.group("number");
 			} else {
 				return "caribbeancom-" + match.group("number");
 			}
