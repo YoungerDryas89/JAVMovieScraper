@@ -53,6 +53,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	// TODO: Implement also getting the japanese translation
 	// TODO: Implement scrapeOriginalTitle
 	// TODO: Implement getting ratings from japanese page
+	// TODO: Get proper studio, thumbnail. The English movie pages are missing attributes such as studio
 	private Document japaneseDocument;
 	private Thumb[] scrapedPosters;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -99,6 +100,13 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Rating scrapeRating() {
 		// this site does not have ratings, so just return some default values
+		if(japaneseDocument != null){
+			var rating_elements = japaneseDocument.select("#userreview_average > span.spec-content.rating");
+			if(!rating_elements.isEmpty()){
+				return new Rating(5, String.valueOf(rating_elements.first().text().length()));
+			}
+
+		}
 		return new Rating(0, "0");
 	}
 
@@ -289,11 +297,11 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Studio scrapeStudio() {
+		// Studio attribute is only available on the Japanese version of the site
 		if(japaneseDocument != null) {
-			return new Studio("Caribbeancom Premium");
-		} else {
 			return new Studio(japaneseDocument.selectFirst("#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content > a").text());
 		}
+		return new Studio("Caribbeancom");
 	}
 
 	@Override
