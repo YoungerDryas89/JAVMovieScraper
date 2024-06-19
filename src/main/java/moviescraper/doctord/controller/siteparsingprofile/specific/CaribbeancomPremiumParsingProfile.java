@@ -62,10 +62,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	private static final Pattern DOC_ID_RE = Pattern.compile("moviepages/([0-9_]+)/");
 
 	final String title_path = ".movie-info .section .heading h1";
-	final String release_date_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-content";
+	final String release_date_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-title";
 	final String actor_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(1) > span.spec-content";
 	final String genre_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(4) > span.spec-content";
-	final String duration_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content";
+	final String duration_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-title";
 
 	@Override
 	public Title scrapeTitle() {
@@ -118,6 +118,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element date_element = document.select(release_date_path).first();
+        if(date_element.text().equals("Release Date")){
+           return new ReleaseDate(date_element.nextElementSibling().text(), caribbeanReleaseDateFormat);
+        }
         assert date_element != null;
         return new ReleaseDate(date_element.text(), caribbeanReleaseDateFormat);
 	}
@@ -159,15 +162,17 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Runtime scrapeRuntime() {
 		Element duration_element = document.selectFirst(duration_path);
-		String[] durationSplitByTimeUnit = duration_element.text().split(":");
-		if (durationSplitByTimeUnit.length == 3) {
-			int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
-			int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-			// we don't care about seconds
+        if(duration_element.text().equals("Duration")) {
+            String[] durationSplitByTimeUnit = duration_element.nextElementSibling().text().split(":");
+            if (durationSplitByTimeUnit.length == 3) {
+                int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+                int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+                // we don't care about seconds
 
-			int totalMinutes = (hours * 60) + minutes;
-			return new Runtime(Integer.toString(totalMinutes));
-		}
+                int totalMinutes = (hours * 60) + minutes;
+                return new Runtime(Integer.toString(totalMinutes));
+            }
+        }
 		return Runtime.BLANK_RUNTIME;
 	}
 
