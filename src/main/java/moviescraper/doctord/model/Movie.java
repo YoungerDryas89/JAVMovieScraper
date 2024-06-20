@@ -829,6 +829,7 @@ public class Movie {
 				}
 			}
 			siteToParseFrom.setDocument(searchMatch);
+            siteToParseFrom.prepareData();
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 
 			Movie scrapedMovie = new Movie(siteToParseFrom);

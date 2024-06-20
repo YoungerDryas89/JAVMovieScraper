@@ -654,4 +654,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	public void setDiscardResults(boolean value) {
 		discardResults = value;
 	}
+
+    // Intended for classes that need to do extra preparation after this.document is assigned with a new page
+    public void prepareData(){
+    }
 }
