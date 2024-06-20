@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.IllegalFormatException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -62,28 +58,70 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	private static final Pattern DOC_ID_RE = Pattern.compile("moviepages/([0-9_]+)/");
 
 	final String title_path = ".movie-info .section .heading h1";
-	final String release_date_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-title";
-	final String actor_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(1) > span.spec-content";
-	final String genre_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(4) > span.spec-content";
-	final String duration_path = "#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(2) > span.spec-title";
+
+    final Map<String, String> japaneseDetailEquivalent = Map.of(
+            "Starring", "出演",
+            "Release Date", "販売日",
+            "Duration", "再生時間",
+            "Studio", "スタジオ",
+            "Tags", "タグ"
+    );
+
+    Map<Language, Elements> detailTable = null;
+
+
+    @Override
+    public void prepareData(){
+        detailTable = new HashMap<>();
+        try {
+            detailTable.put(Language.ENGLISH, document.select(".movie-spec"));
+            initializeJapaneseDocument();
+            detailTable.put(Language.JAPANESE, japaneseDocument.select(".movie-spec"));
+        }catch (NullPointerException e){
+            System.err.println(e.getMessage());
+            throw e;
+        }
+    }
+
+    private Element getItemByNameWithFallback(String name){
+        if(detailTable != null){
+            Elements targetLang = detailTable.get(scrapingLanguage).select(".spec-title");
+            Elements japanese = detailTable.get(Language.JAPANESE).select(".spec-title");
+            for(var elem : targetLang){
+                if(elem.text().equals(name))
+                    return elem.nextElementSibling();
+            }
+            return getItemFromJapanesePageByName(name);
+        }
+        return null;
+    }
+
+    private Element getItemFromJapanesePageByName(String name){
+        Elements japanese = detailTable.get(Language.JAPANESE).select(".spec-title");
+        name = japaneseDetailEquivalent.get(name);
+        for(var jelem : japanese){
+            if(jelem.text().equals(name))
+                return jelem.nextElementSibling();
+        }
+        return null;
+    }
 
 	@Override
 	public Title scrapeTitle() {
-		// html body div#page div#main div#moviepages div.container.page-margin div.inner-container div.movie-info div.section div.heading h1
 		Element title_element = document.select(title_path).first();
-
-		if(title_element.text().isEmpty()){
-			// Since no title was provided in the html document, it means we must load the japanese one
-			System.out.println("English page for movie " + getIdFromUrl() + " is missing critical details; the Japanese document will fill those missing details.");
-			initializeJapaneseDocument();
-			title_element = japaneseDocument.selectFirst(title_path);
-		}
 		return new Title(title_element.text());
 	}
 
+
 	@Override
 	public OriginalTitle scrapeOriginalTitle() {
-		// Carribean.com has no more title
+        if(scrapingLanguage == Language.ENGLISH && japaneseDocument == null){
+            initializeJapaneseDocument();
+        }
+        if(scrapingLanguage == Language.ENGLISH){
+            var title_element = japaneseDocument.select(title_path).first();
+            return new OriginalTitle(title_element.text());
+        }
 		return new OriginalTitle("");
 	}
 
@@ -117,12 +155,11 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public ReleaseDate scrapeReleaseDate() {
-		Element date_element = document.select(release_date_path).first();
-        if(date_element.text().equals("Release Date")){
-           return new ReleaseDate(date_element.nextElementSibling().text(), caribbeanReleaseDateFormat);
+		Element date_element = getItemByNameWithFallback("Release Date");
+        if(date_element != null){
+           return new ReleaseDate(date_element.text(), caribbeanReleaseDateFormat);
         }
-        assert date_element != null;
-        return new ReleaseDate(date_element.text(), caribbeanReleaseDateFormat);
+        return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
 	@Override
@@ -161,8 +198,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Runtime scrapeRuntime() {
-		Element duration_element = document.selectFirst(duration_path);
-        if(duration_element.text().equals("Duration")) {
+		Element duration_element = getItemByNameWithFallback("Duration");
+        if(duration_element != null && duration_element.text().equals("Duration")) {
             String[] durationSplitByTimeUnit = duration_element.nextElementSibling().text().split(":");
             if (durationSplitByTimeUnit.length == 3) {
                 int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
@@ -268,7 +305,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<>();
-		var genre_elements = document.selectFirst(genre_path);
+		var genre_elements = getItemByNameWithFallback("Tags");
 		for (Element genreElement : genre_elements.children()) {
 			genresReturned.add(new Genre(genreElement.text().trim()));
 		}
@@ -278,11 +315,22 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-		var actor_elements = document.select(actor_path).first();
-		for(var actor_element : actor_elements.children()){
-			Actor actor = new Actor(actor_element.text(), null, null);
-			actorList.add(actor);
-		}
+		var actor_elements = getItemByNameWithFallback("Starring");
+        if(actor_elements != null) {
+
+            // In some cases the English page's actors element will be present but the contents will be empty, hence we will get them from the
+            // Japanese translation of the page
+            var first_child = actor_elements.firstElementChild();
+            if(first_child.text() == null || first_child.text().isEmpty()){
+                actor_elements = getItemFromJapanesePageByName("Starring");
+            }
+
+            for (var actor_element : actor_elements.children()) {
+                var actor_name = actor_element.text();
+                Actor actor = new Actor(actor_element.text(), null, null);
+                actorList.add(actor);
+            }
+        }
 		return actorList;
 	}
 
@@ -304,9 +352,13 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public Studio scrapeStudio() {
 		// Studio attribute is only available on the Japanese version of the site
 		if(japaneseDocument != null) {
-			return new Studio(japaneseDocument.selectFirst("#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(3) > span.spec-content > a").text());
+            var studio_element = getItemFromJapanesePageByName("Studio");
+            if(studio_element != null){
+                return new Studio(studio_element.text());
+            }
+            //#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(4) > span.spec-content
 		}
-		return new Studio("Caribbeancom");
+		return Studio.BLANK_STUDIO;
 	}
 
 	@Override
