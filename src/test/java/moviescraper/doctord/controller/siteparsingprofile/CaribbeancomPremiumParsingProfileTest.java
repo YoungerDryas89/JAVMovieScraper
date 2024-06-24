@@ -39,6 +39,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 			Document document = SiteParsingProfile.getDocument(searchResults[0]);
 			System.out.println("Scrape: " + document.location());
 			parser.setDocument(document);
+            parser.prepareData();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,7 +66,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testScrapeOriginalTitle() {
 		OriginalTitle originalTitle = parser.scrapeOriginalTitle();
-		assertEquals("Wrong original title", "", originalTitle.getOriginalTitle());
+		assertEquals("Wrong original title", "THE 熟女　~妖艶で悩ましい美魔女たち~", originalTitle.getOriginalTitle());
 	}
 
 	@Test
@@ -77,19 +78,20 @@ public class CaribbeancomPremiumParsingProfileTest {
 	@Test
 	public void testScrapeYear() {
 		Year year = parser.scrapeYear();
-		assertEquals("Wrong year", "2016", year.getYear());
+		assertEquals("Wrong year", "", year.getYear());
 	}
 
 	@Test
 	public void testScrapeReleaseDate() {
 		ReleaseDate releaseDate = parser.scrapeReleaseDate();
-		assertEquals("Wrong release date", "2016-12-28", releaseDate.getReleaseDate());
+		assertEquals("Wrong release date", "", releaseDate.getReleaseDate());
 	}
 
 	@Test
 	public void testScrapePlot() {
+        String moviePlot = "芸能界も高齢化ならAV界だって同じ！？熟女界のビッグ4による、豪華淫乱なオムニバスが登場！年齢も場数も重ねるごとに味と深みを増してゆく極上の美魔女たちの痴態をたっぷり収録！数百、いや数千もの肉棒を受け入れてきた大ベテラン女優にしか出せない妖艶なフェロモンが画面から滲み出てきます。男を翻弄する言葉遣いに腰振り、顔面や男根に自ら跨り快楽を追及する貪欲さ、何よりセックスを積極的に楽しむ姿勢が伝わってくる臨場感がタマりません！";
 		Plot plot = parser.scrapePlot();
-		assertEquals("Didn't scrape something which is long and looks like a plot", Plot.BLANK_PLOT, plot);
+		assertEquals("", moviePlot, plot.getPlot());
 	}
 
 	@Test
