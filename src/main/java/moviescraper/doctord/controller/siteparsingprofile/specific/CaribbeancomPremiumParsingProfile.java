@@ -3,23 +3,19 @@ package moviescraper.doctord.controller.siteparsingprofile.specific;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import moviescraper.doctord.controller.languagetranslation.Language;
-import moviescraper.doctord.controller.languagetranslation.TranslateString;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -47,9 +43,6 @@ import moviescraper.doctord.model.dataitem.Year;
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	// TODO: Implement also getting the japanese translation
-	// TODO: Implement scrapeOriginalTitle
-	// TODO: Implement getting ratings from japanese page
-	// TODO: Get proper studio, thumbnail. The English movie pages are missing attributes such as studio
 	private Document japaneseDocument;
 	private Thumb[] scrapedPosters;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -60,11 +53,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	final String title_path = ".movie-info .section .heading h1";
 
     final Map<String, String> japaneseDetailEquivalent = Map.of(
-            "Starring", "出演",
+            "Starring:", "出演",
             "Release Date", "販売日",
             "Duration", "再生時間",
             "Studio", "スタジオ",
-            "Tags", "タグ"
+            "Tags", "タグ",
+            "Ratings", "ユーザー評価",
+            "Series", "シリーズ"
+
     );
 
     Map<Language, Elements> detailTable = null;
@@ -86,17 +82,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
     private Element getItemByNameWithFallback(String name){
         if(detailTable != null){
             Elements targetLang = detailTable.get(scrapingLanguage).select(".spec-title");
-            Elements japanese = detailTable.get(Language.JAPANESE).select(".spec-title");
             for(var elem : targetLang){
                 if(elem.text().equals(name))
                     return elem.nextElementSibling();
             }
-            return getItemFromJapanesePageByName(name);
+            return getItemFromOriginalPageByName(name);
         }
         return null;
     }
 
-    private Element getItemFromJapanesePageByName(String name){
+    private Element getItemFromOriginalPageByName(String name){
         Elements japanese = detailTable.get(Language.JAPANESE).select(".spec-title");
         name = japaneseDetailEquivalent.get(name);
         for(var jelem : japanese){
@@ -132,6 +127,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Set scrapeSet() {
+        if(japaneseDocument != null){
+            Element series = getItemFromOriginalPageByName("Series");
+            if(series != null){
+                return new Set(series.text());
+            }
+        }
 		return Set.BLANK_SET;
 	}
 
@@ -139,9 +140,9 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public Rating scrapeRating() {
 		// this site does not have ratings, so just return some default values
 		if(japaneseDocument != null){
-			var rating_elements = japaneseDocument.select("#userreview_average > span.spec-content.rating");
-			if(!rating_elements.isEmpty()){
-				return new Rating(5, String.valueOf(rating_elements.first().text().length()));
+			Element rating_elements = getItemFromOriginalPageByName("Ratings");
+			if(rating_elements != null){
+				return new Rating(5, String.valueOf(rating_elements.text().length()));
 			}
 
 		}
@@ -199,15 +200,12 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public Runtime scrapeRuntime() {
 		Element duration_element = getItemByNameWithFallback("Duration");
-        if(duration_element != null && duration_element.text().equals("Duration")) {
-            String[] durationSplitByTimeUnit = duration_element.nextElementSibling().text().split(":");
+        if(duration_element != null) {
+            String[] durationSplitByTimeUnit = duration_element.text().split(":");
             if (durationSplitByTimeUnit.length == 3) {
                 int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
                 int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-                // we don't care about seconds
-
-                int totalMinutes = (hours * 60) + minutes;
-                return new Runtime(Integer.toString(totalMinutes));
+                return new Runtime(Integer.toString((hours * 60) + minutes));
             }
         }
 		return Runtime.BLANK_RUNTIME;
@@ -308,14 +306,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	@Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
-		var actor_elements = getItemByNameWithFallback("Starring");
+		var actor_elements = getItemByNameWithFallback("Starring:");
         if(actor_elements != null) {
 
             // In some cases the English page's actors element will be present but the contents will be empty, hence we will get them from the
             // Japanese translation of the page
             var first_child = actor_elements.firstElementChild();
             if(first_child.text() == null || first_child.text().isEmpty()){
-                actor_elements = getItemFromJapanesePageByName("Starring");
+                actor_elements = getItemFromOriginalPageByName("Starring");
             }
 
             for (var actor_element : actor_elements.children()) {
@@ -345,11 +343,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	public Studio scrapeStudio() {
 		// Studio attribute is only available on the Japanese version of the site
 		if(japaneseDocument != null) {
-            var studio_element = getItemFromJapanesePageByName("Studio");
+            var studio_element = getItemFromOriginalPageByName("Studio");
             if(studio_element != null){
                 return new Studio(studio_element.text());
             }
-            //#moviepages > div > div.inner-container > div.movie-info > div > ul > li:nth-child(4) > span.spec-content
 		}
 		return Studio.BLANK_STUDIO;
 	}
