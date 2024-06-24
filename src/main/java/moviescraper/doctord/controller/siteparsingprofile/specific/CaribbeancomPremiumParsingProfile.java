@@ -7,9 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,11 +42,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	// TODO: Implement also getting the japanese translation
 	private Document japaneseDocument;
-	private Thumb[] scrapedPosters;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-	private static final Pattern videojsPoster = Pattern.compile("vgsPlayer\\.poster\\('([^']+)'");
-	private static final Pattern TRAILER_RE = Pattern.compile("(https:\\\\/\\\\/smovie.caribbeancompr.com\\\\/sample\\\\/movies\\\\/[0-9_]+\\\\/[0-9ip]+.mp4)");
-	private static final Pattern DOC_ID_RE = Pattern.compile("moviepages/([0-9_]+)/");
 
 	final String title_path = ".movie-info .section .heading h1";
 
@@ -235,52 +229,27 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		// TODO: Look at this sometime
-		//Believe it or not, the fanart (dvd cover) exists, but is normally only set as the preview of the trailer
-		//it follows a predictable URL structure though, so we can grab it anyways :)
-
-		//start by grabbing the ID part of the current page
-		String urlOfCurrentPage = document.location();
-		if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
-			urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "");
-            String movieID = getIdFromUrl();
-			if (urlOfCurrentPage.length() > 1) {
-				String imageURL = "http://www.caribbeancompr.com/moviepages/" + movieID + "/images/l_l.jpg";
-				try {
-					Thumb fanartThumbs[] = new Thumb[1];
-					Thumb fanartThumb = new Thumb(imageURL);
-                    fanartThumbs[0] = fanartThumb;
-					//also allow the user to use posters as the fanart
-					Thumb[] additionalPosterThumbs;
-					additionalPosterThumbs = (scrapedPosters == null) ? scrapePosters() : scrapedPosters;
-					Thumb[] allCombinedFanart = ArrayUtils.addAll(fanartThumbs, additionalPosterThumbs);
-					return allCombinedFanart;
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-					return new Thumb[0];
-				}
-
-			}
-		}
-		return new Thumb[0];
+		return scrapePosters();
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
         List<Thumb> extrafanart = new ArrayList<>();
-        Elements gallery_elements = document.select(".is-gallery").first().children();
         try {
-            for (var image_elem_trees : gallery_elements) {
-                var image_elem = image_elem_trees.select(".fancy-gallery").first();
-                if (image_elem.attr("data-is_sample").equals("1")) {
-                    Thumb img = new Thumb(image_elem.attr("href"));
-                    extrafanart.add(img);
-                }
-            }
-        }catch (MalformedURLException e){
+			Element gallery_elements = document.select(".is-gallery").first();
+			if(gallery_elements != null && gallery_elements.childrenSize() > 0) {
+				for (var image_elem_trees : gallery_elements.children()) {
+					var image_elem = image_elem_trees.select(".fancy-gallery").first();
+					if (image_elem.attr("data-is_sample").equals("1")) {
+						Thumb img = new Thumb(image_elem.attr("href"));
+						extrafanart.add(img);
+					}
+				}
+			}
+        }catch (MalformedURLException|NullPointerException e){
             System.err.println(e.getMessage());
         }
-		return extrafanart.toArray(new Thumb[extrafanart.size()]);
+		return extrafanart.toArray(new Thumb[0]);
 	}
 
 	@Override
