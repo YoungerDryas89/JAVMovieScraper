@@ -245,15 +245,15 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		String urlOfCurrentPage = document.location();
 		if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
 			urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "");
-			String movieID = urlOfCurrentPage.replaceFirst(Pattern.quote("/index.html"), "");
+            String movieID = getIdFromUrl();
 			if (urlOfCurrentPage.length() > 1) {
 				String imageURL = "http://www.caribbeancompr.com/moviepages/" + movieID + "/images/l_l.jpg";
 				try {
 					Thumb fanartThumbs[] = new Thumb[1];
 					Thumb fanartThumb = new Thumb(imageURL);
+                    fanartThumbs[0] = fanartThumb;
 					//also allow the user to use posters as the fanart
 					Thumb[] additionalPosterThumbs;
-					fanartThumbs[0] = fanartThumb;
 					additionalPosterThumbs = (scrapedPosters == null) ? scrapePosters() : scrapedPosters;
 					Thumb[] allCombinedFanart = ArrayUtils.addAll(fanartThumbs, additionalPosterThumbs);
 					return allCombinedFanart;
@@ -269,27 +269,20 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		// TODO: Look at this sometime
-		String urlOfCurrentPage = document.location();
-		if (urlOfCurrentPage != null && urlOfCurrentPage.contains("moviepages")) {
-			urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://en.caribbeancompr.com/eng/moviepages/"), "");
-			String movieID = urlOfCurrentPage.replaceFirst(Pattern.quote("/index.html"), "");
-			if (urlOfCurrentPage.length() > 1) {
-				Thumb extraFanartThumbs[] = new Thumb[3];
-				for (int i = 1; i < 4; i++) {
-					String extraThumbURL = "http://en.caribbeancompr.com/moviepages/" + movieID + "/images/l/00" + i + ".jpg";
-					try {
-						Thumb extraFanartThumb = new Thumb(extraThumbURL);
-						extraFanartThumbs[i - 1] = extraFanartThumb;
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						return new Thumb[0];
-					}
-				}
-				return extraFanartThumbs;
-			}
-		}
-		return new Thumb[0];
+        List<Thumb> extrafanart = new ArrayList<>();
+        Elements gallery_elements = document.select(".is-gallery").first().children();
+        try {
+            for (var image_elem_trees : gallery_elements) {
+                var image_elem = image_elem_trees.select(".fancy-gallery").first();
+                if (image_elem.attr("data-is_sample").equals("1")) {
+                    Thumb img = new Thumb(image_elem.attr("href"));
+                    extrafanart.add(img);
+                }
+            }
+        }catch (MalformedURLException e){
+            System.err.println(e.getMessage());
+        }
+		return extrafanart.toArray(new Thumb[extrafanart.size()]);
 	}
 
 	@Override
