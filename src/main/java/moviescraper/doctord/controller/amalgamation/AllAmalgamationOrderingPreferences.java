@@ -10,16 +10,7 @@ import com.cedarsoftware.util.io.JsonIoException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
-import moviescraper.doctord.controller.siteparsingprofile.specific.ActionJavParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.DmmParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.ExcaliburFilmsParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.IAFDParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.JavBusParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.AvMooParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.SquarePlusParsingProfile;
-import moviescraper.doctord.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.*;
 import org.apache.commons.io.IOUtils;
 
 public class AllAmalgamationOrderingPreferences {
@@ -141,7 +132,7 @@ public class AllAmalgamationOrderingPreferences {
 
 		//JAV Preferences
 
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new AvMooParsingProfile(),
+		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new NJavParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(),
 		        new SquarePlusParsingProfile(), new JavBusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile());
 
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
@@ -155,7 +146,7 @@ public class AllAmalgamationOrderingPreferences {
 
 			// R18 has the absolute best title information. Pick any english
 			// site first, fallback to machine translated DMM
-			DataItemSourceAmalgamationPreference bestContentForID = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile(),
+			DataItemSourceAmalgamationPreference bestContentForID = new DataItemSourceAmalgamationPreference(new NJavParsingProfile(), new JavLibraryParsingProfile(),
 			        new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
 			preferences.setCustomOrderingForField("id", bestContentForID);
 
