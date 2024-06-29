@@ -56,7 +56,7 @@ public class DetermineMovie {
 
 
     public Pair<String, String> determineIdFromTitle(String title){
-        String matchTagPattern = "(?i)(?<id>$ID)\\s?[^a-zA-Z0-9]\\s?(?<num>[a-zA-z0-9]{$MIN,$MAX})";
+        String matchTagPattern = "(?i)(?<id>$ID)\\s?[^a-zA-Z0-9]\\s?(?<num>(\\d|[0-9A-Za-z]){$MIN,$MAX})";
         String matchIdWordBoundary = "(?i)\b%ID\b";
         String pos = "(?i)%ID(?=[_-\\s])(?<num>[0-9a-z]%LIMITER";
         for(var tag: this.tags){
