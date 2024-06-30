@@ -56,34 +56,17 @@ public class DetermineMovie {
 
 
     public Pair<String, String> determineIdFromTitle(String title){
-        String matchTagPattern = "(?i)(?<id>$ID)\\s?[^a-zA-Z0-9]\\s?(?<num>(\\d|[0-9A-Za-z]){$MIN,$MAX})";
-        String matchIdWordBoundary = "(?i)\b%ID\b";
-        String pos = "(?i)%ID(?=[_-\\s])(?<num>[0-9a-z]%LIMITER";
+        String matchTagPattern = "(?i)(?<id>\\b$ID)[^a-z0-9_](?<num>\\d+)";
+        String matchTag2 = "(?i)\\b$ID";
         for(var tag: this.tags){
-            if(title.toLowerCase().contains(tag.tag)){
-                int index = title.toLowerCase().indexOf(tag.tag);
-                if(index > 0){
-                    char last_char = title.charAt(index - 1);
-                    if(Character.isAlphabetic(last_char) || Character.isDigit(last_char))
-                        break;
-                }
+            Pattern matchTag2Pattern = Pattern.compile(matchTag2.replaceFirst("\\$ID", tag.tag));
+            if(matchTag2Pattern.matcher(title).find()){
 
-
-                matchTagPattern = matchTagPattern.replaceFirst("\\$ID", tag.tag.toUpperCase()).replaceFirst("\\$MIN", String.valueOf(tag.min_code_length)).replaceFirst("\\$MAX", String.valueOf(tag.max_code_length));
+                matchTagPattern = matchTagPattern.replaceFirst("\\$ID", tag.tag);
                 Pattern matchTag = Pattern.compile(matchTagPattern);
-                Matcher getTagMatch = matchTag.matcher(title.toLowerCase());
+                Matcher getTagMatch = matchTag.matcher(title);
                 if(getTagMatch.find()){
-                    var idMap = getTagMatch.namedGroups();
-                    String assigned_tag = null, number = null;
-                    if(idMap.containsKey("id")){
-                        assigned_tag = getTagMatch.group("id");
-                    }
-
-                    if(idMap.containsKey("num")){
-                        number = getTagMatch.group("num");
-                    }
-
-                    return new Pair<String, String>(assigned_tag, number);
+                    return new Pair<String, String>(tag.tag, getTagMatch.group("num"));
                 }
 
             }

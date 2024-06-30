@@ -129,7 +129,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	final static Pattern CaribbeancomPattern = Pattern.compile("(?i)(?<id>(?<series>carib|caribbeancom(pr)?|caribbeancom premium)\\s?[-_\\s]\\s?(?<number>\\d{6}[_-]\\d{3}))");
 	final static Pattern CaribbeancomPatternReverse = Pattern.compile("(?i)(?<id>(?<number>\\d{6}[_-]\\d{3})\\s?[-_\\s]\\s?(?<series>carib(pr)?|caribbeancom(pr)?|caribbeancom premium))");
 
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?:hhd800\\.com@)?-?(?<id>(?<series>[A-Za-z]+)[-_\\s\\S\\+]?(?<number>\\d{2,4}))");
+	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?<tag>(?:\\d{3,4})?[a-z]+|[a-z]{1,2}\\d+)[^a-z0-9_](?<num>\\d+)");
 	final static Pattern kinten8gokuPattern = Pattern.compile("(?i)(?:Kin8tengoku|KIN8)[-_\\s](?<num>\\d+)");
 	/**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
@@ -256,10 +256,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			}
 		}
 
-		var result = dproperties.determineIdFromTitle(fileNameNoExtension);
-		if(result != null){
-			return result.getKey() + "-" + result.getValue();
-		}
 
 		match = FC2Pattern.matcher(fileNameNoExtension);
 		if(match.find()){
@@ -287,13 +283,17 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			return id;
 		}
 
+        var result = dproperties.determineIdFromTitle(fileNameNoExtension);
+        if(result != null){
+            return result.getKey() + "-" + result.getValue();
+        }
+
 		match = avGeneralIdextract.matcher(fileNameNoExtension);
 		if(match.find()){
-			assert(match.group("id") != null);
-			assert(match.group("series") != null);
-			assert(match.group("number") != null);
+			assert(match.group("tag") != null);
+			assert(match.group("num") != null);
 
-			id = match.group("id");
+			id = match.group("tag") + "-" + match.group("num");
 		}
 		return id;
 	}
