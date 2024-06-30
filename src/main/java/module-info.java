@@ -17,11 +17,6 @@ module moviescraper.doctord {
     requires org.apache.commons.codec;
     requires xstream;
     requires java.sql;
-    requires org.seleniumhq.selenium.api;
-    requires org.seleniumhq.selenium.chrome_driver;
-    requires dev.failsafe.core;
-    requires org.seleniumhq.selenium.firefox_driver;
-    requires fastjson;
     requires org.junit.jupiter.api;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
