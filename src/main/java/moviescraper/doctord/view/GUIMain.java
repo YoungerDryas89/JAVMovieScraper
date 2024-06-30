@@ -22,8 +22,6 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.preferences.GuiSettings;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.scraper.FirefoxBrowser;
-import moviescraper.doctord.scraper.HeadlessBrowser;
 import moviescraper.doctord.view.renderer.FileRenderer;
 
 import java.awt.event.*;
@@ -99,7 +97,6 @@ public class GUIMain {
 	private GUIMainButtonPanel buttonPanel;
 	private DirectorySort sortSetting = DirectorySort.DateModified;
 	private Boolean sortAsAscending = false;
-	HeadlessBrowser browser;
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
@@ -157,7 +154,6 @@ public class GUIMain {
 
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
-		browser = new FirefoxBrowser();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 
@@ -170,13 +166,6 @@ public class GUIMain {
 		currentlySelectedActorsFolderList = new ArrayList<>();
 		movieToWriteToDiskList = new ArrayList<>();
 		frmMoviescraper = new JFrame();
-		frmMoviescraper.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				super.windowClosing(e);
-				browser.quit();
-			}
-		});
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
@@ -767,10 +756,6 @@ public class GUIMain {
 
 	public void updateFileList(){
 		updateFileListModel(getCurrentlySelectedDirectoryList(), true);
-	}
-
-	public HeadlessBrowser browser(){
-		return this.browser;
 	}
 
 }

@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import moviescraper.doctord.scraper.HeadlessBrowser;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -116,7 +115,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	private ImageIcon profileIcon;
 	protected static DetermineMovie dproperties = new DetermineMovie();
-	protected HeadlessBrowser browser;
 
 	/**
 	 * If this has a value when scraping, will use overridenSearchResult
@@ -169,10 +167,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		setScrapingLanguage(scrapingPreferences);
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 		this.isDisabled = false;
-	}
-
-	public void setBrowser(HeadlessBrowser browser) {
-		this.browser = browser;
 	}
 
 	public Document getDocument() {

@@ -223,8 +223,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			if (propertyListener != null)
 				worker.removePropertyChangeListener(propertyListener);
 		}
-		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference, guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape),
-				guiMain.browser(), this);
+		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference, guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape), this);
 		propertyListener = new AmalgamationPropertyChangeListener();
 		worker.addPropertyChangeListener(propertyListener);
 		worker.execute();

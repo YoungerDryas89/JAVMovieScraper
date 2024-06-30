@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import moviescraper.doctord.scraper.FirefoxBrowser;
-import moviescraper.doctord.scraper.HeadlessBrowser;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -175,7 +173,6 @@ public class Main {
 	}
 
 	private static void runScrape(String[] optionValues, String userProvidedURL) {
-		HeadlessBrowser browser = new FirefoxBrowser();
 		boolean useFileNameCleanup = false;
 		if (optionValues != null && optionValues.length == 2) {
 			String scraperName = optionValues[0];
@@ -213,7 +210,7 @@ public class Main {
 
 						}
 
-						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", browser, wasCustomURLSet);
+						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet);
 						//write out the metadata to disk if we got a hit
 						if (scrapedMovie != null) {
 							System.out.println("Movie scraped as" + scrapedMovie);

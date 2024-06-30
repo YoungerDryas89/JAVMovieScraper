@@ -13,7 +13,6 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.DataItemSource;
-import moviescraper.doctord.scraper.HeadlessBrowser;
 import moviescraper.doctord.view.ScrapeAmalgamatedProgressDialog;
 
 public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SiteParsingProfile, Movie>> {
@@ -33,7 +32,6 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 	private ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference;
 	private ScrapeAmalgamatedProgressDialog parent;
-	HeadlessBrowser browser;
 
 	/**
 	 * @param allAmalgamationOrderingPreferences
@@ -41,8 +39,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 	 * @param scraperGroupAmalgamationPreference
 	 * @param fileToScrape - file scraped if no gui (if there is a gui we use the state variable from there wich is the file to scrape)
 	 */
-	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape,
-	        HeadlessBrowser browser, ScrapeAmalgamatedProgressDialog parent) {
+	public ScrapeAmalgamatedMovieWorker(AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences, ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference, File fileToScrape, ScrapeAmalgamatedProgressDialog parent) {
 		runningWorkers = new HashMap<>();
 		progress = 0;
 		amountOfProgressPerSubtask = 0;
@@ -51,7 +48,6 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		this.fileToScrape = fileToScrape;
 		this.parent = parent;
 		this.allAmalgamationOrderingPreferences = allAmalgamationOrderingPreferences;
-		this.browser = browser;
 	}
 
 	SwingWorker<Void, Void> getWorkerByScraperName(SiteParsingProfile scraper) {
@@ -180,7 +176,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 						if (parent != null) {
 							customURLSet = parent.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
 						}
-						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", browser, customURLSet);
+						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet);
 
 						return null;
 					} catch (IOException e) {
