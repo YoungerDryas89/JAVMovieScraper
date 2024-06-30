@@ -778,7 +778,7 @@ public class Movie {
 
 			if(searchResults.length == 0){
 				// TODO: Need something better and more user friendly than just simply printing this out to the console.
-				System.out.println("Oops! It looks like I couldn't find anything using the provided title.");
+				System.err.println("No title could be found with the provided Id.");
 			}
 			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
 			for (int i = 0; i < searchResults.length; i++) {
