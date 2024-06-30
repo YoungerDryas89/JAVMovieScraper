@@ -183,7 +183,7 @@ public class GUIMain {
 		frmMoviescraper.setBackground(SystemColor.window);
 		frmMoviescraper.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
 		frmMoviescraper.setPreferredSize(new Dimension(guiSettings.getWidth(), guiSettings.getHeight()));
-		frmMoviescraper.setTitle("JAVMovieScraper");
+		frmMoviescraper.setTitle("JAVMovieScraper v0.5.0");
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Add listener
