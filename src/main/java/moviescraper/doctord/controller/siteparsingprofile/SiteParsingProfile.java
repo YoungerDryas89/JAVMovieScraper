@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -596,23 +597,31 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public static Document getDocument(SearchResult searchResult) {
 		try {
+            int seconds = (int) (Math.random() * (10 - 5) + 5);
+            Thread.sleep(Duration.ofSeconds(seconds));
 			if (searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
 			else
 				return Jsoup.connect(searchResult.getUrlPath()).userAgent(getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		return null;
+		} catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
+        return null;
 	}
 
 	public Document downloadDocument(SearchResult searchResult) {
 		try {
-			if (searchResult.isJSONSearchResult())
-				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else
-				return Jsoup.connect(searchResult.getUrlPath()).userAgent(getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
+			if (searchResult.isJSONSearchResult()) {
+                int seconds = (int) (Math.random() * (10 - 5) + 5);
+                Thread.sleep(Duration.ofSeconds(seconds));
+                return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+            } else {
+                return Jsoup.connect(searchResult.getUrlPath()).userAgent(getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+            }
+
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 		return null;
