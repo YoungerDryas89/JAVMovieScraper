@@ -176,7 +176,8 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 						if (parent != null) {
 							customURLSet = parent.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
 						}
-						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet);
+
+						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet, parent.parent());
 
 						return null;
 					} catch (IOException e) {

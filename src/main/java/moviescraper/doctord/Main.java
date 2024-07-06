@@ -210,7 +210,7 @@ public class Main {
 
 						}
 
-						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet);
+						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet, null);
 						//write out the metadata to disk if we got a hit
 						if (scrapedMovie != null) {
 							System.out.println("Movie scraped as" + scrapedMovie);

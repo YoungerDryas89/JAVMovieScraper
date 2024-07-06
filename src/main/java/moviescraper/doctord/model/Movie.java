@@ -20,6 +20,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
+import moviescraper.doctord.view.FileDetailPanel;
+import moviescraper.doctord.view.GUIMain;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -760,19 +762,38 @@ public class Movie {
 	 */
 
 	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom) throws IOException {
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, GUIMain parent) throws IOException {
 
 		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
 		if (siteToParseFrom.getDiscardResults())
 			return null;
-		String searchString = siteToParseFrom.createSearchString(movieFile);
+
+		String searchString;
+		FileDetailPanel panel = null;
+		if(parent != null){
+			panel = parent.getFileDetailPanel();
+		}
+
+		if(panel != null && panel.shouldOverrideInferredId() && !panel.inferredId().equals("N/A")){
+			searchString = siteToParseFrom.createSearchStringFromId(panel.inferredId());
+		} else {
+			searchString = siteToParseFrom.createSearchString(movieFile);
+		}
 		SearchResult[] searchResults = null;
 		int searchResultNumberToUse = 0;
 		//no URL was passed in so we gotta figure it ourselves
 		if (!useURLtoScrapeFrom) {
 			searchResults = siteToParseFrom.getSearchResults(searchString);
 			int levDistanceOfCurrentMatch = 999999; // just some super high number
-			String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
+			String idFromMovieFile;
+			if(panel != null && panel.shouldOverrideInferredId() && (!panel.inferredId().isEmpty() || !panel.inferredId().equals("N/A")))
+				idFromMovieFile = panel.inferredId();
+			else
+				idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
+
+
+			if(panel != null && !panel.shouldOverrideInferredId())
+				panel.setInferredId(idFromMovieFile);
 
 			if(searchResults.length == 0){
 				// TODO: Need something better and more user friendly than just simply printing this out to the console.
