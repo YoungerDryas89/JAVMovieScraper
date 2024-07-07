@@ -34,7 +34,8 @@ public class MoviescraperPreferences extends Settings {
 		frequentlyUsedTags, //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
 		writeThumbTagsForPosterAndFanartToNfo, //Whether to write the <thumb> tag into the nfo,
 		userAgent, //UserAgent to use
-		cookieJar //UserAgent to use
+		cookieJar, //UserAgent to use
+		writeGenericFilenamesForFolders
 		;
 
 		@Override
@@ -273,5 +274,13 @@ public class MoviescraperPreferences extends Settings {
 
 	public void setCookieJar(String preferenceValue) {
 		setStringValue(Key.cookieJar, preferenceValue);
+	}
+
+	public void setWriteGenericFilenamesForFolder(Boolean preferenceValue){
+		setBooleanValue(Key.writeGenericFilenamesForFolders, preferenceValue);
+	}
+
+	public Boolean getWriteGenericFilenamesForFolders(){
+		return getBooleanValue(Key.writeGenericFilenamesForFolders, true);
 	}
 }
