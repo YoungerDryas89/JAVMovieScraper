@@ -2,6 +2,7 @@ package moviescraper.doctord.model.preferences;
 
 import java.io.File;
 
+import moviescraper.doctord.controller.DirectorySort;
 import org.apache.commons.lang3.SystemUtils;
 
 public class GuiSettings extends Settings {
@@ -9,7 +10,12 @@ public class GuiSettings extends Settings {
 	protected final static GuiSettings INSTANCE = new GuiSettings();
 
 	enum Key implements Settings.Key {
-		lastUsedDirectory, lastUsedScraper, showOutputPanel, showToolbar, useContentBasedTypeIcons, pathToExternalMediaPlayer, fileListDividerLocation, width, height;
+		lastUsedDirectory, lastUsedScraper, showOutputPanel, showToolbar, useContentBasedTypeIcons, pathToExternalMediaPlayer, fileListDividerLocation, width, height,
+		HideImages,
+		HideNFOFiles,
+		Ordering,
+		Sort
+		;
 
 		@Override
 		public String getKey() {
@@ -115,5 +121,37 @@ public class GuiSettings extends Settings {
 
 	public void setFileListDividerLocation(Integer value) {
 		setIntegerValue(Key.fileListDividerLocation, value);
+	}
+
+	public void setHideImages(boolean preferenceValue){
+		setBooleanValue(Key.HideImages, preferenceValue);
+	}
+
+	public Boolean getHideImages(){
+		return getBooleanValue(Key.HideImages, false);
+	}
+
+	public void setHideNFOFiles(boolean preferenceValue){
+		setBooleanValue(Key.HideNFOFiles, preferenceValue);
+	}
+
+	public Boolean getHideNFOFiles(){
+		return getBooleanValue(Key.HideNFOFiles, false);
+	}
+
+	public void setAscending(boolean value){
+		setBooleanValue(Key.Ordering, value);
+	}
+
+	public Boolean getAscending(){
+		return getBooleanValue(Key.Ordering, false);
+	}
+
+	public void setSort(DirectorySort value){
+		setIntegerValue(Key.Sort, value.getValue());
+	}
+
+	public DirectorySort getSort(){
+		return DirectorySort.values()[getIntegerValue(Key.Sort, DirectorySort.DateModified.getValue())];
 	}
 }

@@ -189,6 +189,10 @@ public class GUIMainButtonPanel extends JPanel {
 		btnSortDirectory.setIcon(initializeImageIcon("Sort"));
 		btnSortDirectory.setToolTipText("Sort the current directory");
 
+		JButton btnFilterSettings = new JButton();
+		btnFilterSettings.setIcon(initializeImageIcon("Settings"));
+		btnFilterSettings.setToolTipText("Filtering options");
+
 		SortPopupMenu sortPopupMenu = new SortPopupMenu(guiMain);
 		btnSortDirectory.addActionListener(new ActionListener() {
 			@Override
@@ -197,11 +201,21 @@ public class GUIMainButtonPanel extends JPanel {
 			}
 		});
 
+		FilterPopupMenu filterPopupMenu = new FilterPopupMenu(guiMain);
+		btnFilterSettings.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				filterPopupMenu.show(btnFilterSettings, 0, btnFilterSettings.getHeight());
+			}
+		});
+
+
 
 		directoryOperationsButtons.add(btnBrowseDirectory);
 		directoryOperationsButtons.add(btnUpDirectory);
 		directoryOperationsButtons.add(btnSortDirectory);
 		directoryOperationsButtons.add(btnRefreshDirectory);
+		directoryOperationsButtons.add(btnFilterSettings);
 
 		add(directoryOperationsButtons);
 	}

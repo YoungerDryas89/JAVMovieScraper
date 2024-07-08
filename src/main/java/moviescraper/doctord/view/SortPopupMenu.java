@@ -3,6 +3,7 @@ package moviescraper.doctord.view;
 import moviescraper.doctord.controller.DirectoryOrder;
 import moviescraper.doctord.controller.DirectorySort;
 import moviescraper.doctord.controller.DirectorySoryOptionAction;
+import moviescraper.doctord.model.preferences.GuiSettings;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,13 +14,13 @@ import java.util.List;
 import static moviescraper.doctord.view.GUIMainButtonPanel.initializeImageIcon;
 
 public class SortPopupMenu extends JPopupMenu {
-    private final GUIMain parent;
+    final GUIMain parent;
+    final GuiSettings settings;
     public static ImageIcon dotIcon = initializeImageIcon("Dot");
-    List<DirectorySoryOptionAction> actions = new ArrayList<DirectorySoryOptionAction>();
     Action currentSort, currentOrder;
-    int lastOrder, lastSort;
     public SortPopupMenu(GUIMain parent){
         this.parent = parent;
+        this.settings = parent.getGuiSettings();
 
         ActionListener sortPopupMenuListener = new ActionListener() {
             @Override
@@ -45,7 +46,7 @@ public class SortPopupMenu extends JPopupMenu {
         var sizeSort = new DirectorySoryOptionAction(DirectorySort.Size, parent);
         var ascendingOrder = new DirectorySoryOptionAction(DirectoryOrder.Ascending, parent);
         var descendingOrder = new DirectorySoryOptionAction(DirectoryOrder.Descending, parent);
-        switch(parent.getSortSetting()){
+        switch(settings.getSort()){
             case Alphabetically -> {
                 alphabeticalSort.putValue(Action.SMALL_ICON, dotIcon);
                 currentSort = alphabeticalSort;
@@ -60,7 +61,7 @@ public class SortPopupMenu extends JPopupMenu {
             }
         }
 
-        if(parent.getSortAsAscending()){
+        if(settings.getAscending()){
             ascendingOrder.putValue(Action.SMALL_ICON, dotIcon);
             currentOrder = ascendingOrder;
         } else {
