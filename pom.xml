@@ -160,6 +160,17 @@
             <artifactId>maven-assembly-plugin</artifactId>
             <version>3.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>python</artifactId>
+            <version>24.0.0</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
