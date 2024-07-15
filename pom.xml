@@ -168,8 +168,14 @@
         </dependency>
         <dependency>
             <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+            <version>24.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
             <artifactId>python</artifactId>
             <version>24.0.0</version>
+            <type>pom</type>
         </dependency>
     </dependencies>
     <repositories>
