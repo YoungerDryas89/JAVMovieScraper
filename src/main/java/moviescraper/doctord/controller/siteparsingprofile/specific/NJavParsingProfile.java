@@ -121,9 +121,9 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         try {
             Element poster = document.select(posterPath).first();
             if (poster != null) {
-                posters.add(new Thumb(poster.attr("data-poster")));
+                posters.add(new Thumb(poster.attr("data-poster"), true));
             }
-        }catch (MalformedURLException e){
+        }catch (IOException e){
             System.err.println(e.getMessage());
         }
         return posters.toArray(new Thumb[0]);
@@ -131,7 +131,16 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
 
     @Override
     public Thumb[] scrapeFanart() {
-        return scrapePosters();
+        List<Thumb> posters = new ArrayList<>();
+        try {
+            Element poster = document.select(posterPath).first();
+            if (poster != null) {
+                posters.add(new Thumb(poster.attr("data-poster")));
+            }
+        }catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+        return posters.toArray(new Thumb[0]);
     }
 
     @Override
