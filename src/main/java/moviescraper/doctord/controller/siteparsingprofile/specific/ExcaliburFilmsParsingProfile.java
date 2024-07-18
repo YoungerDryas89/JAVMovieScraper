@@ -44,6 +44,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	@Override
@@ -53,7 +55,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return groupNames;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("title").first();
 		if (titleElement != null) {
@@ -65,29 +68,34 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return new OriginalTitle(scrapeTitle().getTitle());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		//Excalibur doesn't have set info
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		//Excalibur doesn't have rating info
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("font:containsOwn(Released:) + font").first();
 		if (releaseDateElement != null) {
@@ -97,30 +105,35 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		//Excalibur doesn't have this info
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		//Excalibur doesn't have this info
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		//Excalibur doesn't have this info
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		Element plotElement = document.select("a:has(font b:containsOwn(Description:)) + font").first();
 		if (plotElement != null) {
@@ -134,13 +147,15 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		//Excalibur doesn't have this information
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("font:containsOwn(Run Time:) + font").first();
 		if (runtimeElement != null) {
@@ -201,7 +216,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		Element mpaaRatingElement = document.select("font:containsOwn(Rated:) + font a").first();
 		if (mpaaRatingElement != null) {
@@ -211,7 +227,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return MPAARating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		String id = getIDStringFromDocumentLocation(document);
 		if (id != null) {
@@ -231,7 +248,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return null;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("font:containsOwn(Fetish:) + a").first();
@@ -244,7 +262,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		Element firstActorList = document.select("font:containsOwn(Starring:) + font").first();
@@ -299,7 +318,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return actorThumb;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("font:containsOwn(Director:) + a").first();
@@ -316,7 +336,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("font:containsOwn(By:) + a").first();
 		if (studioElement != null) {
@@ -326,7 +347,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		String fileBaseName;
 		if (file.isFile())

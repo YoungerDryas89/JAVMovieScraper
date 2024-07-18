@@ -18,12 +18,15 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import moviescraper.doctord.model.dataitem.Runtime;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -301,63 +304,63 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return discNumberStripped.trim();
 	}
 
-	public abstract Title scrapeTitle();
+	public abstract @NotNull Title scrapeTitle();
 
-	public abstract OriginalTitle scrapeOriginalTitle();
+	public abstract @NotNull  OriginalTitle scrapeOriginalTitle();
 
-	public abstract SortTitle scrapeSortTitle();
+	public abstract @NotNull SortTitle scrapeSortTitle();
 
-	public abstract Set scrapeSet();
+	public abstract @NotNull Set scrapeSet();
 
-	public abstract Rating scrapeRating();
+	public abstract @NotNull Rating scrapeRating();
 
-	public abstract ReleaseDate scrapeReleaseDate();
+	public abstract @NotNull ReleaseDate scrapeReleaseDate();
 
-	public abstract Year scrapeYear();
+	public abstract @NotNull Year scrapeYear();
 
-	public abstract Top250 scrapeTop250();
+	public abstract @NotNull Top250 scrapeTop250();
 
-	public abstract Votes scrapeVotes();
+	public abstract @NotNull Votes scrapeVotes();
 
-	public abstract Outline scrapeOutline();
+	public abstract @NotNull Outline scrapeOutline();
 
-	public abstract Plot scrapePlot();
+	public abstract @NotNull Plot scrapePlot();
 
-	public abstract Tagline scrapeTagline();
+	public abstract @NotNull Tagline scrapeTagline();
 
-	public abstract moviescraper.doctord.model.dataitem.Runtime scrapeRuntime();
+	public abstract @NotNull moviescraper.doctord.model.dataitem.Runtime scrapeRuntime();
 
-	public abstract Thumb[] scrapePosters();
+	public abstract @NotNull Thumb[] scrapePosters();
 
-	public abstract Thumb[] scrapeFanart();
+	public abstract @NotNull Thumb[] scrapeFanart();
 
-	public abstract Thumb[] scrapeExtraFanart();
+	public abstract @NotNull Thumb[] scrapeExtraFanart();
 
-	public abstract MPAARating scrapeMPAA();
+	public abstract @NotNull MPAARating scrapeMPAA();
 
-	public abstract ID scrapeID();
+	public abstract @NotNull ID scrapeID();
 
-	public abstract ArrayList<Genre> scrapeGenres();
+	public abstract @NotNull ArrayList<Genre> scrapeGenres();
 
-	public abstract ArrayList<Actor> scrapeActors();
+	public abstract @NotNull ArrayList<Actor> scrapeActors();
 
-	public abstract ArrayList<Director> scrapeDirectors();
+	public abstract @NotNull ArrayList<Director> scrapeDirectors();
 
-	public abstract Studio scrapeStudio();
+	public abstract @NotNull Studio scrapeStudio();
 
-	public abstract String createSearchString(File file);
+	public abstract @NotNull String createSearchString(File file);
         
-        public abstract String createSearchStringFromId(String id);
+    public abstract String createSearchStringFromId(String id);
 
-	public Trailer scrapeTrailer() {
+	public @NotNull Trailer scrapeTrailer() {
 		return Trailer.BLANK_TRAILER;
 	}
 
-	public ArrayList<Tag> scrapeTags() {
+	public @NotNull ArrayList<Tag> scrapeTags() {
 		return Tag.BLANK_TAGS;
 	}
 
-	public abstract SearchResult[] getSearchResults(String searchString) throws IOException;
+	public abstract @NotNull SearchResult[] getSearchResults(String searchString) throws IOException;
 
 	public SearchResult[] getLinksFromGoogle(String searchQuery, String site) {
 		//System.out.println("calling get links from google with searchQuery = " + searchQuery);

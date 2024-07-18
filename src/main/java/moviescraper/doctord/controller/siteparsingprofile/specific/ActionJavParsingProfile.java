@@ -41,49 +41,58 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class ActionJavParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final SimpleDateFormat actionJavReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 
 		Element titleElement = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > span:nth-child(1)").first();
 		return new Title(titleElement.text());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		// ActionJav doesn't have the Japanese title, so we don't want to return
 		// anything but a blank text element
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		// ActionJav doesn't have any set information
 		return Set.BLANK_SET;
 
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > span:nth-child(1)").first();
 		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
@@ -96,33 +105,39 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on ActionJav
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		// Find text elements that contain the word "min"
 		// We might get some duplicates here if the movie is offered in multiple
@@ -188,12 +203,14 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return new Thumb[]{};
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(4) > td:nth-child(2) > span:nth-child(1)").first();
 
@@ -203,7 +220,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		Element genreElements = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > span:nth-child(1)").first();
 		var genres = new ArrayList<Genre>();
@@ -215,7 +233,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return genres;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > span:nth-child(1) > a:nth-child(1)");
 		if (actorElements != null) {
@@ -234,19 +253,22 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		//ActionJav doesn't have director information, so just return an empty list
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(3) > td:nth-child(2) > span:nth-child(1)").first();
 		return new Studio(studioElement.text());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

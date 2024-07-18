@@ -42,6 +42,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class JavBusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	public static final String urlLanguageEnglish = "en";
@@ -77,7 +79,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("title").first();
 		if (titleElement != null) {
@@ -95,7 +98,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		initializeJapaneseDocument();
 		if (japaneseDocument != null) {
@@ -112,12 +116,14 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		String seriesWord = (scrapingLanguage == Language.ENGLISH) ? "Series:" : "シリーズ:";
 		Element setElement = document.select("span.header:containsOwn(" + seriesWord + ") ~ a").first();
@@ -132,17 +138,20 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		String releaseDateWord = (scrapingLanguage == Language.ENGLISH) ? "Release Date:" : "発売日:";
 		Element releaseDateElement = document.select("p:contains(" + releaseDateWord + ")").first();
@@ -153,32 +162,38 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "収録時間:";
 		Element lengthElement = document.select("p:contains(" + lengthWord + ")").first();
@@ -237,12 +252,14 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return new MPAARating("XXX");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select(".movie .info span + span").first();
 		if (idElement != null)
@@ -251,7 +268,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("span.genre a[href*=/genre/");
@@ -271,7 +289,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actorElements = document.select("div.star-box li a img");
@@ -298,7 +317,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監督:";
@@ -309,7 +329,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		String studioWord = (scrapingLanguage == Language.ENGLISH) ? "Studio:" : "メーカー:";
 		Element studioElement = document.select("span.header:containsOwn(" + studioWord + ") ~ a").first();
@@ -319,7 +340,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

@@ -38,6 +38,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
 
 	//include adult results when searching
@@ -60,7 +62,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return groupNames;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -75,7 +78,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -90,12 +94,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -113,7 +119,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -127,12 +134,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -147,12 +156,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -168,12 +179,14 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -188,7 +201,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -203,7 +217,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -259,13 +274,15 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		//may need to come back to this later
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -281,7 +298,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		//We want to get genres for sure, but maybe keywords should be <tags>?
 		//I'm leaving keywords out for now but may revist them at a later date
@@ -304,7 +322,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
@@ -341,7 +360,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
@@ -366,7 +386,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
@@ -387,7 +408,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		URLCodec codec = new URLCodec();

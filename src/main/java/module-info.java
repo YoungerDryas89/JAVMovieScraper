@@ -18,6 +18,8 @@ module moviescraper.doctord {
     requires xstream;
     requires java.sql;
     requires org.junit.jupiter.api;
+    requires annotations;
+    requires org.jetbrains.annotations;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
     exports moviescraper.doctord.controller.siteparsingprofile;

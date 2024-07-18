@@ -40,6 +40,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class AvMooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final String siteLanguageToScrape = "en";
@@ -59,7 +61,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div.container h3").first();
 		if (titleElement != null) {
@@ -77,7 +80,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		try {
 			Element titleElement = document.select("div.container h3").first();
@@ -110,14 +114,16 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		Element setElement = document.select("div.container p:contains(Series:) ~ p a").first();
 		if (setElement != null) {
@@ -126,18 +132,21 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		// this site does not have ratings, so just return some default values
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("div.container p:contains(Release Date:), div.container p:contains(發行日期:)").first();
 		if (releaseDateElement != null) {
@@ -150,37 +159,43 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on AvMoo
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		//This type of info doesn't exist on AvMoo
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		//This type of info doesn't exist on AvMoo
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		//This type of info doesn't exist on AvMoo
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		//This type of info doesn't exist on AvMoo
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("div.container p:contains(Length:)").first();
 		if (runtimeElement != null) {
@@ -225,12 +240,14 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("div.container p:contains(ID:)").first();
 		if (idElement != null) {
@@ -241,7 +258,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document.select(".genre");
 		if (genreElements != null) {
@@ -254,7 +272,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div#avatar-waterfall a.avatar-box");
 		if (actorElements != null) {
@@ -282,7 +301,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		Element directorElement = document.select("div.row.movie p:contains(Director:)").first();
 		if (directorElement != null) {
@@ -295,7 +315,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("div.row.movie p:contains(Studio:) ~ p a").first();
 		if (studioElement != null) {
@@ -306,7 +327,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

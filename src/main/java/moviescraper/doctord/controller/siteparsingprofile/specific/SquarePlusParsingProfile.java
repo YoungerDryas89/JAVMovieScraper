@@ -39,6 +39,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.annotation.Nonnull;
+
 public class SquarePlusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final SimpleDateFormat squarePlusReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
@@ -58,7 +60,8 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 
 		Element titleElement = document.select("div.product-name.page-title h1").first();
@@ -75,20 +78,23 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 			return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		//Does not have original japanese title, so don't return anything
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		Element setElement = document.select("th.label:containsOwn(Series) ~ td").first();
 		if (setElement != null)
@@ -98,18 +104,21 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		//site doesn't have a rating
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("th.label:containsOwn(Release date) ~ td").first();
 		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
@@ -119,33 +128,39 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on ActionJav
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("th.label:containsOwn(Play Time) ~ td").first();
 		if (runtimeElement != null)
@@ -180,13 +195,15 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		// It's always XXX content on ActionJav! ;)
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("div.page-title h1").first();
 		//just get the ID number off the end of the title, if it exists
@@ -200,7 +217,8 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 			return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Element genreElement = document.select("th.label:containsOwn(Genre) ~ td").first();
@@ -212,7 +230,8 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 
@@ -232,13 +251,15 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		//SquarePlus doesn't have director information, so just return an empty list
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("th.label:containsOwn(Label) ~ td:not(:containsOwn(Other))").first();
 		if (studioElement != null)
@@ -247,7 +268,8 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

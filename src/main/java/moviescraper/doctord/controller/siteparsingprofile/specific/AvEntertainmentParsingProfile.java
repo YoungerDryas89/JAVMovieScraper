@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import static java.util.stream.Collectors.toList;
 import org.apache.commons.lang3.StringUtils;
@@ -64,39 +65,46 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	final static String getFanArtTable = ".gallery-block > div:nth-child(1) > div:nth-child(2)";
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Elements elements = document.selectXpath(getTitle);
 		return new Title(elements.text());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		String set = getMovieData("Series", "シリーズ").get(0).text();
 		return new Set(set);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return new Rating(0, "");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 
 		Elements elements = document.selectXpath(getReleaseDate);
@@ -107,32 +115,38 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		String runtime = "";
 		Elements elements = document.selectXpath(getRuntime);
@@ -189,12 +203,14 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Elements select = document.select("div[class=top-title]");
 		String id = "";
@@ -217,7 +233,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return StringUtils.substringAfterLast(input, wordSeparator);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		// TODO: Add Japanese word for category
 		var categories = getMovieData("Category", "");
@@ -229,7 +246,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return genres;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements elements = document.selectXpath(getStars);
 		ArrayList<Actor> list = new ArrayList<>();
@@ -254,13 +272,15 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return list;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> list = new ArrayList<>();
 		return list;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		String studio = getMovieData("Studio", "スタジオ").get(0).text();
 		return new Studio(studio);
@@ -283,7 +303,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return returnElements;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

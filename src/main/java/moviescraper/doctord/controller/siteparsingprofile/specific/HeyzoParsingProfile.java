@@ -39,6 +39,8 @@ import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private String englishPage;
@@ -55,7 +57,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		super();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#movie h1").first();
 		if (titleElement != null) {
@@ -65,7 +68,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		if (scrapingLanguage == Language.JAPANESE)
 			return new OriginalTitle(scrapeTitle().getTitle());
@@ -78,17 +82,20 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		//This used to be scrapable, but this now requires javascript to parse the page to get the rating
 		//TODO: If I ever replace jsoup with a javascript enabled parser, rewrite this function
@@ -104,12 +111,14 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		 */
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Elements elements = japaneseDocument.select("table.movieInfo tr.table-release-day");
 		Element releaseDateElement = elements.first().children().last();
@@ -124,32 +133,38 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("tbody:contains(Whole Movie File Download) tr:contains(:) td").first();
 		if (runtimeElement != null) {
@@ -188,7 +203,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return thumbList.toArray(new Thumb[thumbList.size()]);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		String scrapedId = scrapeID().getId();
 		String trailerURL = "https://sample.heyzo.com/contents/3000/" + scrapedId + "/heyzo_hd_0194_sample.mp4";
@@ -223,12 +239,14 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return scrapePosters();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		//Just get the ID from the page URL by doing some string manipulation
 		String baseUri = document.baseUri();
@@ -240,7 +258,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select(".movieInfo a[href*=/listpages/category]");
@@ -253,7 +272,8 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.selectXpath("//td[text()='Actress(es)']/following-sibling::td/a");
 		ArrayList<Actor> actorList = new ArrayList<>();
@@ -286,18 +306,21 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		// TODO Auto-generated method stub
 		return new Studio("HEYZO");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileID = findIDTagFromFile(file).toLowerCase();

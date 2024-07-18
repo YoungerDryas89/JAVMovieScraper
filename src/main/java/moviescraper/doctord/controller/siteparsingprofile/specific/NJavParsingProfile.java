@@ -7,6 +7,7 @@ import moviescraper.doctord.model.dataitem.Runtime;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -37,21 +38,25 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
             }
         }
     }
+    @Nonnull
     @Override
     public Title scrapeTitle() {
         return new Title(document.select(titlePath).text());
     }
 
+    @Nonnull
     @Override
     public OriginalTitle scrapeOriginalTitle() {
         return OriginalTitle.BLANK_ORIGINALTITLE;
     }
 
+    @Nonnull
     @Override
     public SortTitle scrapeSortTitle() {
         return SortTitle.BLANK_SORTTITLE;
     }
 
+    @Nonnull
     @Override
     public Set scrapeSet() {
         if(movie_data.containsKey("Series:")){
@@ -60,11 +65,13 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return Set.BLANK_SET;
     }
 
+    @Nonnull
     @Override
     public Rating scrapeRating() {
         return Rating.BLANK_RATING;
     }
 
+    @Nonnull
     @Override
     public ReleaseDate scrapeReleaseDate() {
         if(movie_data.containsKey("Release date:")){
@@ -73,26 +80,31 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return ReleaseDate.BLANK_RELEASEDATE;
     }
 
+    @Nonnull
     @Override
     public Year scrapeYear() {
         return scrapeReleaseDate().getYear();
     }
 
+    @Nonnull
     @Override
     public Top250 scrapeTop250() {
         return Top250.BLANK_TOP250;
     }
 
+    @Nonnull
     @Override
     public Votes scrapeVotes() {
         return Votes.BLANK_VOTES;
     }
 
+    @Nonnull
     @Override
     public Outline scrapeOutline() {
         return Outline.BLANK_OUTLINE;
     }
 
+    @Nonnull
     @Override
     public Plot scrapePlot() {
         Element plotElement = document.select(plotPath).first();
@@ -102,11 +114,13 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return Plot.BLANK_PLOT;
     }
 
+    @Nonnull
     @Override
     public Tagline scrapeTagline() {
         return Tagline.BLANK_TAGLINE;
     }
 
+    @Nonnull
     @Override
     public Runtime scrapeRuntime() {
         if(movie_data.containsKey("Runtime:")){
@@ -148,11 +162,13 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return new Thumb[0];
     }
 
+    @Nonnull
     @Override
     public MPAARating scrapeMPAA() {
         return MPAARating.RATING_XXX;
     }
 
+    @Nonnull
     @Override
     public ID scrapeID() {
         if(movie_data.containsKey("Code:")){
@@ -161,6 +177,7 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return ID.BLANK_ID;
     }
 
+    @Nonnull
     @Override
     public ArrayList<Genre> scrapeGenres() {
         ArrayList<Genre> genres = new ArrayList<>();
@@ -172,6 +189,7 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return genres;
     }
 
+    @Nonnull
     @Override
     public ArrayList<Actor> scrapeActors() {
         ArrayList<Actor> actresses = new ArrayList<>();
@@ -183,11 +201,13 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return actresses;
     }
 
+    @Nonnull
     @Override
     public ArrayList<Director> scrapeDirectors() {
         return new ArrayList<>();
     }
 
+    @Nonnull
     @Override
     public Studio scrapeStudio() {
         if(movie_data.containsKey("Maker:")){
@@ -200,6 +220,7 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return Studio.BLANK_STUDIO;
     }
 
+    @Nonnull
     @Override
     public String createSearchString(File file) {
         scrapedMovieFile = file;
@@ -227,6 +248,7 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
         return "NJav";
     }
 
+    @Nonnull
     @Override
     public ArrayList<Tag> scrapeTags(){
         ArrayList<Tag> tags = new ArrayList<>();
