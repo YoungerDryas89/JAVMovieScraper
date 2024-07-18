@@ -124,7 +124,23 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
     @Override
     public Runtime scrapeRuntime() {
         if(movie_data.containsKey("Runtime:")){
-            return new Runtime(movie_data.get("Runtime:").text());
+            try {
+                Element durationElement = movie_data.get("Runtime:");
+                if (durationElement != null) {
+                    String[] durationSplitByTimeUnit = durationElement.text().split(":");
+                    if (durationSplitByTimeUnit.length != 3) {
+                        throw new IllegalArgumentException("Invalid number of parts");
+                    }
+                    int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+                    int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+                    // we don't care about seconds
+
+                    int totalMinutes = (hours * 60) + minutes;
+                    return new Runtime(Integer.toString(totalMinutes));
+                }
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+            }
         }
         return Runtime.BLANK_RUNTIME;
     }
