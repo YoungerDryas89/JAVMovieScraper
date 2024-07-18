@@ -164,7 +164,7 @@ public class FileDetailPanel extends JPanel {
 		scraperOptionsJPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scraper Options"));
 		overrideCheckbox = new JCheckBox("Override", false);
 		inferredIdTextField = new JTextField("N/A", DEFAULT_TEXTFIELD_LENGTH);
-		inferredTextFieldLabel = new JLabel("Inferred Movie Id:");
+		inferredTextFieldLabel = new JLabel("Movie Id Inferred From Filename:");
 		overrideCheckbox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
