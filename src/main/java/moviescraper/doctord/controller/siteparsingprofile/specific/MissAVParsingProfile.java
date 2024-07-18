@@ -168,7 +168,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
 
     @Override
     public Thumb[] scrapePosters() {
-        // TODO: Fix for chinese media titles
+        // TODO: Fix for chinese media titles; Need a way to discern Japanese titles from Chinese ones
         try {
             Thumb[] posters = new Thumb[1];
             Element posterElement = document.select(posterImg).first();
