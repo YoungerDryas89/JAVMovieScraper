@@ -5,6 +5,7 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -15,11 +16,11 @@ import java.util.Map;
 
 public class MissAVParsingProfile extends SiteParsingProfile implements SpecificProfile {
     final String titleTablePath = "div.space-y-2";
-    final String titlePath = "div.mb-1";
+    final String titlePath = "h1.text-base";
     final String notFoundpath = "p.text-4xl.font-extrabold.text-primary";
-    final String plotTextPath = "div.mb-1.text-secondary";
+    final String plotTextPath = "div.mb-1";
     final String posterImg = "video.player";
-    final String durtationPath = "div.plyr__controls__item.plyr__time--duration";
+    final String durtationPath = "/html/body/div[2]/div[3]/div/div[2]/div[1]/div[1]/div/div/div[1]/div[3]";
     Map<String, Element> movie_data = new HashMap<>();
 
     @Override
@@ -146,8 +147,9 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     @Nonnull
     @Override
     public Runtime scrapeRuntime() {
-        try {
-            Element durationElement = document.select(durtationPath).first();
+        // TODO: Broken
+        /*try {
+            Element durationElement = document.getElementsByAttributeStarting()
             if (durationElement != null) {
                 String[] durationSplitByTimeUnit = durationElement.text().split(":");
                 if (durationSplitByTimeUnit.length != 3) {
@@ -162,7 +164,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
             }
         }catch (Exception e){
             System.err.println(e.getMessage());
-        }
+        }*/
         return Runtime.BLANK_RUNTIME;
     }
 
@@ -257,7 +259,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
         if(movie_data.containsKey("Director:")){
             Element directorElement = movie_data.get("Director:");
             if(directorElement != null){
-                directors.add(new Director(directorElement.lastElementChild().text(), null));
+                directors.add(new Director(directorElement.text(), null));
             }
         }
         return directors;
