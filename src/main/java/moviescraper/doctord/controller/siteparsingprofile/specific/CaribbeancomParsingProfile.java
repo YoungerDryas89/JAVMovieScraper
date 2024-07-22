@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +50,16 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	boolean useTranslationOfJapanesePageForEnglishMetadata = true;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
+
+	Map<String, String> japaneseDetailEquivalent = Map.of(
+			"Starring:", "出演",
+			"Release date:", "配信日",
+			"Runtime:", "再生時間",
+			"Tags:", "タグ",
+			"User Rating:", "ユーザー評価"
+	);
+
+	Map<Language, String> detailTable = new HashMap<>();
 
 	@Override
 	public String getParserName() {
