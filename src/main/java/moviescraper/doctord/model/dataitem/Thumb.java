@@ -25,15 +25,16 @@ public class Thumb extends MovieDataItem {
 	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
 	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
 	private SoftReference<? extends Image> thumbImage;
+    private SoftReference<? extends Image> croppedThumbnailImage;
 	private SoftReference<? extends Image> previewThumbImage;
-	private SoftReference<? extends ImageIcon> imageIconThumbImage;
-	private SoftReference<? extends ImageIcon> previewIconThumbImage;
+	private SoftReference<? extends Image> imageIconThumbImage;
+	private SoftReference<? extends Image> previewIconThumbImage;
 	private String thumbLabel;
 	private boolean loadedFromDisk;
 	protected final static int connectionTimeout = 10000; //10 seconds
 	protected final static int readTimeout = 10000; //10 seconds
 	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
-	private boolean isImageModified;
+	private boolean isImageModified = false;
 	private boolean needToReloadThumbImage = false;
 	private boolean needToReloadPreviewImage = false;
 
@@ -47,18 +48,20 @@ public class Thumb extends MovieDataItem {
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException {
 
 		thumbURL = new URL(url);
-		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
+		BufferedImage origThumbnail = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
+        BufferedImage croppedThumbnail = null;
 		//just get the jpg from the url
 		String filename = fileNameFromURL(url);
 		//routine adapted from pythoncovercrop.py
 		if (useJavCoverCropRoutine) {
-			tempImage = doJavCoverCropRoutine(tempImage, filename);
+			croppedThumbnail = doJavCoverCropRoutine(origThumbnail, filename);
 			this.isImageModified = true;
-			ImageCache.putImageInCache(thumbURL, tempImage, true); //cache cropped image so we don't need to do this again
-		} else {
-			this.isImageModified = false;
+			ImageCache.putImageInCache(thumbURL, croppedThumbnail, true); //cache cropped image so we don't need to do this again
 		}
-		thumbImage = new SoftReference<>(tempImage);
+
+        ImageCache.putImageInCache(thumbURL, origThumbnail, false);
+
+		thumbImage = new SoftReference<>(origThumbnail);
 		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
 		needToReloadThumbImage = false;
 	}

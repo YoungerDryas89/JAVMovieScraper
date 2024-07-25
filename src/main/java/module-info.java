@@ -20,6 +20,8 @@ module moviescraper.doctord {
     requires org.junit.jupiter.api;
     requires annotations;
     requires org.jetbrains.annotations;
+    requires commons.collections;
+    requires JImageHash;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
     exports moviescraper.doctord.controller.siteparsingprofile;

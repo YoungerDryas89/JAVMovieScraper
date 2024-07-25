@@ -1,19 +1,12 @@
 package moviescraper.doctord.view;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.Thumb;
@@ -29,6 +22,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	private AsyncImageComponent lblPosterIcon;
 	private AsyncImageComponent lblFanartIcon;
+    JButton uncropButton;
 	private static final String artworkTooltip = "Double click to change image.";
 
 	//initial max sizes = values can change when window is resized
@@ -57,6 +51,24 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblPosterIcon.setAlignmentY(Component.CENTER_ALIGNMENT);
 		lblPosterIcon.addMouseListener(new MouseListenerShowArtPicker(false));
 
+
+        uncropButton = new JButton("Uncrop Poster");
+        uncropButton.setEnabled(false);
+        uncropButton.setVisible(false);
+        uncropButton.setAlignmentX(LEFT_ALIGNMENT);
+        uncropButton.setAlignmentY(CENTER_ALIGNMENT);
+        uncropButton.setPreferredSize(new Dimension(100, 35));
+        uncropButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(guiMain.getFileDetailPanel().getCurrentMovie().getPosters()[0].isModified()){
+                    uncropButton.setText("Uncrop Poster");
+                } else {
+                    uncropButton.setText("Crop Poster");
+                }
+            }
+        });
+
 		//set up the fanart
 		lblFanartIcon = new AsyncImageComponent(null, false, null, false, true, false);
 		lblFanartIcon.setPreferredSize(new Dimension(maximumFanartSizeX, maximumFanartSizeY));
@@ -66,6 +78,8 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		lblFanartIcon.addMouseListener(new MouseListenerShowArtPicker(true));
 
 		add(lblPosterIcon);
+        add(Box.createRigidArea(new Dimension(0, 5)));
+        add(uncropButton);
 		//add a little bit of space between the poster and the fanart
 		add(Box.createRigidArea(new Dimension(0, 5)));
 		add(lblFanartIcon);
@@ -84,6 +98,8 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 	public void clearPoster() {
 		lblPosterIcon.clear();
+        uncropButton.setVisible(false);
+        uncropButton.setEnabled(false);
 	}
 
 	private void updatePosterAndFanartSizes() {
@@ -126,6 +142,12 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		else
 			return image;
 	}
+
+    void updateCropButton(Boolean enabled){
+        uncropButton.setLocation(lblPosterIcon.getX(), (int) (lblPosterIcon.getY() + lblPosterIcon.getHeight()));
+        uncropButton.setEnabled(enabled);
+        uncropButton.setVisible(true);
+    }
 
 	public void updateView(boolean forceUpdatePoster, GUIMain gui) {
 		boolean posterFileUpdateOccured = false;
@@ -202,6 +224,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			try {
 				if (gui.getFileDetailPanel().currentMovie.getPosters().length > 0) {
 					lblPosterIcon.setIcon(gui.getFileDetailPanel().currentMovie.getPosters()[0], new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+                    updateCropButton(gui.getFileDetailPanel().currentMovie.getPosters()[0].isModified());
 					posterFileUpdateOccured = true;
 				}
 			} catch (Exception e) {

@@ -144,6 +144,11 @@
         <artifactId>httpclient</artifactId>
         <version>4.5.13</version>
     </dependency>
+        <dependency>
+            <groupId>dev.brachtendorf</groupId>
+            <artifactId>JImageHash</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>com.cedarsoftware</groupId>

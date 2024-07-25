@@ -161,7 +161,7 @@ public class FileDetailPanel extends JPanel {
 		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
 
 		scraperOptionsJPanel = new JPanel();
-		scraperOptionsJPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Scraper Options"));
+		scraperOptionsJPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Additional Options"));
 		overrideCheckbox = new JCheckBox("Override", false);
 		inferredIdTextField = new JTextField("N/A", DEFAULT_TEXTFIELD_LENGTH);
 		inferredTextFieldLabel = new JLabel("Movie Id Inferred From Filename:");
@@ -176,6 +176,9 @@ public class FileDetailPanel extends JPanel {
 		scraperOptionsJPanel.add(inferredTextFieldLabel);
 		scraperOptionsJPanel.add(inferredIdTextField);
 		scraperOptionsJPanel.add(overrideCheckbox);
+
+        JButton uncrop = new JButton("Uncrop Poster");
+        scraperOptionsJPanel.add(uncrop, BorderLayout.SOUTH);
 		fileDetailsPanel.add(scraperOptionsJPanel, getLayoutPositionString(COLUMN_FORM_FIELD, 28));
 
 		//Path

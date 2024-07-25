@@ -26,7 +26,8 @@ public class DetermineMovie {
     private HashMap<String, List<String>> studios = new HashMap<>();
     public DetermineMovie(){
         try(
-                InputStream is = getClass().getClassLoader().getResourceAsStream("tags");
+                //InputStream is = getClass().getClassLoader().getResourceAsStream("tags");
+                FileInputStream is = new FileInputStream("/home/sai/Projects/JAVMovieScraper/src/main/resources/tags");
                 Scanner scanner = new Scanner(is);
 
         ){
