@@ -139,7 +139,7 @@ public class WriteFileDataAction implements ActionListener {
 			protected void done() {
 				guiMain.setMainGUIEnabled(true);
 				//out of loop and done writing files, update the gui
-				guiMain.updateFileListModel(guiMain.getCurrentlySelectedDirectoryList(), true);
+				guiMain.updateFileListModel(true);
 				guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 			}
 		}; //end SwingWorker definition

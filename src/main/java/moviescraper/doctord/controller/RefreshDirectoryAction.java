@@ -27,7 +27,7 @@ public class RefreshDirectoryAction implements ActionListener {
 			File currentDirectory = this.guiMain.getCurrentlySelectedDirectoryList();
 			if (currentDirectory != null && currentDirectory.exists()) {
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				this.guiMain.updateFileListModel(currentDirectory, true);
+				this.guiMain.updateFileListModel(true);
 			}
 		} finally {
 			this.guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());

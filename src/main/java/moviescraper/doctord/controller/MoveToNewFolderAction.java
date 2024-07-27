@@ -162,7 +162,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 		// reuse them when updating the GUI
 		guiMain.removeOldScrapedMovieReferences();
 		guiMain.removeOldSelectedFileReferences();
-		this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
+		this.guiMain.updateFileListModel(false);
 	}
 
 }

@@ -26,9 +26,9 @@ public class UpDirectoryAction implements ActionListener {
 		try {
 			File parentDirectory = this.guiMain.getCurrentlySelectedDirectoryList().getParentFile();
 			if (parentDirectory != null && parentDirectory.exists()) {
-				this.guiMain.setCurrentlySelectedDirectoryList(parentDirectory);
+                guiMain.getFileList().setCurrentlySelectedDirectory(parentDirectory);
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				this.guiMain.updateFileListModel(this.guiMain.getCurrentlySelectedDirectoryList(), false);
+				this.guiMain.updateFileListModel(false);
 			}
 		} finally {
 			this.guiMain.getGuiSettings().setLastUsedDirectory(this.guiMain.getCurrentlySelectedDirectoryList());

@@ -32,11 +32,11 @@ public class DirectorySoryOptionAction extends AbstractAction {
                 case DirectoryOrder.Descending -> settings.setAscending(false);
                 default -> throw new IllegalStateException("Unexpected value: " + key);
             }
-            parent.updateFileList();
+            parent.updateFileListModel(true);
         } else{
             if (settings.getSort() != getValue("Key")) {
                 settings.setSort((DirectorySort) getValue("Key"));
-                parent.updateFileList();
+                parent.getFileList().update(true);
             }
         }
     }

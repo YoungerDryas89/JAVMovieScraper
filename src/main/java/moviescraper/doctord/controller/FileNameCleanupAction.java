@@ -53,7 +53,7 @@ public class FileNameCleanupAction implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			guiMain.updateFileListModel(guiMain.getCurrentlySelectedDirectoryList(), false);
+			guiMain.updateFileListModel(false);
 		}
 
 	}
