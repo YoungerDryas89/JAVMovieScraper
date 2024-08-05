@@ -80,4 +80,9 @@ public class ImageCache {
 		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
 		return cacheToUse.containsKey(url);
 	}
+
+	public static void replace(URL url, Image image, boolean isModified){
+		var cacheToUse = isModified? modifiedImageCache : cache;
+		cacheToUse.replace(url, image);
+	}
 }

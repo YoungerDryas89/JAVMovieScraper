@@ -490,6 +490,10 @@ public class Movie {
 					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
 						writer.setOutput(posterFileOutput);
 						writer.write(null, image, iwp);
+
+						if(ImageCache.isImageCached(posterFile.toURL(), false)){
+							ImageCache.replace(posterFile.toURL(), posterToSaveToDisk.getThumbImage(), posterToSaveToDisk.isModified());
+						}
 					}
 				}
 				//write out the poster file without reencoding it and resizing it
@@ -501,12 +505,18 @@ public class Movie {
 					if (!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))) {
 						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
 						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
+						if(ImageCache.isImageCached(posterFile.toURL(), false)){
+							ImageCache.replace(posterFile.toURL(), posterToSaveToDisk.getThumbImage(), posterToSaveToDisk.isModified());
+						}
 					} else {
 						if (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)) {
 							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
 							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
 								writer.setOutput(folderFileOutput);
 								writer.write(null, image, iwp);
+								if(ImageCache.isImageCached(posterFile.toURL(), false)){
+									ImageCache.replace(posterFile.toURL(), posterToSaveToDisk.getThumbImage(), posterToSaveToDisk.isModified());
+								}
 							}
 						} else {
 							System.out.println("Skipping overwrite of folder.jpg due to preference setting");
