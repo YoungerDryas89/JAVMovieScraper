@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -490,25 +492,42 @@ public class Movie {
 					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
 						writer.setOutput(posterFileOutput);
 						writer.write(null, image, iwp);
-					}
-				}
+
+                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+					} catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				//write out the poster file without reencoding it and resizing it
 				else if ((!posterFile.exists() || writePosterIfAlreadyExists) && posterToSaveToDisk.getThumbURL() != null) {
-					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
-				}
+                    try {
+                        System.out.println("Writing poster file from nfo: " + posterFile);
+                        FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
+                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+                    } catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				if (createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null) {
 					if (!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))) {
-						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
-					} else {
+                        try {
+                            System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
+                            FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
+                            ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+                        } catch (URISyntaxException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } else {
 						if (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)) {
 							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
 							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
 								writer.setOutput(folderFileOutput);
 								writer.write(null, image, iwp);
-							}
-						} else {
+                                ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+							} catch (URISyntaxException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        } else {
 							System.out.println("Skipping overwrite of folder.jpg due to preference setting");
 						}
 					}
@@ -532,14 +551,24 @@ public class Movie {
 				if (fanartToSaveToDisk.getImageIconThumbImage() != null && fanartToSaveToDisk.isModified()) {
 					try {
 						ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+                        ImageCache.replaceIfPresent(fanartFile.toURI().toURL(), fanartToSaveToDisk.getThumbImage());
 					} catch (IOException e) {
 						System.err.println("Failed to write fanart due to io error");
 						e.printStackTrace();
-					}
-				}
+					} catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				//download the url and save it out to disk
-				else
-					FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, fanartToSaveToDisk.getReferrerURL());
+				else {
+                    try {
+                        FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, fanartToSaveToDisk.getReferrerURL());
+                        ImageCache.replaceIfPresent(fanartFile.toURI().toURL(), fanartToSaveToDisk.getThumbImage());
+                    } catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+
+                }
 			}
 		}
 

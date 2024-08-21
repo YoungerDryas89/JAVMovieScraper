@@ -3,6 +3,8 @@ package moviescraper.doctord.model;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,4 +82,10 @@ public class ImageCache {
 		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
 		return cacheToUse.containsKey(url);
 	}
+
+    public static void replaceIfPresent(URL url, Image image) throws URISyntaxException, MalformedURLException {
+        if(cache.containsKey(url)){
+            cache.replace(url, image);
+        }
+    }
 }
