@@ -13,7 +13,8 @@ public class GenericMovieScraper extends AbstractMovieScraper {
 
 	@Override
 	public Movie createMovie() {
-		return new Movie(profile);
+		// Null isn't it here, but this class is never used anyway and will probably get removed
+		return new Movie(profile, null);
 	}
 
 }

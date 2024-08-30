@@ -207,7 +207,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
+		// TODO: crop posters for this scraper
 		return scrapePostersAndFanart(true);
 	}
 

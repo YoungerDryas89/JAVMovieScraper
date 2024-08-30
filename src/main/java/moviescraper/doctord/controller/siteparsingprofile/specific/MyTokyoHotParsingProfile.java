@@ -188,15 +188,15 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> posters = new ArrayList<>();
 		Element trailerBackgroundImage = document.select("video[poster]").first();
 		if (trailerBackgroundImage != null) {
 			String posterAttr = trailerBackgroundImage.attr("poster");
 			try {
 				//TODO: crop this poster
-				posters.add(new Thumb(posterAttr));
-			} catch (MalformedURLException e) {
+				posters.add(new Thumb(posterAttr, cropPosters));
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -233,12 +233,12 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Nonnull

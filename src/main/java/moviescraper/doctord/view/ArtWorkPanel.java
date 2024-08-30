@@ -143,6 +143,10 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			return image;
 	}
 
+    boolean isUncropEnabled(){
+        return uncropButton.isSelected();
+    }
+
     void updateCropButton(Boolean enabled){
         uncropButton.setLocation(lblPosterIcon.getX(), (int) (lblPosterIcon.getY() + lblPosterIcon.getHeight()));
         uncropButton.setEnabled(enabled);

@@ -99,6 +99,7 @@ public class FileDetailPanel extends JPanel {
 	JTextField inferredIdTextField;
 	JLabel inferredTextFieldLabel;
 	JPanel scraperOptionsJPanel;
+	JCheckBox cropPosters;
 
 	/**
 	 * Create the panel.
@@ -173,12 +174,22 @@ public class FileDetailPanel extends JPanel {
 		});
 		inferredIdTextField.setEditable(overrideCheckbox.isSelected());
 
-		scraperOptionsJPanel.add(inferredTextFieldLabel);
-		scraperOptionsJPanel.add(inferredIdTextField);
-		scraperOptionsJPanel.add(overrideCheckbox);
+		JPanel idoverridePanel = new JPanel();
+		idoverridePanel.add(inferredTextFieldLabel);
+		idoverridePanel.add(inferredIdTextField);
+		idoverridePanel.add(overrideCheckbox);
 
-        JButton uncrop = new JButton("Uncrop Poster");
-        scraperOptionsJPanel.add(uncrop, BorderLayout.SOUTH);
+		JPanel uncropPanel = new JPanel();
+		uncropPanel.setLayout(new BorderLayout(10, 10));
+
+		cropPosters = new JCheckBox("Crop Posters", true);
+		uncropPanel.add(cropPosters, BorderLayout.WEST);
+		scraperOptionsJPanel.add(idoverridePanel);
+		scraperOptionsJPanel.add(uncropPanel);
+		scraperOptionsJPanel.setLayout(new BoxLayout(scraperOptionsJPanel, BoxLayout.Y_AXIS));
+		//scraperOptionsJPanel.setLayout();
+
+		scraperOptionsJPanel.add(uncropPanel);
 		fileDetailsPanel.add(scraperOptionsJPanel, getLayoutPositionString(COLUMN_FORM_FIELD, 28));
 
 		//Path
@@ -641,6 +652,8 @@ public class FileDetailPanel extends JPanel {
 	public Boolean shouldOverrideInferredId(){
 		return overrideCheckbox.isSelected();
 	}
+
+	public Boolean cropPosters() { return cropPosters.isSelected(); }
 
 	/**
 	 * Sets a new movie and updates a view

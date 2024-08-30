@@ -89,7 +89,7 @@ public class MyTokyoHotParsingProfileTest {
 
 	@Test
 	public void testScrapePoster() {
-		Thumb[] posters = parser.scrapePosters();
+		Thumb[] posters = parser.scrapePosters(false);
 		assertEquals("Poster not correct", "https://my.cdn.tokyo-hot.com/media/20876/list_image/n0754/820x462_default.jpg", posters[0].getThumbURL().toString());
 	}
 

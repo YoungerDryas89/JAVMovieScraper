@@ -181,21 +181,21 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		String scrapedId = scrapeID().getId();
 		try {
 			if(SiteParsingProfile.fileExistsAtURL("https://en.heyzo.com/contents/3000/" + scrapedId + "/images/player_thumbnail_en.jpg")) {
-				Thumb cover = new Thumb("https://en.heyzo.com/contents/3000/" + scrapedId +"/images/player_thumbnail_en.jpg");
+				Thumb cover = new Thumb("https://en.heyzo.com/contents/3000/" + scrapedId +"/images/player_thumbnail_en.jpg", cropPosters);
 				thumbList.add(cover);
 			} else {
 				//If for whatever reason the above^ image is not available use some fan art as a thumbnail
 				if(SiteParsingProfile.fileExistsAtURL("https://https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/001.jpg")){
-					Thumb fanartSubstitute = new Thumb("https://https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/001.jpg");
+					Thumb fanartSubstitute = new Thumb("https://https://en.heyzo.com/contents/3000/" + scrapedId + "/gallery/001.jpg", cropPosters);
 					thumbList.add(fanartSubstitute);
 				}
 			}
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return thumbList.toArray(new Thumb[thumbList.size()]);
 		}
@@ -236,7 +236,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Nonnull

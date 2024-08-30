@@ -169,14 +169,14 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		try {
 			// Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
 			var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
 			if (fileExistsAtURL(jacketURL, false)) {
-				thumbList.add(new Thumb(jacketURL));
+				thumbList.add(new Thumb(jacketURL, cropPosters));
 				return thumbList.toArray(new Thumb[thumbList.size()]);
 			} else {
 				String[] thumbnailJsonNodes = {
@@ -202,7 +202,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 				return thumbList.toArray(new Thumb[thumbList.size()]);
 
 			}
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return new Thumb[0];

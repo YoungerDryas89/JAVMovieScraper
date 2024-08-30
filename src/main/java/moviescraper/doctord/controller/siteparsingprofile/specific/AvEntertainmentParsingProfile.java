@@ -155,7 +155,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		//List<Thumb> thumbs = new ArrayList<>();
 		//Thumb[] fanart = scrapeFanart();
 		// TODO: Fix AvEntertainment's scrapePosters()
@@ -174,9 +174,9 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		var elem = document.select(poster_elem_string).first();
 		List<Thumb> returnList = new ArrayList<Thumb>();
 		try{
-			Thumb thumb = new Thumb(elem.attr("href"));
+			Thumb thumb = new Thumb(elem.attr("href"), cropPosters);
 			returnList.add(thumb);
-		} catch (MalformedURLException e){
+		} catch (IOException e){
 			System.err.println(e.getMessage());
 		}
 		return returnList.toArray(new Thumb[returnList.size()]);

@@ -32,7 +32,7 @@ public class ActionJavParsingProfileTest {
 
     @Test
     public void testPoster(){
-        var poster = profile.scrapePosters();
+        var poster = profile.scrapePosters(false);
         assertTrue(poster.length > 0 && poster[0].getThumbURL().toString().equals("https://images.actionjav.com/web_img/covers_hires_full/amateur_-_27908_hd.jpg"));
     }
 

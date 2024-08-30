@@ -116,7 +116,7 @@ public class Movie {
 		this.year = year;
 	}
 
-	public Movie(SiteParsingProfile siteToScrapeFrom) {
+	public Movie(SiteParsingProfile siteToScrapeFrom, GUIMain parent) {
 		title = siteToScrapeFrom.scrapeTitle();
 
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
@@ -133,7 +133,7 @@ public class Movie {
 		studio = siteToScrapeFrom.scrapeStudio();
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
 		runtime = siteToScrapeFrom.scrapeRuntime();
-		posters = siteToScrapeFrom.scrapePosters();
+		posters = siteToScrapeFrom.scrapePosters(parent.getFileDetailPanel().cropPosters());
 		fanart = siteToScrapeFrom.scrapeFanart();
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
 		mpaa = siteToScrapeFrom.scrapeMPAA();
@@ -880,7 +880,7 @@ public class Movie {
             siteToParseFrom.prepareData();
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 
-			Movie scrapedMovie = new Movie(siteToParseFrom);
+			Movie scrapedMovie = new Movie(siteToParseFrom, parent);
 			return scrapedMovie;
 		} else //no movie match found
 		{

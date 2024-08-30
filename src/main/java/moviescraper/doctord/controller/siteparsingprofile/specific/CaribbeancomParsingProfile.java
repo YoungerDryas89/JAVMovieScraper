@@ -183,7 +183,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
 		// I tried getting the URL through extracting it directly, but what I would get in the scraper would not be
@@ -193,12 +193,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		try {
 			for(var suffix : image_url_suffix){
 				if(fileExistsAtURL(img_url + "/images/" + suffix)){
-					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/" + suffix);
+					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/" + suffix, cropPosters);
 					posters.add(additionalThumb);
 					break;
 				}
 			}
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return posters.toArray(new Thumb[posters.size()]);

@@ -222,7 +222,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
 		ArrayList<Thumb> posters = new ArrayList<>();
 		ArrayList<Thumb> trailerImages = new ArrayList<>();
@@ -235,11 +235,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			//add the trailer image
 			try {
 				for (Element currentTrailerElement : trailerImgElements) {
-					Thumb trailerImage = new Thumb(fixIPAddressOfData18(currentTrailerElement.attr("src")));
+					Thumb trailerImage = new Thumb(fixIPAddressOfData18(currentTrailerElement.attr("src")), cropPosters);
 					trailerImage.setViewerURL(new URL(document.location()));
 					trailerImages.add(trailerImage);
 				}
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -372,7 +372,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		if (scrapedPosters != null)
 			return scrapedPosters;
 		else
-			return scrapePosters();
+			return scrapePosters(false);
 	}
 
 	@Override
@@ -380,7 +380,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 		if (scrapedPosters != null)
 			return scrapedPosters;
 		else
-			return scrapePosters();
+			return scrapePosters(false);
 	}
 
 	@Nonnull

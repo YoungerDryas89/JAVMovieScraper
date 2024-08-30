@@ -146,12 +146,12 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
     }
 
     @Override
-    public Thumb[] scrapePosters() {
+    public Thumb[] scrapePosters(boolean cropPosters) {
         List<Thumb> posters = new ArrayList<>();
         try {
             Element poster = document.select(posterPath).first();
             if (poster != null) {
-                posters.add(new Thumb(poster.attr("data-poster"), true));
+                posters.add(new Thumb(poster.attr("data-poster"), cropPosters));
             }
         }catch (IOException e){
             System.err.println(e.getMessage());

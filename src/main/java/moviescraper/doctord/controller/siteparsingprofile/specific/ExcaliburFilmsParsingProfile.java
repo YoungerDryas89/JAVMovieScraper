@@ -166,16 +166,16 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		String movieID = scrapeID().getId();
 		String thumbPath = getPosterPathFromIDString(movieID);
 		if (thumbPath == null)
 			return new Thumb[0];
 		try {
-			Thumb posterThumb = new Thumb(thumbPath);
+			Thumb posterThumb = new Thumb(thumbPath, cropPosters);
 			Thumb[] thumbsToReturn = { posterThumb };
 			return thumbsToReturn;
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return new Thumb[0];
 		}

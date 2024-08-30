@@ -210,8 +210,8 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
-		return scrapePostersAndFanart(true);
+	public Thumb[] scrapePosters(boolean cropPosters) {
+		return scrapePostersAndFanart(cropPosters);
 	}
 
 	@Override
