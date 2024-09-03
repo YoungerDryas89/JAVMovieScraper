@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import moviescraper.doctord.controller.FileDownloaderUtilities;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ImageCache {
 	private static final int initialCapacity = 200;
 	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
-	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
+	private static Map<URL, Pair<>> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
 
 	public static Image getImageFromCache(URL url, boolean isImageModified, URL referrerURL) throws IOException {
 		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;

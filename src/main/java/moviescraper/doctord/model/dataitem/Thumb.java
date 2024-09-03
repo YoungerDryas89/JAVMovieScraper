@@ -10,6 +10,7 @@ import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -36,6 +37,9 @@ public class Thumb extends MovieDataItem {
 	private boolean isImageModified;
 	private boolean needToReloadThumbImage = false;
 	private boolean needToReloadPreviewImage = false;
+
+	ConcurrentLinkedDeque<Thumb> modifiedChildren;
+	Thumb originalParent = null;
 
 	public Thumb(URL thumbURL) {
 		//Delay the call to actually reading in the thumbImage until it is needed
