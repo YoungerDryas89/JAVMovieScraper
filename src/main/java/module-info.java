@@ -23,6 +23,7 @@ module moviescraper.doctord {
     requires commons.collections;
     requires JImageHash;
     requires commons.math3;
+    requires com.github.benmanes.caffeine;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
     exports moviescraper.doctord.controller.siteparsingprofile;
