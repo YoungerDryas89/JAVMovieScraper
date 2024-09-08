@@ -61,10 +61,22 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
         uncropButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(guiMain.getFileDetailPanel().getCurrentMovie().getPosters()[0].isModified()){
-                    uncropButton.setText("Uncrop Poster");
+				var img = lblPosterIcon.getThumb();
+                if(!img.isModified()){
+					Thumb replacementThumb;
+					if(!img.hasDerivations())
+						replacementThumb = img.createCroppedImage();
+					else
+						replacementThumb = img.derivedChild();
+                    assert replacementThumb != null;
+					lblPosterIcon.clear();
+                    lblPosterIcon.setIcon(replacementThumb, new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+					updateCropButton(true);
                 } else {
-                    uncropButton.setText("Crop Poster");
+                    assert img.getOriginalImage() != null;
+					lblPosterIcon.clear();
+					lblPosterIcon.setIcon(img.getOriginalImage(), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+					updateCropButton(true);
                 }
             }
         });
@@ -143,7 +155,16 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			return image;
 	}
 
+    public boolean isUncropEnabled(){
+        return uncropButton.isSelected();
+    }
+
     void updateCropButton(Boolean enabled){
+		if(lblPosterIcon.getThumb().isModified()){
+			uncropButton.setText("Uncrop Poster");
+		} else {
+			uncropButton.setText("Crop Poster");
+		}
         uncropButton.setLocation(lblPosterIcon.getX(), (int) (lblPosterIcon.getY() + lblPosterIcon.getHeight()));
         uncropButton.setEnabled(enabled);
         uncropButton.setVisible(true);
@@ -242,6 +263,10 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 
 			}
 		}
+
+		if(lblPosterIcon.getThumb() != null && !lblPosterIcon.getThumb().isLoadedFromDisk())
+			updateCropButton(true);
+
 	}
 
 	@Override

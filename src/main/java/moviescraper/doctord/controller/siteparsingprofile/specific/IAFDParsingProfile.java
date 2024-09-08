@@ -190,14 +190,14 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		Element posterElement = document.select("a[rel=covers]").first();
 		if (posterElement != null) {
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
+				posterThumbs[0] = new Thumb(posterElement.attr("href"), cropPosters);
 				return posterThumbs;
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				return new Thumb[0];
 			}

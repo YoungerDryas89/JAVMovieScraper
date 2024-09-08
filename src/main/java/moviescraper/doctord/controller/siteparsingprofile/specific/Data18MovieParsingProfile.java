@@ -196,15 +196,15 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		Element posterElement = document.select("img[alt=Cover]").first();
 		if (posterElement != null) {
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("src")));
+				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("src")), cropPosters);
 				posterThumbs[0].setViewerURL(posterThumbs[0].getThumbURL());
 				return posterThumbs;
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				return new Thumb[0];
 			}

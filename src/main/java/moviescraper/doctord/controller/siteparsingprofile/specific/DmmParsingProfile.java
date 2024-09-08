@@ -287,12 +287,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		//don't crop the cover for videoc elements as it is a website release and does not have dvd art
 		if (document.baseUri().contains("/digital/videoc"))
 			return scrapePostersAndFanart(false, false);
 		else
-			return scrapePostersAndFanart(true, false);
+			return scrapePostersAndFanart(cropPosters, false);
 	}
 
 	/**

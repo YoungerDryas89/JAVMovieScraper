@@ -10,12 +10,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import moviescraper.doctord.controller.FileDownloaderUtilities;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ImageCache {
 	private static final int initialCapacity = 200;
 	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
 	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
+
 
 	public static Image getImageFromCache(URL url, boolean isImageModified, URL referrerURL) throws IOException {
 		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
@@ -88,4 +91,10 @@ public class ImageCache {
             cache.replace(url, image);
         }
     }
+
+	public static void replaceIfPresent(URL url, boolean derived, Image image) {
+		var cacheToUse = derived? modifiedImageCache : cache;
+		if(cacheToUse.containsKey(url))
+			cacheToUse.replace(url, image);
+	}
 }

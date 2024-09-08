@@ -149,13 +149,13 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		try {
 			String Id = findID(scrapedMovieFile.getName());
 			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getThumbURL(Id, 1));
+			thumbs[0] = new Thumb(getThumbURL(Id, 1), cropPosters);
 			return thumbs;
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return new Thumb[0];

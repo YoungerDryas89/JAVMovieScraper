@@ -249,7 +249,7 @@ public class Main {
 		File trailerFile = new File(Movie.getFileNameOfTrailer(scrapeTarget));
 
 		try {
-			scrapedMovie.writeToFile(nfoFile, posterFile, fanartFile, currentlySelectedFolderJpgFile, extraFanartFolder, trailerFile, preferences);
+			scrapedMovie.writeToFile(nfoFile, posterFile, fanartFile, currentlySelectedFolderJpgFile, extraFanartFolder, trailerFile, preferences, true);
 
 			//TODO: write out trailers, actor images
 		} catch (IOException e) {

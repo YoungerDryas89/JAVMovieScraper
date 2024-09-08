@@ -260,7 +260,8 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
+		// TODO: crop posters whenever I can get this scraper running
 		return scrapePostersAndFanart("posters", movieImagePosterThumbnailPathPrefix);
 	}
 

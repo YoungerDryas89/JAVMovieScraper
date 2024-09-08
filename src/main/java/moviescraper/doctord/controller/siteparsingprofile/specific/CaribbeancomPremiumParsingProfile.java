@@ -221,7 +221,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		String id = getIdFromUrl();
 		List<Thumb> posters = new LinkedList<>();
 		String[] posterUrls = {
@@ -233,10 +233,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		try {
 			for(var paths : posterUrls){
 				if(fileExistsAtURL("https://www.caribbeancompr.com" + paths)){
-					posters.add(new Thumb("https://www.caribbeancompr.com" + paths));
+					posters.add(new Thumb("https://www.caribbeancompr.com" + paths, cropPosters));
 				}
 			}
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			Logger.getLogger(CaribbeancomPremiumParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return posters.toArray(new Thumb[posters.size()]);
@@ -244,7 +244,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Override

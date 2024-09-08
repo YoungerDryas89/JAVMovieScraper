@@ -89,7 +89,7 @@ public class AvEntertainmentParsingProfileTest {
 
 	@Test
 	public void testPosters() throws IOException {
-		Thumb[] posters = profile.scrapePosters();
+		Thumb[] posters = profile.scrapePosters(true);
 		assertTrue("Wrong count of posters", posters.length == 1);
 		assertEquals("Wrong poster", "https://imgs02.aventertainments.com/new/bigcover/dvd1pt-154.webp", posters[0].getThumbURL().toString());
 		//TestingHelper.showImage("posters", posters[0].getThumbImage());

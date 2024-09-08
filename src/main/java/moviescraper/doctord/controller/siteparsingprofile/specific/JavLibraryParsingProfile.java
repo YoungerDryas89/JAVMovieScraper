@@ -220,8 +220,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
-		return scrapePostersAndFanart(true);
+	public Thumb[] scrapePosters(boolean cropPosters) {
+		return scrapePostersAndFanart(cropPosters);
 	}
 
 	@Override

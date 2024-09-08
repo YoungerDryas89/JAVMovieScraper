@@ -330,7 +330,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public abstract @NotNull moviescraper.doctord.model.dataitem.Runtime scrapeRuntime();
 
-	public abstract @NotNull Thumb[] scrapePosters();
+	public abstract @NotNull Thumb[] scrapePosters(boolean cropPosters);
 
 	public abstract @NotNull Thumb[] scrapeFanart();
 
