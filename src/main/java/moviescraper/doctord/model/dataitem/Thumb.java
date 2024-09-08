@@ -26,13 +26,12 @@ public class Thumb extends MovieDataItem {
 	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
 	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
 	private SoftReference<? extends Image> thumbImage;
+	private SoftReference<? extends  Image> modifiedImage;
 	private SoftReference<? extends Image> previewThumbImage;
 	private SoftReference<? extends ImageIcon> imageIconThumbImage;
 	private SoftReference<? extends ImageIcon> previewIconThumbImage;
 	private String thumbLabel;
 	private boolean loadedFromDisk;
-	protected final static int connectionTimeout = 10000; //10 seconds
-	protected final static int readTimeout = 10000; //10 seconds
 	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
 	private boolean isImageModified;
 	private boolean needToReloadThumbImage = false;
@@ -54,16 +53,16 @@ public class Thumb extends MovieDataItem {
 		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
 		//just get the jpg from the url
 		String filename = fileNameFromURL(url);
+		thumbImage = new SoftReference<>(tempImage);
+		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
+
 		//routine adapted from pythoncovercrop.py
 		if (useJavCoverCropRoutine) {
-			tempImage = doJavCoverCropRoutine(tempImage, filename);
-			this.isImageModified = true;
-			ImageCache.putImageInCache(thumbURL, tempImage, true); //cache cropped image so we don't need to do this again
+			createCroppedImage();
 		} else {
 			this.isImageModified = false;
 		}
-		thumbImage = new SoftReference<>(tempImage);
-		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
+
 		needToReloadThumbImage = false;
 	}
 
@@ -156,6 +155,22 @@ public class Thumb extends MovieDataItem {
 	 */
 	public static String fileNameFromURL(String url) {
 		return url.substring(url.lastIndexOf("/") + 1, url.length());
+	}
+
+	public void createCroppedImage(){
+		if(thumbImage != null && thumbImage.get() != null) {
+			BufferedImage tempImg = doJavCoverCropRoutine((BufferedImage) thumbImage.get(), fileNameFromURL(thumbURL.toString()));
+			if(ImageCache.isImageCached(thumbURL, true))
+				ImageCache.removeImageFromCache(thumbURL, true);
+			ImageCache.putImageInCache(thumbURL, tempImg, true);
+
+			modifiedImage = new SoftReference<>(tempImg);
+			this.isImageModified = true;-
+		}
+	}
+
+	public Image croppedImage(){
+		return this.modifiedImage.get();
 	}
 
 	/**

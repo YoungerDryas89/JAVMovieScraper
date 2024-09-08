@@ -485,7 +485,12 @@ public class Movie {
 				iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 				iwp.setCompressionQuality(1); // an float between 0 and 1
 				// 1 specifies minimum compression and maximum quality
-				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
+				IIOImage image;
+				if(posterToSaveToDisk.isModified()){
+					image = new IIOImage((RenderedImage) posterToSaveToDisk.croppedImage(), null, null);
+				} else {
+					image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
+				}
 
 				if (writePoster && posterToSaveToDisk.isModified()) {
 					System.out.println("Writing poster to " + posterFile);
@@ -493,7 +498,7 @@ public class Movie {
 						writer.setOutput(posterFileOutput);
 						writer.write(null, image, iwp);
 
-                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.croppedImage());
 					} catch (URISyntaxException e) {
                         System.err.println(e.getMessage());
                     }
@@ -509,6 +514,7 @@ public class Movie {
                     }
                 }
 				if (createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null) {
+					// if the image is not modified
 					if (!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))) {
                         try {
                             System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
@@ -523,7 +529,10 @@ public class Movie {
 							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
 								writer.setOutput(folderFileOutput);
 								writer.write(null, image, iwp);
-                                ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+								if(posterToSaveToDisk.isModified())
+                                	ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.croppedImage());
+								else
+									ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
 							} catch (URISyntaxException e) {
                                 System.err.println(e.getMessage());
                             }
