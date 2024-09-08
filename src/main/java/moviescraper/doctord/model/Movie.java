@@ -134,6 +134,9 @@ public class Movie {
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
 		runtime = siteToScrapeFrom.scrapeRuntime();
 		posters = siteToScrapeFrom.scrapePosters(parent.getFileDetailPanel().cropPosters());
+		if(posters[0].hasDerivations())
+			posters[0] = posters[0].derivedChild();
+
 		fanart = siteToScrapeFrom.scrapeFanart();
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
 		mpaa = siteToScrapeFrom.scrapeMPAA();
@@ -444,7 +447,7 @@ public class Movie {
 	}
 
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile,
-	        MoviescraperPreferences preferences) throws IOException {
+	        MoviescraperPreferences preferences, boolean preferPosterDerivation) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
@@ -462,9 +465,21 @@ public class Movie {
 			nfoFile.delete();
 		FileUtils.writeStringToFile(nfoFile, xml, org.apache.commons.lang3.CharEncoding.UTF_8);
 
+		Thumb parentPoster = null;
 		Thumb posterToSaveToDisk = null;
 		if (posters != null && posters.length > 0)
 			posterToSaveToDisk = posters[0];
+
+		if(preferPosterDerivation && posterToSaveToDisk.hasDerivations() ) {
+			parentPoster = posterToSaveToDisk;
+			posterToSaveToDisk = parentPoster.derivedChild();
+
+			assert posterToSaveToDisk != null;
+		} else if(!preferPosterDerivation && posterToSaveToDisk.isModified()){
+			posterToSaveToDisk = posterToSaveToDisk.getOriginalImage();
+
+			assert posterToSaveToDisk != null;
+		}
 
 		boolean writePoster = preferences.getWriteFanartAndPostersPreference();
 		boolean writeFanart = preferences.getWriteFanartAndPostersPreference();
@@ -486,20 +501,14 @@ public class Movie {
 				iwp.setCompressionQuality(1); // an float between 0 and 1
 				// 1 specifies minimum compression and maximum quality
 				IIOImage image;
-				if(posterToSaveToDisk.isModified()){
-					image = new IIOImage((RenderedImage) posterToSaveToDisk.croppedImage(), null, null);
-				} else {
-					image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
-				}
+				image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 
 				if (writePoster && posterToSaveToDisk.isModified()) {
 					System.out.println("Writing poster to " + posterFile);
 					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
 						writer.setOutput(posterFileOutput);
 						writer.write(null, image, iwp);
-
-                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.croppedImage());
-					} catch (URISyntaxException e) {
+					} catch (IOException e) {
                         System.err.println(e.getMessage());
                     }
                 }
@@ -519,8 +528,7 @@ public class Movie {
                         try {
                             System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
                             FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
-                            ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
-                        } catch (URISyntaxException e) {
+                        } catch (IOException e) {
                             System.err.println(e.getMessage());
                         }
                     } else {
@@ -529,11 +537,7 @@ public class Movie {
 							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
 								writer.setOutput(folderFileOutput);
 								writer.write(null, image, iwp);
-								if(posterToSaveToDisk.isModified())
-                                	ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.croppedImage());
-								else
-									ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
-							} catch (URISyntaxException e) {
+							} catch (IOException e) {
                                 System.err.println(e.getMessage());
                             }
                         } else {
@@ -542,6 +546,15 @@ public class Movie {
 					}
 				}
 				writer.dispose();
+			}
+		}
+
+		if(preferPosterDerivation && posterToSaveToDisk.isModified()){
+			try {
+				ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+			}catch (URISyntaxException e){
+				System.err.println("Failed to update image cache with child image of: " + parentPoster.getThumbURL());
+				System.err.println(e.getMessage());
 			}
 		}
 

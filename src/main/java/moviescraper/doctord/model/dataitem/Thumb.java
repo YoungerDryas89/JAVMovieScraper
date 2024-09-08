@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 
 import moviescraper.doctord.controller.FileDownloaderUtilities;
 import moviescraper.doctord.model.ImageCache;
+import org.jetbrains.annotations.Nullable;
 
 public class Thumb extends MovieDataItem {
 	private URL thumbURL;
@@ -26,24 +27,23 @@ public class Thumb extends MovieDataItem {
 	//use soft references here to hold onto our memory of a loaded up image for as long as possible and only GC it when we have no choice
 	//note that the strong reference will be in the image cache. the image cache has logic in place to purge items if it gets too full
 	private SoftReference<? extends Image> thumbImage;
-	private SoftReference<? extends  Image> modifiedImage;
 	private SoftReference<? extends Image> previewThumbImage;
 	private SoftReference<? extends ImageIcon> imageIconThumbImage;
 	private SoftReference<? extends ImageIcon> previewIconThumbImage;
 	private String thumbLabel;
-	private boolean loadedFromDisk;
+	private boolean loadedFromDisk = false;
 	//Did the image change from the original image from url (this matters when knowing whether we need to reencode when saving it back to disk)
-	private boolean isImageModified;
+	private boolean isImageModified = false;
 	private boolean needToReloadThumbImage = false;
 	private boolean needToReloadPreviewImage = false;
 
-	ConcurrentLinkedDeque<Thumb> modifiedChildren;
-	Thumb originalParent = null;
+	private Thumb originalImage;
+	private boolean hasDerivations = false;
+	private ConcurrentLinkedDeque<Thumb> modifiedChildren = new ConcurrentLinkedDeque<>();
 
 	public Thumb(URL thumbURL) {
 		//Delay the call to actually reading in the thumbImage until it is needed
 		this.thumbURL = thumbURL;
-		isImageModified = false;
 		needToReloadThumbImage = true;
 	}
 
@@ -57,13 +57,22 @@ public class Thumb extends MovieDataItem {
 		imageIconThumbImage = new SoftReference<>(new ImageIcon(tempImage));
 
 		//routine adapted from pythoncovercrop.py
-		if (useJavCoverCropRoutine) {
+		if (useJavCoverCropRoutine)
 			createCroppedImage();
-		} else {
-			this.isImageModified = false;
-		}
 
 		needToReloadThumbImage = false;
+	}
+
+	public Thumb(Image img, Thumb parentThumb){
+		this.thumbURL = parentThumb.getThumbURL();
+		this.thumbImage = new SoftReference<>(img);
+		this.originalImage = parentThumb;
+		this.isImageModified = true;
+
+		if(ImageCache.isImageCached(thumbURL, true))
+			ImageCache.replaceIfPresent(thumbURL, true, img);
+		else
+			ImageCache.putImageInCache(thumbURL, img, true);
 	}
 
 	/**
@@ -82,18 +91,15 @@ public class Thumb extends MovieDataItem {
 	public Thumb(String url) throws MalformedURLException {
 		setThumbURL(url);
 		//Delay the call to actually reading in the thumbImage until it is needed
-		this.isImageModified = false;
 	}
 
 	//TODO: Generate an empty thumbnail that points to nowhere
 	public Thumb() {
-		this.isImageModified = false;
 		needToReloadThumbImage = false;
 	}
 
 	public Thumb(File file) throws IOException {
 		this.setImage(ImageIO.read(file));
-		this.isImageModified = false;
 		loadedFromDisk = true;
 		thumbURL = file.toURI().toURL();
 	}
@@ -157,20 +163,33 @@ public class Thumb extends MovieDataItem {
 		return url.substring(url.lastIndexOf("/") + 1, url.length());
 	}
 
-	public void createCroppedImage(){
+	@Nullable
+	public Thumb createCroppedImage(){
+		Thumb newImg = null;
 		if(thumbImage != null && thumbImage.get() != null) {
 			BufferedImage tempImg = doJavCoverCropRoutine((BufferedImage) thumbImage.get(), fileNameFromURL(thumbURL.toString()));
-			if(ImageCache.isImageCached(thumbURL, true))
-				ImageCache.removeImageFromCache(thumbURL, true);
-			ImageCache.putImageInCache(thumbURL, tempImg, true);
 
-			modifiedImage = new SoftReference<>(tempImg);
-			this.isImageModified = true;-
+			newImg = new Thumb(tempImg, this);
+			modifiedChildren.add(newImg);
+			this.hasDerivations = true;
 		}
+		return newImg;
 	}
 
-	public Image croppedImage(){
-		return this.modifiedImage.get();
+	public boolean hasDerivations(){
+		return hasDerivations;
+	}
+
+	@Nullable
+	public Thumb derivedChild() {
+		if(!modifiedChildren.isEmpty())
+			return modifiedChildren.getFirst();
+		return null;
+	}
+
+	@Nullable
+	public Thumb getOriginalImage(){
+		return this.originalImage;
 	}
 
 	/**

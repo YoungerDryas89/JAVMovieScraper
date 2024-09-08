@@ -91,4 +91,10 @@ public class ImageCache {
             cache.replace(url, image);
         }
     }
+
+	public static void replaceIfPresent(URL url, boolean derived, Image image) {
+		var cacheToUse = derived? modifiedImageCache : cache;
+		if(cacheToUse.containsKey(url))
+			cacheToUse.replace(url, image);
+	}
 }
