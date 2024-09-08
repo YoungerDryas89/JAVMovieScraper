@@ -174,6 +174,11 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
         try {
             Thumb[] posters = new Thumb[1];
             Element posterElement = document.select(posterImg).first();
+
+            if(posterElement == null)
+                // try another way
+                posterElement = document.select(".plyr__video-wrapper .player").first();
+
             if (posterElement != null) {
                 posters[0] = new Thumb(posterElement.attr("data-poster"), cropPosters);
                 return posters;
