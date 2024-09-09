@@ -27,7 +27,7 @@ public class DetermineMovie {
     public DetermineMovie(){
         try(
                 //InputStream is = getClass().getClassLoader().getResourceAsStream("tags");
-                FileInputStream is = new FileInputStream("/home/sai/Projects/JAVMovieScraper/src/main/resources/tags");
+                FileInputStream is = new FileInputStream("tags");
                 Scanner scanner = new Scanner(is);
 
         ){
