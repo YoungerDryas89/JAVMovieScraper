@@ -100,14 +100,14 @@ public class WriteFileDataAction implements ActionListener {
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
 								        new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
 								        new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())), new File(Movie.getFileNameOfFolderJpg(newMovieFile)),
-								        new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled() || guiMain.getFileDetailPanel().cropPosters());
+								        new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							} else {
 								//save without renaming movie
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
 								        new File(Movie.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
-								        new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled() || guiMain.getFileDetailPanel().cropPosters());
+								        new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							}
 
 							//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
@@ -139,7 +139,7 @@ public class WriteFileDataAction implements ActionListener {
 			protected void done() {
 				guiMain.setMainGUIEnabled(true);
 				//out of loop and done writing files, update the gui
-				guiMain.updateFileListModel(true);
+				guiMain.updateFileListModel(guiMain.getCurrentlySelectedDirectoryList(), true);
 				guiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());
 			}
 		}; //end SwingWorker definition

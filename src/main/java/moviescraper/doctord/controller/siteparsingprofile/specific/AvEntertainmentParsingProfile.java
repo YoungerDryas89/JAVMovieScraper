@@ -189,8 +189,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		for(var image_element : elements){
 			var url = image_element.firstElementChild().attr("href");
 			try {
-				thumbs.add(new Thumb(url));
-			}catch (MalformedURLException e){
+				thumbs.add(new Thumb(url, false));
+			}catch (IOException e){
 				System.err.println(e.getMessage());
 			}
 		}

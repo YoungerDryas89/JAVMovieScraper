@@ -6,26 +6,32 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import moviescraper.doctord.controller.FileDownloaderUtilities;
-import org.apache.commons.lang3.tuple.Pair;
-
 public class ImageCache {
 	private static final int initialCapacity = 200;
-	private static Map<URL, Image> cache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
-	private static Map<URL, Image> modifiedImageCache = Collections.synchronizedMap(new HashMap<URL, Image>(initialCapacity));
+
+	private static final Cache<URL, Image> cache = Caffeine.newBuilder()
+			.expireAfterAccess(3, TimeUnit.HOURS)
+			.initialCapacity(initialCapacity)
+			.build();
+	private static final Cache<URL, Image> modifiedImageCache = Caffeine.newBuilder()
+			.expireAfterAccess(3, TimeUnit.HOURS)
+			.initialCapacity(initialCapacity)
+			.build();
 
 
 	public static Image getImageFromCache(URL url, boolean isImageModified, URL referrerURL) throws IOException {
-		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
+		Cache<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
+		var mapToUse = isImageModified ? modifiedImageCache.asMap() : cache.asMap();
+
 
 		//Cache already contains the item, so just return it
-		if (cacheToUse.containsKey(url)) {
-			return cacheToUse.get(url);
+		if (mapToUse.containsKey(url)) {
+			return cacheToUse.getIfPresent(url);
 		}
 		//we didn't find it, so read the Image into the cache and also return it
 		else {
@@ -44,8 +50,8 @@ public class ImageCache {
 				cacheToUse.put(url, blankImage);
 				return blankImage;
 			} catch (OutOfMemoryError e) {
-				System.out.println("We ran out of memory..clearing the cache. It was size " + cache.size() + " before the clear");
-				cacheToUse.clear();
+				System.out.println("We ran out of memory..clearing the cache. It was size " + cache.estimatedSize() + " before the clear");
+				cacheToUse.cleanUp();
 				System.gc();
 				return FileDownloaderUtilities.getImageFromUrl(url);
 			} catch (IOException e) {
@@ -58,17 +64,12 @@ public class ImageCache {
 	}
 
 	public static void putImageInCache(URL url, Image image, boolean isImageModified) {
-		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
+		Cache<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
 		//300 is arbitrary for now, but at some point we gotta boot stuff from cache or we will run out memory
 		//Ideally, I would boot out old items first, but I would need a new data structure to do this, probably
 		//by using a library already written that handles all the cache stuff rather than just using a map like I'm doing
 		//in this class
 
-		//TODO: purge old items instead of the whole world. get a real cache library from a 3rd party
-		if (cacheToUse.size() > 300) {
-			System.out.println("Clearing cache - cache had " + cacheToUse.size() + " items before clearing.");
-			cacheToUse.clear();
-		}
 		cacheToUse.put(url, image);
 	}
 
@@ -77,24 +78,28 @@ public class ImageCache {
 	}
 
 	public static void removeImageFromCache(URL url, boolean isImageModified) {
-		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
-		cacheToUse.remove(url);
+		Cache<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
+		if(cacheToUse.asMap().containsKey(url))
+			cacheToUse.invalidate(url);
 	}
 
 	public static boolean isImageCached(URL url, boolean isImageModified) {
-		Map<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
-		return cacheToUse.containsKey(url);
+		Cache<URL, Image> cacheToUse = isImageModified ? modifiedImageCache : cache;
+		return cacheToUse.asMap().containsKey(url);
 	}
 
     public static void replaceIfPresent(URL url, Image image) throws URISyntaxException, MalformedURLException {
-        if(cache.containsKey(url)){
-            cache.replace(url, image);
+        if(cache.asMap().containsKey(url)){
+			cache.invalidate(url);
+			cache.put(url, image);
         }
     }
 
 	public static void replaceIfPresent(URL url, boolean derived, Image image) {
 		var cacheToUse = derived? modifiedImageCache : cache;
-		if(cacheToUse.containsKey(url))
-			cacheToUse.replace(url, image);
+		if(cacheToUse.asMap().containsKey(url)) {
+			cache.invalidate(url);
+			cache.put(url, image);
+		}
 	}
 }

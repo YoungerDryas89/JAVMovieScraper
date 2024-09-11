@@ -44,12 +44,11 @@ public class BrowseDirectoryAction implements ActionListener {
 							// program is swing :)
 							myGuiMain.setCurrentlySelectedDirectoryList(returnVal);
 
-
 							// display a wait cursor while repopulating the list
 							// as this can sometimes be slow
 							try {
 								myGuiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-								myGuiMain.updateFileListModel(false);
+								myGuiMain.updateFileListModel(myGuiMain.getCurrentlySelectedDirectoryList(), false);
 							} finally {
 								myGuiMain.getGuiSettings().setLastUsedDirectory(myGuiMain.getCurrentlySelectedDirectoryList());
 								myGuiMain.getFrmMoviescraper().setCursor(Cursor.getDefaultCursor());

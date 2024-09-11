@@ -42,7 +42,7 @@ class FilterOptionAction extends AbstractAction{
                 case FilterModes.HideNFOFiles -> settings.setHideNFOFiles(!settings.getHideNFOFiles());
                 default -> throw new IllegalStateException("Unexpected value: " + key);
             }
-            parent.updateFileListModel(true);
+            parent.updateFileList();
         }
     }
 

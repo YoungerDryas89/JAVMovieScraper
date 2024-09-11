@@ -447,7 +447,7 @@ public class Movie {
 	}
 
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile,
-	        MoviescraperPreferences preferences, boolean preferPosterDerivation) throws IOException {
+	        MoviescraperPreferences preferences, boolean uncropButtonPressed) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
@@ -470,16 +470,17 @@ public class Movie {
 		if (posters != null && posters.length > 0)
 			posterToSaveToDisk = posters[0];
 
-		if(preferPosterDerivation && posterToSaveToDisk.hasDerivations() ) {
-			parentPoster = posterToSaveToDisk;
-			posterToSaveToDisk = parentPoster.derivedChild();
+		if(uncropButtonPressed){
+			if(posterToSaveToDisk.hasDerivations())
+				posterToSaveToDisk = posterToSaveToDisk.derivedChild();
 
-			assert posterToSaveToDisk != null;
-		} else if(!preferPosterDerivation && posterToSaveToDisk.isModified()){
-			posterToSaveToDisk = posterToSaveToDisk.getOriginalImage();
+		} else {
+			if(posterToSaveToDisk.isModified())
+				posterToSaveToDisk = posterToSaveToDisk.getOriginalImage();
 
-			assert posterToSaveToDisk != null;
 		}
+
+		assert posterToSaveToDisk != null;
 
 		boolean writePoster = preferences.getWriteFanartAndPostersPreference();
 		boolean writeFanart = preferences.getWriteFanartAndPostersPreference();
@@ -549,11 +550,11 @@ public class Movie {
 			}
 		}
 
-		if(preferPosterDerivation && posterToSaveToDisk.isModified()){
+		if(uncropButtonPressed && posterToSaveToDisk.isModified()){
 			try {
 				ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
 			}catch (URISyntaxException e){
-				System.err.println("Failed to update image cache with child image of: " + parentPoster.getThumbURL());
+				System.err.println("Failed to update image cache with child image of: " + posterToSaveToDisk.getOriginalImage().getThumbURL());
 				System.err.println(e.getMessage());
 			}
 		}

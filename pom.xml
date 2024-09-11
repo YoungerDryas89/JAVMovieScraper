@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>moviescraper.doctord</groupId>
     <artifactId>JAVMovieScraper</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.2</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -170,6 +170,16 @@
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-webp</artifactId>
+            <version>3.11.0</version>
         </dependency>
     </dependencies>
     <repositories>
