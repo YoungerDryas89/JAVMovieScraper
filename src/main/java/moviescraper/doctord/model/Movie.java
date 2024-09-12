@@ -553,6 +553,7 @@ public class Movie {
 		if(uncropButtonPressed && posterToSaveToDisk.isModified()){
 			try {
 				ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+				ImageCache.removeImageFromCache(posterToSaveToDisk.getThumbURL(), false);
 			}catch (URISyntaxException e){
 				System.err.println("Failed to update image cache with child image of: " + posterToSaveToDisk.getOriginalImage().getThumbURL());
 				System.err.println(e.getMessage());
