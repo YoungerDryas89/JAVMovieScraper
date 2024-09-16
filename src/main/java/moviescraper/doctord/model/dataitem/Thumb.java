@@ -50,6 +50,10 @@ public class Thumb extends MovieDataItem {
 	public Thumb(String url, boolean useJavCoverCropRoutine) throws IOException {
 
 		thumbURL = new URL(url);
+
+		// Remove any existing entries in the cache
+		ImageCache.removeImageFromCache(thumbURL, false);
+
 		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
 		//just get the jpg from the url
 		String filename = fileNameFromURL(url);
