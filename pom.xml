@@ -181,6 +181,17 @@
             <artifactId>imageio-webp</artifactId>
             <version>3.11.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+            <version>24.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>python</artifactId>
+            <version>24.1.0</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
@@ -246,6 +257,25 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.graalvm.python</groupId>
+                <artifactId>graalpy-maven-plugin</artifactId>
+                <version>24.1.0</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <packages>
+                                <!-- Select Python packages to install via pip. -->
+                                <package>undetected-chromedriver</package>
+                                <package>nodriver</package>
+                            </packages>
+                        </configuration>
+                        <goals>
+                            <goal>process-graalpy-resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
