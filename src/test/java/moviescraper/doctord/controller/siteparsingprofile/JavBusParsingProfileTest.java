@@ -157,7 +157,7 @@ public class JavBusParsingProfileTest {
 
 	@Test
 	public void testPoster() throws IOException {
-		Thumb[] poster = profile.scrapePosters();
+		Thumb[] poster = profile.scrapePosters(true);
 		assertTrue("There should be 1 Fanart.", poster.length == 1);
 
 		//TestingHelper.showImage("Poster", poster[0].getThumbImage());

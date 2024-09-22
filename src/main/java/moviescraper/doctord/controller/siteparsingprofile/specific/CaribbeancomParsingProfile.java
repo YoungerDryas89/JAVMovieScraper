@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +41,8 @@ import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class CaribbeancomParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	Document japaneseDocument;
@@ -52,6 +50,16 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	boolean useTranslationOfJapanesePageForEnglishMetadata = true;
 	private static final SimpleDateFormat caribbeanReleaseDateFormat = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
+
+	Map<String, String> japaneseDetailEquivalent = Map.of(
+			"Starring:", "出演",
+			"Release date:", "配信日",
+			"Runtime:", "再生時間",
+			"Tags:", "タグ",
+			"User Rating:", "ユーザー評価"
+	);
+
+	Map<Language, String> detailTable = new HashMap<>();
 
 	@Override
 	public String getParserName() {
@@ -68,7 +76,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		try {
 			Element titleElement = document.select(".movie-info .heading [itemprop=name]").first();
@@ -78,32 +87,38 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		try {
 			Element releaseDate = document.select(".movie-info [itemprop=uploadDate]").first();
@@ -113,33 +128,39 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		try {
 			Element durationElement = document.select(".movie-info span[itemprop=duration]").first();
@@ -162,7 +183,7 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ID id = scrapeID();
 		ArrayList<Thumb> posters = new ArrayList<>();
 		// I tried getting the URL through extracting it directly, but what I would get in the scraper would not be
@@ -172,12 +193,12 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		try {
 			for(var suffix : image_url_suffix){
 				if(fileExistsAtURL(img_url + "/images/" + suffix)){
-					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/" + suffix);
+					Thumb additionalThumb = new Thumb("https://en.caribbeancom.com/moviepages/" + id.getId() + "/images/" + suffix, cropPosters);
 					posters.add(additionalThumb);
 					break;
 				}
 			}
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return posters.toArray(new Thumb[posters.size()]);
@@ -205,12 +226,14 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		initializeJapaneseDocument();
 		// Just get the ID from the page URL by doing some string manipulation
@@ -223,7 +246,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return new ID("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		try {
@@ -242,7 +266,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		Elements actorElements = document.select(".movie-info [itemprop=actor]");
@@ -257,18 +282,21 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		//No Director information on the site
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		return new Studio("Caribbeancom");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		ID id = scrapeID();
 		if (id != null && id.getId().length() > 0) {
@@ -280,7 +308,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return Trailer.BLANK_TRAILER;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		this.id = findIDTagFromFile(file);

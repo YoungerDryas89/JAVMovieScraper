@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>moviescraper.doctord</groupId>
     <artifactId>JAVMovieScraper</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.4</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -70,11 +70,6 @@
         <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.19.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
@@ -115,11 +110,6 @@
             <version>2.2</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>2.0.31</version>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20230618</version>
@@ -154,6 +144,11 @@
         <artifactId>httpclient</artifactId>
         <version>4.5.13</version>
     </dependency>
+        <dependency>
+            <groupId>dev.brachtendorf</groupId>
+            <artifactId>JImageHash</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>com.cedarsoftware</groupId>
@@ -171,15 +166,20 @@
             <version>3.6.0</version>
         </dependency>
         <dependency>
-            <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>polyglot</artifactId>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
             <version>24.1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>python</artifactId>
-            <version>24.1.0</version>
-            <type>pom</type>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-webp</artifactId>
+            <version>3.11.0</version>
         </dependency>
     </dependencies>
     <repositories>
@@ -247,26 +247,6 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.graalvm.python</groupId>
-                <artifactId>graalpy-maven-plugin</artifactId>
-                <version>24.1.0</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <packages>
-                                <!-- Select Python packages to install via pip. -->
-                                <package>undetected-chromedriver</package>
-                                <package>nodriver</package>
-                            </packages>
-                        </configuration>
-                        <goals>
-                            <goal>process-graalpy-resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 </project>

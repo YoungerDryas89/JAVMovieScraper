@@ -38,6 +38,8 @@ import moviescraper.doctord.model.dataitem.Year;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.annotation.Nonnull;
+
 public class OnePondoParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
 
 	//private boolean scrapeInEnglish;
@@ -49,7 +51,8 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		return "1pondo";
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		JSONObject pageJSON = getMovieJSON();
         String title;
@@ -67,63 +70,73 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
         return new Title(title);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		JSONObject pageJSON = getMovieJSON();
 		return new OriginalTitle(pageJSON.getString("Title"));
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// This site has no sort title information
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		// This site has no set information
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		// This site has no rating information
 		return new Rating(0, "0");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		JSONObject pageJSON = getMovieJSON();
 		String releaseYear = pageJSON.getString("Year");
 		return new Year(releaseYear);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		JSONObject pageJSON = getMovieJSON();
 		String releaseDate = pageJSON.getString("Release");
 		return new ReleaseDate(releaseDate);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		//This site has no top250 information
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		//This site has no vote information
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		//This site has no outline for movies
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		var json = getMovieJSON();
         String plot;
@@ -140,13 +153,15 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
         return new Plot(plot);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		// TODO Auto-generated method stub
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		JSONObject pageJSON = getMovieJSON();
 		String duration = String.valueOf(pageJSON.getInt("Duration"));
@@ -154,14 +169,14 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		try {
 			// Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
 			var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
 			if (fileExistsAtURL(jacketURL, false)) {
-				thumbList.add(new Thumb(jacketURL));
+				thumbList.add(new Thumb(jacketURL, cropPosters));
 				return thumbList.toArray(new Thumb[thumbList.size()]);
 			} else {
 				String[] thumbnailJsonNodes = {
@@ -187,7 +202,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 				return thumbList.toArray(new Thumb[thumbList.size()]);
 
 			}
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return new Thumb[0];
@@ -251,26 +266,30 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		return scrapeFanart();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		JSONObject pageJSON = getMovieJSON();
 		String movieID = pageJSON.getString("MovieID");
 		return new ID(movieID);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		//For now, I wasn't able to find any genres on the page
 		ArrayList<Genre> genreList = new ArrayList<>();
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>(1);
 		JSONObject pageJSON = getMovieJSON();
@@ -291,19 +310,22 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		//No Directors listed for this site, return an empty list
 		ArrayList<Director> directorList = new ArrayList<>();
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		return new Studio("1pondo");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		ID movieID = scrapeID();
 		String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
@@ -313,7 +335,8 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 			return Trailer.BLANK_TRAILER;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file));

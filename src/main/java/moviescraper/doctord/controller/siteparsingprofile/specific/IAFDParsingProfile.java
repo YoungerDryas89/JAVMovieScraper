@@ -40,6 +40,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class IAFDParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private boolean useSiteSearch = true;
@@ -52,7 +54,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return groupNames;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select(getTitleElementSelector()).first();
 		System.out.println(titleElement);
@@ -75,17 +78,20 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return "div.col-sm-12 h1";
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		Element setElement = findSidebarElement("Studio");
 		if (setElement != null && setElement.text().contains(".com")) {
@@ -94,13 +100,15 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 			return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		// TODO Auto-generated method stub
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 
 		String yearText = "year=";
@@ -113,7 +121,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 			return Year.BLANK_YEAR;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		//I don't think IAFD has the month or day a movie was released - only the year
 		//In some rare cases they have this information in the comments. There is also a release date field
@@ -122,25 +131,29 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		// TODO Auto-generated method stub
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		Element plotElement = document.select("div#sceneinfo ul").first();
 		if (plotElement != null) {
@@ -159,13 +172,15 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		// TODO Auto-generated method stub
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = findSidebarElement("Minutes");
 		if (runtimeElement != null) {
@@ -175,14 +190,14 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		Element posterElement = document.select("a[rel=covers]").first();
 		if (posterElement != null) {
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(posterElement.attr("href"));
+				posterThumbs[0] = new Thumb(posterElement.attr("href"), cropPosters);
 				return posterThumbs;
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				return new Thumb[0];
 			}
@@ -201,25 +216,29 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return extraFanart.toArray(new Thumb[extraFanart.size()]);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		// TODO Auto-generated method stub
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		//No Genres in IAFD
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("div.castbox:not(.nonsex) a"); //performers who are not just extras, etc
 		ArrayList<Actor> actorList = new ArrayList<>();
@@ -254,7 +273,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = findSidebarElement("Director");
@@ -266,7 +286,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = findSidebarElement("Distributor");
 		if (studioElement != null) {
@@ -277,7 +298,8 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileBaseName;

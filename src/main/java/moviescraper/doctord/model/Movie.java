@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -20,7 +22,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
-import moviescraper.doctord.scraper.HeadlessBrowser;
+import moviescraper.doctord.view.FileDetailPanel;
+import moviescraper.doctord.view.GUIMain;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -113,7 +116,7 @@ public class Movie {
 		this.year = year;
 	}
 
-	public Movie(SiteParsingProfile siteToScrapeFrom) {
+	public Movie(SiteParsingProfile siteToScrapeFrom, GUIMain parent) {
 		title = siteToScrapeFrom.scrapeTitle();
 
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
@@ -130,7 +133,10 @@ public class Movie {
 		studio = siteToScrapeFrom.scrapeStudio();
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
 		runtime = siteToScrapeFrom.scrapeRuntime();
-		posters = siteToScrapeFrom.scrapePosters();
+		posters = siteToScrapeFrom.scrapePosters(parent.getFileDetailPanel().cropPosters());
+		if(posters[0].hasDerivations())
+			posters[0] = posters[0].derivedChild();
+
 		fanart = siteToScrapeFrom.scrapeFanart();
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
 		mpaa = siteToScrapeFrom.scrapeMPAA();
@@ -441,7 +447,7 @@ public class Movie {
 	}
 
 	public void writeToFile(File nfoFile, File posterFile, File fanartFile, File currentlySelectedFolderJpgFile, File targetFolderForExtraFanartFolderAndActorFolder, File trailerFile,
-	        MoviescraperPreferences preferences) throws IOException {
+	        MoviescraperPreferences preferences, boolean uncropButtonPressed) throws IOException {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
@@ -459,9 +465,22 @@ public class Movie {
 			nfoFile.delete();
 		FileUtils.writeStringToFile(nfoFile, xml, org.apache.commons.lang3.CharEncoding.UTF_8);
 
+		Thumb parentPoster = null;
 		Thumb posterToSaveToDisk = null;
 		if (posters != null && posters.length > 0)
 			posterToSaveToDisk = posters[0];
+
+		if(uncropButtonPressed){
+			if(posterToSaveToDisk.hasDerivations())
+				posterToSaveToDisk = posterToSaveToDisk.derivedChild();
+
+		} else {
+			if(posterToSaveToDisk.isModified())
+				posterToSaveToDisk = posterToSaveToDisk.getOriginalImage();
+
+		}
+
+		assert posterToSaveToDisk != null;
 
 		boolean writePoster = preferences.getWriteFanartAndPostersPreference();
 		boolean writeFanart = preferences.getWriteFanartAndPostersPreference();
@@ -482,37 +501,62 @@ public class Movie {
 				iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 				iwp.setCompressionQuality(1); // an float between 0 and 1
 				// 1 specifies minimum compression and maximum quality
-				IIOImage image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
+				IIOImage image;
+				image = new IIOImage((RenderedImage) posterToSaveToDisk.getThumbImage(), null, null);
 
 				if (writePoster && posterToSaveToDisk.isModified()) {
 					System.out.println("Writing poster to " + posterFile);
 					try (FileImageOutputStream posterFileOutput = new FileImageOutputStream(posterFile);) {
 						writer.setOutput(posterFileOutput);
 						writer.write(null, image, iwp);
-					}
-				}
+					} catch (IOException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				//write out the poster file without reencoding it and resizing it
 				else if ((!posterFile.exists() || writePosterIfAlreadyExists) && posterToSaveToDisk.getThumbURL() != null) {
-					System.out.println("Writing poster file from nfo: " + posterFile);
-					FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
-				}
+                    try {
+                        System.out.println("Writing poster file from nfo: " + posterFile);
+                        FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), posterFile, posterToSaveToDisk.getReferrerURL());
+                        ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+                    } catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				if (createFolderJpgEnabledPreference && currentlySelectedFolderJpgFile != null) {
+					// if the image is not modified
 					if (!posterToSaveToDisk.isModified() && (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists))) {
-						System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
-						FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
-					} else {
+                        try {
+                            System.out.println("Writing folder.jpg (no changes) to " + currentlySelectedFolderJpgFile);
+                            FileDownloaderUtilities.writeURLToFile(posterToSaveToDisk.getThumbURL(), currentlySelectedFolderJpgFile, posterToSaveToDisk.getReferrerURL());
+                        } catch (IOException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } else {
 						if (!currentlySelectedFolderJpgFile.exists() || (currentlySelectedFolderJpgFile.exists() && writePosterIfAlreadyExists)) {
 							System.out.println("Writing folder to " + currentlySelectedFolderJpgFile);
 							try (FileImageOutputStream folderFileOutput = new FileImageOutputStream(currentlySelectedFolderJpgFile);) {
 								writer.setOutput(folderFileOutput);
 								writer.write(null, image, iwp);
-							}
-						} else {
+							} catch (IOException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        } else {
 							System.out.println("Skipping overwrite of folder.jpg due to preference setting");
 						}
 					}
 				}
 				writer.dispose();
+			}
+		}
+
+		if(uncropButtonPressed && posterToSaveToDisk.isModified()){
+			try {
+				ImageCache.replaceIfPresent(posterFile.toURI().toURL(), posterToSaveToDisk.getThumbImage());
+				ImageCache.removeImageFromCache(posterToSaveToDisk.getThumbURL(), false);
+			}catch (URISyntaxException e){
+				System.err.println("Failed to update image cache with child image of: " + posterToSaveToDisk.getOriginalImage().getThumbURL());
+				System.err.println(e.getMessage());
 			}
 		}
 
@@ -531,14 +575,24 @@ public class Movie {
 				if (fanartToSaveToDisk.getImageIconThumbImage() != null && fanartToSaveToDisk.isModified()) {
 					try {
 						ImageIO.write(fanartToSaveToDisk.toBufferedImage(), "jpg", fanartFile);
+                        ImageCache.replaceIfPresent(fanartFile.toURI().toURL(), fanartToSaveToDisk.getThumbImage());
 					} catch (IOException e) {
 						System.err.println("Failed to write fanart due to io error");
 						e.printStackTrace();
-					}
-				}
+					} catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+                }
 				//download the url and save it out to disk
-				else
-					FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, fanartToSaveToDisk.getReferrerURL());
+				else {
+                    try {
+                        FileDownloaderUtilities.writeURLToFile(fanartToSaveToDisk.getThumbURL(), fanartFile, fanartToSaveToDisk.getReferrerURL());
+                        ImageCache.replaceIfPresent(fanartFile.toURI().toURL(), fanartToSaveToDisk.getThumbImage());
+                    } catch (URISyntaxException e) {
+                        System.err.println(e.getMessage());
+                    }
+
+                }
 			}
 		}
 
@@ -761,20 +815,38 @@ public class Movie {
 	 */
 
 	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, HeadlessBrowser browser, boolean useURLtoScrapeFrom) throws IOException {
+	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, GUIMain parent) throws IOException {
 
 		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
 		if (siteToParseFrom.getDiscardResults())
 			return null;
-		String searchString = siteToParseFrom.createSearchString(movieFile);
-		siteToParseFrom.setBrowser(browser);
+
+		String searchString;
+		FileDetailPanel panel = null;
+		if(parent != null){
+			panel = parent.getFileDetailPanel();
+		}
+
+		if(panel != null && panel.shouldOverrideInferredId() && !panel.inferredId().equals("N/A")){
+			searchString = siteToParseFrom.createSearchStringFromId(panel.inferredId());
+		} else {
+			searchString = siteToParseFrom.createSearchString(movieFile);
+		}
 		SearchResult[] searchResults = null;
 		int searchResultNumberToUse = 0;
 		//no URL was passed in so we gotta figure it ourselves
 		if (!useURLtoScrapeFrom) {
 			searchResults = siteToParseFrom.getSearchResults(searchString);
 			int levDistanceOfCurrentMatch = 999999; // just some super high number
-			String idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
+			String idFromMovieFile;
+			if(panel != null && panel.shouldOverrideInferredId() && (!panel.inferredId().isEmpty() || !panel.inferredId().equals("N/A")))
+				idFromMovieFile = panel.inferredId();
+			else
+				idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
+
+
+			if(panel != null && !panel.shouldOverrideInferredId())
+				panel.setInferredId(idFromMovieFile);
 
 			if(searchResults.length == 0){
 				// TODO: Need something better and more user friendly than just simply printing this out to the console.
@@ -832,7 +904,7 @@ public class Movie {
             siteToParseFrom.prepareData();
 			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
 
-			Movie scrapedMovie = new Movie(siteToParseFrom);
+			Movie scrapedMovie = new Movie(siteToParseFrom, parent);
 			return scrapedMovie;
 		} else //no movie match found
 		{

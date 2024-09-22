@@ -22,8 +22,6 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
 import moviescraper.doctord.model.preferences.GuiSettings;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
-import moviescraper.doctord.scraper.FirefoxBrowser;
-import moviescraper.doctord.scraper.HeadlessBrowser;
 import moviescraper.doctord.view.renderer.FileRenderer;
 
 import java.awt.event.*;
@@ -37,8 +35,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.beans.PropertyChangeEvent;
+import java.util.function.Supplier;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javafx.embed.swing.JFXPanel;
@@ -97,9 +97,6 @@ public class GUIMain {
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
-	private DirectorySort sortSetting = DirectorySort.DateModified;
-	private Boolean sortAsAscending = false;
-	HeadlessBrowser browser;
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
@@ -157,7 +154,6 @@ public class GUIMain {
 
 		preferences = MoviescraperPreferences.getInstance();
 		guiSettings = GuiSettings.getInstance();
-		browser = new FirefoxBrowser();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
 
@@ -170,20 +166,13 @@ public class GUIMain {
 		currentlySelectedActorsFolderList = new ArrayList<>();
 		movieToWriteToDiskList = new ArrayList<>();
 		frmMoviescraper = new JFrame();
-		frmMoviescraper.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				super.windowClosing(e);
-				browser.quit();
-			}
-		});
 		frmMovieScraperBlocker = new WindowBlocker();
 		//set up the window that sits above the frame and can block input to this frame if needed while a dialog is open
 		frmMoviescraper.setGlassPane(frmMovieScraperBlocker);
 		frmMoviescraper.setBackground(SystemColor.window);
 		frmMoviescraper.setMinimumSize(new Dimension(minimumWidth, minimumHeight));
 		frmMoviescraper.setPreferredSize(new Dimension(guiSettings.getWidth(), guiSettings.getHeight()));
-		frmMoviescraper.setTitle("JAVMovieScraper v0.5.0");
+		frmMoviescraper.setTitle("JAVMovieScraper v0.6.4");
 		frmMoviescraper.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Add listener
@@ -440,9 +429,24 @@ public class GUIMain {
 	}
 
 	private File[] showFileListSorted(File currentlySelectedDirectory) {
-
+		var sortAsAscending = guiSettings.getAscending();
+		var sortSetting = guiSettings.getSort();
 		File[] sortedList = currentlySelectedDirectory.listFiles();
 		//Make a comparator so we get alphabetic order, with all directories first, then all the files (Like Windows Explorer)
+
+		sortedList = Arrays.stream(sortedList).filter(f ->{
+			String[] imageExtensions = {
+					".png", ".jpg", ".jpeg", ".tif", ".webp", ".gif"
+			};
+			if(f.isFile()){
+				if(guiSettings.getHideImages() && StringUtils.endsWithAny(f.getName(), imageExtensions))
+					return false;
+				if(guiSettings.getHideNFOFiles() && f.getName().endsWith(".nfo"))
+					return false;
+
+			}
+            return true;
+        }).toArray(File[]::new);
 		Comparator<File> comp = new Comparator<File>() {
 			@Override
 			public int compare(File file1, File file2) {
@@ -749,28 +753,7 @@ public class GUIMain {
 		buttonPanel.disableWriteFile();
 	}
 
-	public DirectorySort getSortSetting(){
-		return this.sortSetting;
-	}
-
-	public void setSortSetting(DirectorySort sort){
-		this.sortSetting = sort;
-	}
-
-	public Boolean getSortAsAscending(){
-		return this.sortAsAscending;
-	}
-
-	public void setSortAsAscending(boolean state){
-		this.sortAsAscending = state;
-	}
-
 	public void updateFileList(){
 		updateFileListModel(getCurrentlySelectedDirectoryList(), true);
 	}
-
-	public HeadlessBrowser browser(){
-		return this.browser;
-	}
-
 }

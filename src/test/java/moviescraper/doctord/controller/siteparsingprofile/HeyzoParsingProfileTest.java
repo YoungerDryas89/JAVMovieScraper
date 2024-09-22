@@ -102,7 +102,7 @@ public class HeyzoParsingProfileTest {
 
 	@Test
 	public void testPoster() {
-		String posterURL = profile.scrapePosters()[0].getThumbURL().toString();
+		String posterURL = profile.scrapePosters(false)[0].getThumbURL().toString();
 		System.out.println("poster url of first poster = " + posterURL);
 		assertEquals("Wrong poster url", "https://en.heyzo.com/contents/3000/0194/images/player_thumbnail_en.jpg", posterURL);
 	}

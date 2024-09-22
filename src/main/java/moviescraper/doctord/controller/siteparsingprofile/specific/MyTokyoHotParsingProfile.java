@@ -43,6 +43,8 @@ import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class MyTokyoHotParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private boolean scrapeInEnglish = true;
@@ -64,7 +66,8 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = null;
 		if (getScrapingLanguage() == Language.ENGLISH)
@@ -80,7 +83,8 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		initializeJapaneseDocument();
 		Element originalTitleElement = japaneseDocument.select("div.pagetitle").first();
@@ -90,27 +94,32 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return new Rating(10, "");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("dl.info dt:contains(Release Date) + dd, dl.info dt:contains(�?信開始日) + dd").first();
 		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
@@ -120,22 +129,26 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		Element plotElement = null;
 		if (getScrapingLanguage() == Language.ENGLISH)
@@ -150,12 +163,14 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 			return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element durationElement = document.select("dl.info dt:contains(Duration) + dd, dl.info dt:contains(収録時間) + dd").first();
 		if (durationElement != null && durationElement.text().trim().length() > 0) {
@@ -173,15 +188,15 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> posters = new ArrayList<>();
 		Element trailerBackgroundImage = document.select("video[poster]").first();
 		if (trailerBackgroundImage != null) {
 			String posterAttr = trailerBackgroundImage.attr("poster");
 			try {
 				//TODO: crop this poster
-				posters.add(new Thumb(posterAttr));
-			} catch (MalformedURLException e) {
+				posters.add(new Thumb(posterAttr, cropPosters));
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -204,7 +219,8 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return posters.toArray(new Thumb[posters.size()]);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		//ArrayList<Thumb> posters  = new ArrayList<Thumb>();
 		Element trailer = document.select("video source[src*=/samples/]").first();
@@ -217,20 +233,22 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("dl.info dt:contains(Product ID) + dd, dl.info dt:contains(作�?番�?�) + dd").first();
 		if (idElement != null && idElement.text().length() > 0)
@@ -239,7 +257,8 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 			return new ID("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = null;
@@ -251,7 +270,8 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		for (Element element : document.select("#main .info a")) {
@@ -271,17 +291,20 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		return new Studio("Tokyo-Hot");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
             scrapedMovieFile = file;
             return createSearchStringFromId(findIDTagFromFile(file));

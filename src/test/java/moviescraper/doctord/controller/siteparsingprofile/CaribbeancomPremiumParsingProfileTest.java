@@ -121,7 +121,7 @@ public class CaribbeancomPremiumParsingProfileTest {
 
 	@Test
 	public void testScrapePoster() {
-		Thumb[] posters = parser.scrapePosters();
+		Thumb[] posters = parser.scrapePosters(true);
 		assertEquals("Poster size not right", true, posters.length > 0);
 		assertEquals("Wrong poster url", "https://www.caribbeancompr.com/moviepages/122716_008/images/l_l.jpg", posters[0].getThumbURL().toString());
 	}

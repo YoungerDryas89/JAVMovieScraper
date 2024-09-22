@@ -46,6 +46,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.annotation.Nonnull;
+
 public class DmmParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	final static double dmmMaxRating = 5.00;
@@ -103,7 +105,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			setScrapingLanguage(Language.JAPANESE);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("[property=og:title]").first();
 		// run a google translate on the japanese title
@@ -116,21 +119,24 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return new Title(titleElement.attr("content"));
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		Element titleElement = document.select("[property=og:title]").first();
 		// leave the original title as the japanese title
 		return new OriginalTitle(titleElement.attr("content").toString());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		// FIXME: Broken
 		Element setElement = document.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
@@ -142,7 +148,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return new Set(setElement.text());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		Element ratingElement = document.select(".d-review__average strong").first();
 		if (ratingElement != null)
@@ -151,12 +158,14 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element releaseDateElement = document.select("table.mg-b20 tr td:contains(貸出開始日：) + td, table.mg-b20 tr td:contains(発売日：) + td, table.mg-b20 tr td:contains(商品発売日：) + td").first();
 		if (releaseDateElement != null) {
@@ -168,13 +177,15 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on DMM
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		Element votesElement = document.select(".d-review__evaluates strong").first();
 		if (votesElement != null)
@@ -183,13 +194,15 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 
 		//dvd mode
@@ -205,12 +218,14 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return new Plot(plotElement.text());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public moviescraper.doctord.model.dataitem.Runtime scrapeRuntime() {
 		String runtime = "";
 		Element runtimeElement = document.select("table.mg-b20 tr td:contains(収録時間：) + td").first();
@@ -222,7 +237,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		try {
 			//we can return no trailers if scraping trailers is not enabled or the page we are scraping does not have a button to link to the trailer
@@ -271,12 +287,12 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		//don't crop the cover for videoc elements as it is a website release and does not have dvd art
 		if (document.baseUri().contains("/digital/videoc"))
 			return scrapePostersAndFanart(false, false);
 		else
-			return scrapePostersAndFanart(true, false);
+			return scrapePostersAndFanart(cropPosters, false);
 	}
 
 	/**
@@ -345,12 +361,14 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return scrapePostersAndFanart(false, false);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("td:containsOwn(品番：) ~ td").first();
 		if (idElement != null) {
@@ -396,7 +414,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return idElementText;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document.select("table.mg-b12 tr td a[href*=article=keyword/id=]");
 		ArrayList<Genre> genres = new ArrayList<>(genreElements.size());
@@ -530,7 +549,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return true;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		// scrape all the actress IDs
 		Elements actressIDElements = document.select("span#performer a[href*=article=actress/id=]");
@@ -625,7 +645,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directors = new ArrayList<>();
 		Element directorElement = document.select("table.mg-b20 tr td a[href*=article=director/id=]").first();
@@ -640,7 +661,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 		return directors;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("td:containsOwn(メーカー：) ~ td").first();
 		if (studioElement != null) {
@@ -653,7 +675,8 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 			return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));

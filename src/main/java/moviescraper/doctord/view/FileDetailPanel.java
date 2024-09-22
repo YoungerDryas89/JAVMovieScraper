@@ -1,6 +1,6 @@
 package moviescraper.doctord.view;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -11,15 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import com.jgoodies.forms.layout.FormSpecs;
 import moviescraper.doctord.controller.EditGenresAction;
@@ -46,10 +38,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import javax.swing.DropMode;
-import javax.swing.JComponent;
-import javax.swing.ListSelectionModel;
-import javax.swing.TransferHandler;
 
 public class FileDetailPanel extends JPanel {
 
@@ -107,6 +95,12 @@ public class FileDetailPanel extends JPanel {
 
 	private JLabel numberInListSelectedLabel;
 
+	JCheckBox overrideCheckbox;
+	JTextField inferredIdTextField;
+	JLabel inferredTextFieldLabel;
+	JPanel scraperOptionsJPanel;
+	JCheckBox cropPosters;
+
 	/**
 	 * Create the panel.
 	 */
@@ -148,7 +142,8 @@ public class FileDetailPanel extends JPanel {
 		        FormSpecs.DEFAULT_ROWSPEC, //24 - tags
 		        FormSpecs.RELATED_GAP_ROWSPEC, //25 - empty space
 		        RowSpec.decode("fill:pref:grow"), //26 - actors
-		        FormSpecs.RELATED_GAP_ROWSPEC//27 - empty space
+		        FormSpecs.RELATED_GAP_ROWSPEC, //27 - empty space
+				FormSpecs.DEFAULT_ROWSPEC // 28 - Override Space
 		});
 
 		fileDetailsPanel.setLayout(formLayout);
@@ -165,6 +160,37 @@ public class FileDetailPanel extends JPanel {
 		movieNavigationButtonsPanel.add(nextMovieButton);
 		changeEnabledStatusOfPreviousAndNextButtons();
 		fileDetailsPanel.add(movieNavigationButtonsPanel, getLayoutPositionString(COLUMN_FORM_FIELD, ROW_CHANGE_MOVIE_BUTTONS));
+
+		scraperOptionsJPanel = new JPanel();
+		scraperOptionsJPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Additional Options"));
+		overrideCheckbox = new JCheckBox("Override", false);
+		inferredIdTextField = new JTextField("N/A", DEFAULT_TEXTFIELD_LENGTH);
+		inferredTextFieldLabel = new JLabel("Movie Id Inferred From Filename:");
+		overrideCheckbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                inferredIdTextField.setEditable(overrideCheckbox.isSelected());
+			}
+		});
+		inferredIdTextField.setEditable(overrideCheckbox.isSelected());
+
+		JPanel idoverridePanel = new JPanel();
+		idoverridePanel.add(inferredTextFieldLabel);
+		idoverridePanel.add(inferredIdTextField);
+		idoverridePanel.add(overrideCheckbox);
+
+		JPanel uncropPanel = new JPanel();
+		uncropPanel.setLayout(new BorderLayout(10, 10));
+
+		cropPosters = new JCheckBox("Crop Posters", true);
+		uncropPanel.add(cropPosters, BorderLayout.WEST);
+		scraperOptionsJPanel.add(idoverridePanel);
+		scraperOptionsJPanel.add(uncropPanel);
+		scraperOptionsJPanel.setLayout(new BoxLayout(scraperOptionsJPanel, BoxLayout.Y_AXIS));
+		//scraperOptionsJPanel.setLayout();
+
+		scraperOptionsJPanel.add(uncropPanel);
+		fileDetailsPanel.add(scraperOptionsJPanel, getLayoutPositionString(COLUMN_FORM_FIELD, 28));
 
 		//Path
 		JLabel lblPath = new JLabel("Path:");
@@ -612,6 +638,22 @@ public class FileDetailPanel extends JPanel {
 		}
 		return -1;
 	}
+
+	public void setInferredId(String id){
+		if(!overrideCheckbox.isSelected()){
+			inferredIdTextField.setText(id);
+		}
+	}
+
+	public String inferredId(){
+		return inferredIdTextField.getText();
+	}
+
+	public Boolean shouldOverrideInferredId(){
+		return overrideCheckbox.isSelected();
+	}
+
+	public Boolean cropPosters() { return cropPosters.isSelected(); }
 
 	/**
 	 * Sets a new movie and updates a view

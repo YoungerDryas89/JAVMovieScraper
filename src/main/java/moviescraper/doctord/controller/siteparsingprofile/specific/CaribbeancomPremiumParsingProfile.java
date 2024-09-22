@@ -38,6 +38,8 @@ import moviescraper.doctord.model.dataitem.Trailer;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	// TODO: Implement also getting the japanese translation
@@ -95,14 +97,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
         return null;
     }
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element title_element = document.select(title_path).first();
 		return new Title(title_element.text());
 	}
 
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
         if(scrapingLanguage == Language.ENGLISH && japaneseDocument == null){
             initializeJapaneseDocument();
@@ -114,12 +118,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return new OriginalTitle("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
         if(japaneseDocument != null){
             Element series = getItemFromOriginalPageByName("Series");
@@ -130,7 +136,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		// this site does not have ratings, so just return some default values
 		if(japaneseDocument != null){
@@ -143,12 +150,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return new Rating(0, "0");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element date_element = getItemByNameWithFallback("Release Date");
         if(date_element != null){
@@ -157,25 +166,29 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
         return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on this site
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		// This type of info doesn't exist on this site
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		// This type of info doesn't exist on this site
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		if(japaneseDocument == null && scrapingLanguage == Language.ENGLISH) {
 			return Plot.BLANK_PLOT;
@@ -185,13 +198,15 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		}
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		// This type of info doesn't exist on this site
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element duration_element = getItemByNameWithFallback("Duration");
         if(duration_element != null) {
@@ -206,7 +221,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		String id = getIdFromUrl();
 		List<Thumb> posters = new LinkedList<>();
 		String[] posterUrls = {
@@ -218,10 +233,10 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		try {
 			for(var paths : posterUrls){
 				if(fileExistsAtURL("https://www.caribbeancompr.com" + paths)){
-					posters.add(new Thumb("https://www.caribbeancompr.com" + paths));
+					posters.add(new Thumb("https://www.caribbeancompr.com" + paths, cropPosters));
 				}
 			}
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			Logger.getLogger(CaribbeancomPremiumParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
 		return posters.toArray(new Thumb[posters.size()]);
@@ -229,7 +244,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePosters();
+		return scrapePosters(false);
 	}
 
 	@Override
@@ -252,17 +267,20 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return extrafanart.toArray(new Thumb[0]);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		return new ID(getIdFromUrl());
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genresReturned = new ArrayList<>();
 		var genre_elements = getItemByNameWithFallback("Tags");
@@ -272,7 +290,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return genresReturned;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> actorList = new ArrayList<>();
 		var actor_elements = getItemByNameWithFallback("Starring:");
@@ -294,12 +313,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		return new ArrayList<>();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Trailer scrapeTrailer() {
 		int id_index = 5;
 		if(scrapingLanguage != Language.ENGLISH){
@@ -308,7 +329,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return new Trailer("https://smovie.caribbeancompr.com/sample/movies/"+ document.baseUri().split("/")[id_index] +"/480p.mp4");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		// Studio attribute is only available on the Japanese version of the site
 		if(japaneseDocument != null) {
@@ -320,7 +342,8 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());

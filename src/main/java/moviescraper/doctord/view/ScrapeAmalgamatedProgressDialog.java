@@ -118,6 +118,10 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		progressBar.setValue(0);
 	}
 
+	public GUIMain parent(){
+		return this.guiMain;
+	}
+
 	public ScrapeAmalgamatedProgressDialog(GUIMain guiMain, AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences,
 	        ScraperGroupAmalgamationPreference scraperGroupAmalgamationPreference) {
 		super(guiMain.getFrmMoviescraper());
@@ -223,8 +227,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 			if (propertyListener != null)
 				worker.removePropertyChangeListener(propertyListener);
 		}
-		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference, guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape),
-				guiMain.browser(), this);
+		worker = new ScrapeAmalgamatedMovieWorker(allAmalgamationOrderingPreferences, scraperGroupAmalgamationPreference, guiMain.getCurrentlySelectedMovieFileList().get(currentFileIndexToScrape), this);
 		propertyListener = new AmalgamationPropertyChangeListener();
 		worker.addPropertyChangeListener(propertyListener);
 		worker.execute();

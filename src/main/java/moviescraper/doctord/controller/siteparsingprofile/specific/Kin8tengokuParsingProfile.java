@@ -35,11 +35,14 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class Kin8tengokuParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private String id;
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		var scrapedTitle = document.select(".sub_title_vip");
 		if(scrapedTitle.isEmpty()){
@@ -51,32 +54,38 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return new Title();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		return new Set("Kin8tengoku");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		return new Rating(0, "");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
 		Elements elements = document.select("td[class^=movie_table] ");
@@ -91,32 +100,38 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Pattern pattern = Pattern.compile("\\d{2}:\\d{2}:\\d{2}");
 		Elements elements = document.select("td[class^=movie_table] ");
@@ -134,13 +149,13 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		try {
 			String Id = findID(scrapedMovieFile.getName());
 			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getThumbURL(Id, 1));
+			thumbs[0] = new Thumb(getThumbURL(Id, 1), cropPosters);
 			return thumbs;
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return new Thumb[0];
@@ -165,17 +180,20 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return extraFanart.toArray(new Thumb[extraFanart.size()]);
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		return new ID("KIN8-" + findID(scrapedMovieFile.getName()));
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> list = new ArrayList<>();
 		Elements elements = document.select("div[class=icon] a[href~=/listpages/[0-9]]");
@@ -186,7 +204,8 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return list;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		ArrayList<Actor> list = new ArrayList<>();
 		Elements elements = document.select("a[href^=/listpages/actor_]");
@@ -197,19 +216,22 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 		return list;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> list = new ArrayList<>();
 		list.add(new Director("Kin8tengoku", null));
 		return list;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		return new Studio("Kin8tengoku");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		return createSearchStringFromId(findID(FilenameUtils.getName(file.getName())));

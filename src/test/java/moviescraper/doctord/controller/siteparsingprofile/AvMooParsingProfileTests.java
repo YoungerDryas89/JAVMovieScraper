@@ -73,7 +73,7 @@ public class AvMooParsingProfileTests {
 
     @Test
     public void testPosters() throws IOException{
-        Thumb[] posters = profile.scrapePosters();
+        Thumb[] posters = profile.scrapePosters(true);
         assertEquals(1, posters.length);
     }
 

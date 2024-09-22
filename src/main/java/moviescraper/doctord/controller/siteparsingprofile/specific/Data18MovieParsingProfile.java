@@ -46,6 +46,8 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import javax.annotation.Nonnull;
+
 public class Data18MovieParsingProfile extends SiteParsingProfile implements SpecificProfile, SecurityPassthrough {
 
 	boolean useSiteSearch = true;
@@ -65,7 +67,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return groupNames;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 		Element titleElement = document.select("div#centered.main2 div h1").first();
 		if (titleElement != null)
@@ -74,18 +77,21 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// TODO Auto-generated method stub
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		Element setElement = document.select("div div.p8 div p a[href*=/series/]").first();
 		if (setElement != null)
@@ -94,13 +100,15 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 			return Set.BLANK_SET;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		// TODO Auto-generated method stub
 		return Rating.BLANK_RATING;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 
 		//old method before site update in September 2014
@@ -135,25 +143,29 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return Year.BLANK_YEAR;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// TODO Auto-generated method stub
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		// TODO Auto-generated method stub
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		// TODO Auto-generated method stub
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		Element plotElement = document.select("p.gen12:contains(Description:)").first();
 		if (plotElement != null) {
@@ -166,12 +178,14 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element runtimeElement = document.select("p.gen12:contains(Length:)").first();
 		if (runtimeElement != null) {
@@ -182,15 +196,15 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
+	public Thumb[] scrapePosters(boolean cropPosters) {
 		Element posterElement = document.select("img[alt=Cover]").first();
 		if (posterElement != null) {
 			Thumb[] posterThumbs = new Thumb[1];
 			try {
-				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("src")));
+				posterThumbs[0] = new Thumb(fixIPAddressOfData18(posterElement.attr("src")), cropPosters);
 				posterThumbs[0].setViewerURL(posterThumbs[0].getThumbURL());
 				return posterThumbs;
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				return new Thumb[0];
 			}
@@ -337,17 +351,20 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return scrapedExtraFanart;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("div.gen12:has(b:containsOwn(Categories:)) p a[href*=/movies/], div.p8:has(div:containsOwn(Categories:)) a[href*=/movies/]");
@@ -363,7 +380,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return genreList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements actorElements = document.select("p.line1 a img");
 		ArrayList<Actor> actorList = new ArrayList<>();
@@ -403,7 +421,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
 		Element directorElement = document.select("a[href*=director=]").first();
@@ -415,7 +434,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select("div div.p8 div p a[href*=/studios/").first();
 		if (studioElement != null) {
@@ -426,7 +446,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
 		String fileBaseName;
@@ -513,7 +534,8 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		return "Data18 Movie";
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		//Unfortunately this data is not available on full on the page we are scraping, so we store the info from the search result
 		//creation and retrieve it here

@@ -9,8 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import moviescraper.doctord.scraper.FirefoxBrowser;
-import moviescraper.doctord.scraper.HeadlessBrowser;
+import moviescraper.doctord.scraper.DitzyHeadlessBrowser;
+import moviescraper.doctord.scraper.DitzyHeadlessBrowserSingle;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +43,8 @@ import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
+import javax.annotation.Nonnull;
+
 public class JavLibraryParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private String siteLanguageToScrape;
@@ -52,6 +54,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public static final String taiwaneseLanguageCode = "tw";
 	public static final String chineseLanguageCode = "cn";
 	private static final boolean reverseAsianNameInEnglish = true;
+    private static DitzyHeadlessBrowser browser;
 	private String overrideURLJavLibrary;
 	/*
 		TODO: Check if images redirect to 'https://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg' aka 'this image does not exist' url
@@ -70,27 +73,6 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return overrideURLJavLibrary;
 	}
 
-	@Override
-	public Document downloadDocument(SearchResult searchResult) {
-		try {
-			var resultURL = new URL(searchResult.getUrlPath());
-
-			if(browser == null)
-			{
-				System.err.println("Error, provided browser is unavailable or null");
-			} else {
-
-				if (Objects.equals(browser.currentURL(), resultURL)) {
-					return browser.getPageSource();
-				} else {
-					return browser.get(resultURL);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	public void setOverrideURLJavLibrary(String overrideURLJavLibrary) {
 		this.overrideURLJavLibrary = overrideURLJavLibrary;
@@ -102,6 +84,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	public JavLibraryParsingProfile() {
 		siteLanguageToScrape = determineLanguageToUse();
+        browserConfigure();
 	}
 
 	private String determineLanguageToUse() {
@@ -117,7 +100,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		this.siteLanguageToScrape = siteLanguageToScrape;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Title scrapeTitle() {
 
 		Element titleElement = document.select("h3.post-title.text a").first();
@@ -136,26 +120,30 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return new Title("");
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public OriginalTitle scrapeOriginalTitle() {
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public SortTitle scrapeSortTitle() {
 		// we don't need any special sort title - that's usually something the
 		// user provides
 		return SortTitle.BLANK_SORTTITLE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Set scrapeSet() {
 		// Site doesn't have any set information
 		return Set.BLANK_SET;
 
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Rating scrapeRating() {
 		//JavLibrary uses a decimal value out of 10 for its rating
 		Element ratingElement = document.select("span.score").first();
@@ -170,12 +158,14 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return Rating.BLANK_RATING; //No rating found on the page
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Year scrapeYear() {
 		return scrapeReleaseDate().getYear();
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ReleaseDate scrapeReleaseDate() {
 		Element dateElement = document.select("div#video_date tr td.header + td.text").first();
 		String dateText = dateElement.text();
@@ -187,33 +177,39 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Top250 scrapeTop250() {
 		// This type of info doesn't exist on JavLibrary
 		return Top250.BLANK_TOP250;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Votes scrapeVotes() {
 		return Votes.BLANK_VOTES;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Outline scrapeOutline() {
 		return Outline.BLANK_OUTLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Plot scrapePlot() {
 		return Plot.BLANK_PLOT;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Tagline scrapeTagline() {
 		return Tagline.BLANK_TAGLINE;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Runtime scrapeRuntime() {
 		Element lengthElement = document.select("div#video_length tr td.header + td span.text").first();
 		String lengthText = lengthElement.text();
@@ -224,8 +220,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters() {
-		return scrapePostersAndFanart(true);
+	public Thumb[] scrapePosters(boolean cropPosters) {
+		return scrapePostersAndFanart(cropPosters);
 	}
 
 	@Override
@@ -254,12 +250,14 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return new Thumb[0];
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public MPAARating scrapeMPAA() {
 		return MPAARating.RATING_XXX;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ID scrapeID() {
 		Element idElement = document.select("div#video_id tr td.header + td.text").first();
 		String idText = idElement.text();
@@ -269,7 +267,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return ID.BLANK_ID;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Genre> scrapeGenres() {
 		Elements genreElements = document.select(".genre");
 		ArrayList<Genre> genreList = new ArrayList<>(genreElements.size());
@@ -297,7 +296,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return true;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Actor> scrapeActors() {
 		Elements castElements = document.select("span.cast");
 		ArrayList<Actor> actorList = new ArrayList<>(castElements.size());
@@ -340,7 +340,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return actorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public ArrayList<Director> scrapeDirectors() {
 		Elements directorElements = document.select(".director a");
 		ArrayList<Director> directorList = new ArrayList<>(directorElements.size());
@@ -351,7 +352,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return directorList;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public Studio scrapeStudio() {
 		Element studioElement = document.select(".maker a").first();
 		if (studioElement != null) {
@@ -360,7 +362,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return Studio.BLANK_STUDIO;
 	}
 
-	@Override
+	@Nonnull
+    @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
                 return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
@@ -392,7 +395,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			Document doc = browser.get(new URL(searchString));
 
 			//The search found the page directly
-			if (browser.currentURL().toString().contains("/?v=")) {
+			if (doc.location().contains("/?v=")) {
 				String linkTitle = doc.title().replaceAll(Pattern.quote(" - JAVLibrary"), "");
 				Element posterElement = doc.select("img#video_jacket_img").first();
 				//the page does not have the small version on it, but by replacing the last character of the string with an t, we will get the tiny preview
@@ -459,5 +462,27 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public String getParserName() {
 		return "JAVLibrary";
 	}
+
+    @Override
+    public Document downloadDocument(SearchResult searchResult) {
+        try {
+            return browser.get(new URL(searchResult.getUrlPath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void browserConfigure() {
+        if (browser == null) {
+            MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
+            browser = DitzyHeadlessBrowserSingle.getBrowser();
+            try {
+                browser.configure();
+            } catch (IOException ex) {
+                Logger.getLogger(JavLibraryParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
 }
