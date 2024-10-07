@@ -3,15 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>moviescraper.doctord</groupId>
+    <groupId>com.github.youngerdryas89</groupId>
     <artifactId>JAVMovieScraper</artifactId>
     <version>0.6.4</version>
     <packaging>jar</packaging>
     <name>JAVMovieScraper</name>
 
     <properties>
-        <graalpy.version>24.1.0</graalpy.version>
-        <graalpy.edition>python-community</graalpy.edition>
         <native-maven-plugin.version>0.9.28</native-maven-plugin.version>
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.source>21</maven.compiler.source>
@@ -19,17 +17,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>${graalpy.edition}</artifactId>
-            <version>${graalpy.version}</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.python</groupId>
-            <artifactId>python-embedding</artifactId>
-            <version>${graalpy.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -200,17 +187,6 @@
             <artifactId>imageio-webp</artifactId>
             <version>3.11.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>polyglot</artifactId>
-            <version>24.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>python</artifactId>
-            <version>24.1.0</version>
-            <type>pom</type>
-        </dependency>
     </dependencies>
 
     <build>
@@ -240,7 +216,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -253,7 +229,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -263,45 +239,13 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.graalvm.python</groupId>
-                <artifactId>graalpy-maven-plugin</artifactId>
-                <version>${graalpy.version}</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <!-- specify python packages and their versions as if used with pip -->
-                            <packages>
-                                <package>termcolor==2.2</package>
-                                <package>undetected-chromedriver</package>
-                                <package>nodriver</package>
-                            </packages>
-                            <pythonHome>
-                                <includes>
-                                    <!-- java-like regular expression what file paths should be included;
-                                         if empty than default is all -->
-                                    <include>.*</include>
-                                </includes>
-                                <excludes>
-                                    <!-- java-like regular expression what file paths should be excluded;
-                                         default is none -->
-                                    <!-- <exclude></exclude> -->
-                                </excludes>
-                            </pythonHome>
-                        </configuration>
-                        <goals>
-                            <goal>process-graalpy-resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

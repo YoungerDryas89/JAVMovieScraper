@@ -1,4 +1,4 @@
-module moviescraper.doctord {
+module com.github.youngerdryas89 {
     requires javafx.swing;
     requires javafx.controls;
     requires commons.cli;
@@ -24,15 +24,15 @@ module moviescraper.doctord {
     requires JImageHash;
     requires commons.math3;
     requires com.github.benmanes.caffeine;
-    exports moviescraper.doctord;
-    exports moviescraper.doctord.controller.amalgamation;
-    exports moviescraper.doctord.controller.siteparsingprofile;
-    exports moviescraper.doctord.controller.siteparsingprofile.specific;
-    exports moviescraper.doctord.model.dataitem;
-    opens moviescraper.doctord.controller.amalgamation to json.io, xstream;
-    opens moviescraper.doctord.controller.siteparsingprofile to xstream;
-    opens moviescraper.doctord.controller.siteparsingprofile.specific to xstream;
-    opens moviescraper.doctord.model.preferences to xstream;
-    opens moviescraper.doctord.model.dataitem to xstream;
-    opens moviescraper.doctord.controller.xmlserialization to xstream;
+    exports com.github.youngerdryas89;
+    exports com.github.youngerdryas89.controller.amalgamation;
+    exports com.github.youngerdryas89.controller.siteparsingprofile;
+    exports com.github.youngerdryas89.controller.siteparsingprofile.specific;
+    exports com.github.youngerdryas89.model.dataitem;
+    opens com.github.youngerdryas89.controller.amalgamation to json.io, xstream;
+    opens com.github.youngerdryas89.controller.siteparsingprofile to xstream;
+    opens com.github.youngerdryas89.controller.siteparsingprofile.specific to xstream;
+    opens com.github.youngerdryas89.model.preferences to xstream;
+    opens com.github.youngerdryas89.model.dataitem to xstream;
+    opens com.github.youngerdryas89.controller.xmlserialization to xstream;
 }

@@ -1,0 +1,59 @@
+package com.github.youngerdryas89.controller.xmlserialization;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import com.github.youngerdryas89.model.dataitem.Actor;
+import com.github.youngerdryas89.model.dataitem.Thumb;
+
+/**
+ * Helper class for serializing a actor object to and from XML
+ */
+public class KodiXmlActorBean {
+
+	public String name;
+	public String role;
+	public String thumb;
+
+	public KodiXmlActorBean(String name, String role, String thumb) {
+		super();
+		this.name = name;
+		this.role = role;
+		this.thumb = thumb;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getThumb() {
+		return thumb;
+	}
+
+	public void setThumb(String thumb) {
+		this.thumb = thumb;
+	}
+
+	public Actor toActor() throws IOException {
+		Thumb tryToMakeAThumb;
+		try {
+			tryToMakeAThumb = new Thumb(thumb);
+		} catch (MalformedURLException e) {
+			tryToMakeAThumb = null;
+		}
+		return new Actor(name, role, tryToMakeAThumb);
+	}
+
+}
