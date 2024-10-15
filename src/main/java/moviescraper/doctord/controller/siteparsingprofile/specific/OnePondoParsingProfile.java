@@ -344,10 +344,11 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
         
         @Override
         public String createSearchStringFromId(String Id){
-            Id = Id.toLowerCase();
-            if (Id == null)
-		return null;
 
+			assert Id != null;
+			if(Id.isEmpty() || Id == null)
+				return "";
+            Id = Id.toLowerCase();
             return "https://www.1pondo.tv/dyn/phpauto/movie_details/movie_id/" + Id + ".json";
         }
 
