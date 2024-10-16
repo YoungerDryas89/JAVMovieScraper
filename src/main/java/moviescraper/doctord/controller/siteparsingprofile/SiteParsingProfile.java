@@ -130,6 +130,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>[nk]\\d{4})");
 	final static Pattern CaribbeancomPattern = Pattern.compile("(?i)(?<id>(?<series>carib|caribbeancom(pr)?|caribbeancom premium)\\s?[-_\\s]\\s?(?<number>\\d{6}[_-]\\d{3}))");
 	final static Pattern CaribbeancomPatternReverse = Pattern.compile("(?i)(?<id>(?<number>\\d{6}[_-]\\d{3})\\s?[-_\\s]\\s?(?<series>carib(pr)?|caribbeancom(pr)?|caribbeancom premium))");
+	final static Pattern TenMusumePattern = Pattern.compile("(?i)(?<id>\\d{6}_\\d{2,3})(\\-|_)?10MU");
 
 	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?<tag>(?:\\d{3,4})?[a-z]+|[a-z]{1,2}\\d+)[^a-z0-9_](?<num>\\d+)");
 	final static Pattern kinten8gokuPattern = Pattern.compile("(?i)(?:Kin8tengoku|KIN8)[-_\\s](?<num>\\d+)");
@@ -274,6 +275,14 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			id = match.group("id");
 			return id;
 		}
+
+		match = TenMusumePattern.matcher(fileNameNoExtension);
+		if(match.find()){
+			assert (match.group("id") != null);
+			id = match.group("id");
+			return id;
+		}
+
 		match = TokyoHotPattern.matcher(fileNameNoExtension);
 		if(match.find()){
 			assert(match.group("productId") != null);

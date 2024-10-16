@@ -6,6 +6,7 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileJSON
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +17,8 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
     @Override
@@ -120,35 +123,31 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
         ArrayList<Thumb> thumbList = new ArrayList<>();
         JSONObject pageJSON = getMovieJSON();
         try {
-            // Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
-            var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
-            if (fileExistsAtURL(jacketURL, false)) {
-                thumbList.add(new Thumb(jacketURL, cropPosters));
-                return thumbList.toArray(new Thumb[thumbList.size()]);
-            } else {
-                String[] thumbnailJsonNodes = {
-                        "ThumbUltra",
-                        "ThumbHigh",
-                        "ThumbMed",
-                        "ThumbLow"
-                };
-                // Iterate and make sure no duplicates get added
-                for (var elem : thumbnailJsonNodes) {
-                    var url = pageJSON.getString(elem);
-                    if(!thumbList.isEmpty()) {
-                        for (var thumb : thumbList) {
-                            if (!url.equals(thumb.getThumbURL().toString()) && !url.isEmpty()) {
-                                thumbList.add(new Thumb(url));
-                            }
-                        }
-                    } else {
-                        thumbList.add(new Thumb(url));
-                    }
-                }
 
-                return thumbList.toArray(new Thumb[thumbList.size()]);
-
+            if(fileExistsAtURL(pageJSON.getString("MovieThumb"))){
+                thumbList.add(new Thumb(pageJSON.getString("MovieThumb")));
             }
+            // Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
+            String[] thumbnailJsonNodes = {
+                    "ThumbUltra",
+                    "ThumbHigh",
+                    "ThumbMed",
+                    "ThumbLow"
+            };
+            // Iterate and make sure no duplicates get added
+            for (var elem : thumbnailJsonNodes) {
+                var url = pageJSON.getString(elem);
+                if(!thumbList.isEmpty()) {
+                    Thumb newThumb = new Thumb(url);
+                    if(!thumbList.contains(newThumb))
+                        thumbList.add(newThumb);
+                } else {
+                    thumbList.add(new Thumb(url));
+                }
+            }
+
+            return thumbList.toArray(new Thumb[thumbList.size()]);
+
         } catch (IOException ex) {
             Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -157,53 +156,7 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
 
     @Override
     public @NotNull Thumb[] scrapeFanart() {
-        try {
-            ArrayList<Thumb> thumbList = new ArrayList<>();
-            String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
-            String backgroundURLOne = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/1.jpg";
-            String backgroundURLTwo = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/2.jpg";
-            String popupOneURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/1.jpg";
-            String popupTwoURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/2.jpg";
-            String popupThreeURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu/3.jpg";
-            String popupFourURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/popu.jpg";
-            if (SiteParsingProfile.fileExistsAtURL(bannerURL, false))
-                thumbList.add(new Thumb(bannerURL));
-            if (SiteParsingProfile.fileExistsAtURL(popupOneURL, false))
-                thumbList.add(new Thumb(popupOneURL));
-            if (SiteParsingProfile.fileExistsAtURL(popupTwoURL, false))
-                thumbList.add(new Thumb(popupTwoURL));
-            if (SiteParsingProfile.fileExistsAtURL(popupThreeURL, false))
-                thumbList.add(new Thumb(popupThreeURL));
-            //combine the two background images together to make the fanart if we are on a page that has split things into two images
-            if (SiteParsingProfile.fileExistsAtURL(backgroundURLOne, false) && SiteParsingProfile.fileExistsAtURL(backgroundURLTwo, false)) {
-                try {
-                    /*
-                     * BufferedImage img1 = ImageIO.read(new URL(backgroundURLOne));
-                     * BufferedImage img2 = ImageIO.read(new URL(backgroundURLTwo));
-                     * BufferedImage joinedImage = joinBufferedImage(img1, img2);
-                     * Thumb joinedImageThumb = new Thumb(backgroundURLTwo);
-                     * joinedImageThumb.setImage(joinedImage);
-                     * //we did an operation to join the images, so we'll need to re-encode the jpgs. set the modified flag to true
-                     * //so we know to do this
-                     * joinedImageThumb.setIsModified(true);
-                     */
-
-                    Thumb joinedImageThumb = new Thumb(backgroundURLOne, backgroundURLTwo);
-                    thumbList.add(joinedImageThumb);
-                } catch (IOException e) {
-                    thumbList.add(new Thumb(backgroundURLTwo));
-                }
-
-            } else if (SiteParsingProfile.fileExistsAtURL(backgroundURLTwo, false))
-                thumbList.add(new Thumb(backgroundURLTwo));
-            if (SiteParsingProfile.fileExistsAtURL(popupFourURL, false))
-                thumbList.add(new Thumb(popupFourURL));
-            return thumbList.toArray(new Thumb[thumbList.size()]);
-
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // TODO: Fanart available on HTML page
         return new Thumb[0];
     }
 
@@ -264,17 +217,13 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
 
     @Override
     public @NotNull Trailer scrapeTrailer(){
-        ID movieID = scrapeID();
-        String potentialTrailerURL = "http://smovie.1pondo.tv/moviepages/" + movieID.getId() + "/sample/sample.avi";
-        if (SiteParsingProfile.fileExistsAtURL(potentialTrailerURL))
-            return new Trailer(potentialTrailerURL);
-        else
-            return Trailer.BLANK_TRAILER;
+        // TODO: Getting the trailer requires the HTML page
+        return Trailer.BLANK_TRAILER;
     }
 
     @Override
     public @NotNull String createSearchString(File file) {
-        return createSearchStringFromId(findIDTagFromFile(file, false));
+        return createSearchStringFromId(findIDTagFromFile(file));
     }
 
     @Override
@@ -301,5 +250,19 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
     @Override
     public String getParserName() {
         return "10Musume";
+    }
+
+    public static String findIDTagFromFile(File file) {
+        return findIDTag(FilenameUtils.getName(file.getName()));
+    }
+
+    public static String findIDTag(String fileName) {
+        Pattern pattern = Pattern.compile("\\d{6}_\\d{2,3}");
+        Matcher matcher = pattern.matcher(fileName);
+        if (matcher.find()) {
+            String searchString = matcher.group();
+            return searchString;
+        }
+        return null;
     }
 }
