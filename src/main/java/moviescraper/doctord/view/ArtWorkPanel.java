@@ -69,9 +69,13 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 					else
 						replacementThumb = img.derivedChild();
                     assert replacementThumb != null;
-					lblPosterIcon.clear();
-                    lblPosterIcon.setIcon(replacementThumb, new Dimension(maximumPosterSizeX, maximumPosterSizeY));
-					updateCropButton(true);
+
+					// TODO: Display an error if cropping goes wrong
+					if(replacementThumb != null) {
+						lblPosterIcon.clear();
+						lblPosterIcon.setIcon(replacementThumb, new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+						updateCropButton(true);
+					}
                 } else {
                     assert img.getOriginalImage() != null;
 					lblPosterIcon.clear();
