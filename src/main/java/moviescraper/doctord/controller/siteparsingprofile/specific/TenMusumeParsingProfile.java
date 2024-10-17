@@ -124,9 +124,6 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
         JSONObject pageJSON = getMovieJSON();
         try {
 
-            if(fileExistsAtURL(pageJSON.getString("MovieThumb"))){
-                thumbList.add(new Thumb(pageJSON.getString("MovieThumb")));
-            }
             // Some movies have a special poster "jacket". Use it as the primary poster instead of anything else.
             String[] thumbnailJsonNodes = {
                     "ThumbUltra",
@@ -144,6 +141,9 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
                 } else {
                     thumbList.add(new Thumb(url));
                 }
+            }
+            if(fileExistsAtURL(pageJSON.getString("MovieThumb"))){
+                thumbList.add(new Thumb(pageJSON.getString("MovieThumb")));
             }
 
             return thumbList.toArray(new Thumb[thumbList.size()]);
