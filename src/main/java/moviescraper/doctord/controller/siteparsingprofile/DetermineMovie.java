@@ -22,9 +22,16 @@ public class DetermineMovie {
        }
     }
 
-    private List<TagData> tags = new ArrayList<>();
+    private TreeSet<TagData> tags;
     private HashMap<String, List<String>> studios = new HashMap<>();
     public DetermineMovie(){
+
+        tags = new TreeSet<>(new Comparator<TagData>() {
+            @Override
+            public int compare(TagData o1, TagData o2) {
+                return Integer.compare(o2.tag.length(), o1.tag.length());
+            }
+        });
         try(
                 InputStream is = getClass().getClassLoader().getResourceAsStream("tags");
                 Scanner scanner = new Scanner(is);
@@ -43,12 +50,7 @@ public class DetermineMovie {
                 tags.add(returnTag);
 
             }
-            tags.sort(new Comparator<TagData>() {
-                @Override
-                public int compare(TagData o1, TagData o2) {
-                    return Integer.compare(o2.tag.length(), o1.tag.length());
-                }
-            });
+
         }catch (IOException e){
             System.err.println(e.getMessage());
         }
