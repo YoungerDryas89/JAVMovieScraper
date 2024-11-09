@@ -19,6 +19,12 @@ public class PacoPacoMamaParsingProfile extends TenMusumeParsingProfile {
         return "https://www.pacopacomama.com/dyn/phpauto/movie_details/movie_id/" + id + ".json";
     }
 
+
+    @Override
+    public @NotNull Studio scrapeStudio(){
+        return new Studio("PacoPacoMama");
+    }
+
     @Override
     public SiteParsingProfile newInstance() {
         return new PacoPacoMamaParsingProfile();
