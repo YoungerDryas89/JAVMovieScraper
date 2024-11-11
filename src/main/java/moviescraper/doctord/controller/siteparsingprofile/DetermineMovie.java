@@ -1,61 +1,35 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
-import javafx.collections.transformation.SortedList;
 import javafx.util.Pair;
-
 import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DetermineMovie {
-    private class TagData{
-       public String tag;
-       public String studio;
-       public Integer max_code_length, min_code_length;
-
-       public TagData(String[] data){
-           this.tag = data[0];
-           this.studio = data[1];
-           this.min_code_length = Integer.valueOf(data[2]);
-           this.max_code_length = Integer.valueOf(data[3]);
-       }
-    }
-
-    private TreeSet<TagData> tags;
-    private HashMap<String, List<String>> studios = new HashMap<>();
+    private record TagData(String tag, String studio, int code_length){}
+    private final List<TagData> tags = new ArrayList<>(2574);
     public DetermineMovie(){
-
-        tags = new TreeSet<>(new Comparator<TagData>() {
-            @Override
-            public int compare(TagData o1, TagData o2) {
-                return Integer.compare(o2.tag.length(), o1.tag.length());
+        long start = System.nanoTime();
+        try (BufferedReader bin = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("tags")))) {
+            String line;
+            for(int i = 0; i <tags.size(); i++){
+                if((line = bin.readLine()) != null) {
+                    var elems = line.split(";");
+                    tags.add(new TagData(elems[0], elems[1], Integer.parseInt(elems[2])));
+                }
             }
-        });
-        try(
-                InputStream is = getClass().getClassLoader().getResourceAsStream("tags");
-                Scanner scanner = new Scanner(is);
-
-        ){
-            scanner.useDelimiter(System.lineSeparator());
-            var tags_tmp = new HashMap<String, String>();
-            while(scanner.hasNextLine()){
-
-
-                var line = scanner.nextLine();
-                if(line.isEmpty()) continue;
-
-                var elems = line.split(";");
-                var returnTag = new TagData(elems);
-                tags.add(returnTag);
-
-            }
-
-        }catch (IOException e){
-            System.err.println(e.getMessage());
+            tags.sort(new Comparator<TagData>() {
+                @Override
+                public int compare(TagData o1, TagData o2) {
+                    return Integer.compare(o2.tag.length(), o1.tag.length());
+                }
+            });
+        } catch (NullPointerException|IOException e) {
+            System.err.println("Failed to load `tags` resource; Please check if it exists");
         }
+        System.out.println("Tagging execution time: " + (System.nanoTime()-start) + " ns");
     }
-
 
     public Pair<String, String> determineIdFromTitle(String title){
         String matchTagPattern = "(?i)(?<id>\\b$ID)[^a-z0-9_](?<num>\\d+)";
