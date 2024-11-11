@@ -10,7 +10,6 @@ public class DetermineMovie {
     private record TagData(String tag, String studio, int code_length){}
     private final List<TagData> tags = new ArrayList<>(2574);
     public DetermineMovie(){
-        long start = System.nanoTime();
         try (BufferedReader bin = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("tags")))) {
             String line;
             for(int i = 0; i <tags.size(); i++){
@@ -28,7 +27,6 @@ public class DetermineMovie {
         } catch (NullPointerException|IOException e) {
             System.err.println("Failed to load `tags` resource; Please check if it exists");
         }
-        System.out.println("Tagging execution time: " + (System.nanoTime()-start) + " ns");
     }
 
     public Pair<String, String> determineIdFromTitle(String title){
