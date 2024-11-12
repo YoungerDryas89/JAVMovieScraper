@@ -1,6 +1,5 @@
 package moviescraper.doctord.model.preferences;
 
-import moviescraper.doctord.scraper.UserAgent;
 import moviescraper.doctord.view.FavoriteGenrePickerPanel;
 
 public class MoviescraperPreferences extends Settings {
@@ -260,7 +259,7 @@ public class MoviescraperPreferences extends Settings {
 	}
 
 	public String getUserAgent() {
-		return getStringValue(Key.userAgent, UserAgent.getRandomUserAgent());
+		return getStringValue(Key.userAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0");
 	}
 
 	public void setUserAgent(String preferenceValue) {

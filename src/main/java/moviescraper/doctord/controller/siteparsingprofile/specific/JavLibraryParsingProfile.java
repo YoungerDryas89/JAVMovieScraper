@@ -478,7 +478,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
             MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
             browser = DitzyHeadlessBrowserSingle.getBrowser();
             try {
-                browser.configure();
+                browser.loadCookies();
             } catch (IOException ex) {
                 Logger.getLogger(JavLibraryParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
             }

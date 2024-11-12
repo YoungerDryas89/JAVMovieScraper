@@ -91,7 +91,7 @@ public class SettingsDialogJAVLibrary extends javax.swing.JDialog {
 		try {
 			preferences.setUserAgent(userAgentInput.getText());
 			preferences.setCookieJar(cookieJarInput.getText());
-			browser.configure();
+			browser.loadCookies();
 			MoviescraperPreferences.savePreferences();
 			this.setVisible(false);
 		} catch (IOException ex) {
