@@ -13,25 +13,27 @@ import moviescraper.doctord.model.preferences.MoviescraperPreferences;
 
 public class DitzyHeadlessBrowser {
 
-	private MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 	private String userAgent;
-	private DitzyCookies cookies = new DitzyCookies();
-	private int timeout = 10000;
+	private DitzyCookies cookies;
+	private final int timeout;
 	private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
 
 	public DitzyHeadlessBrowser(String userAgent, int timeout) {
 		this.userAgent = userAgent;
 		this.timeout = timeout;
+		this.cookies = new DitzyCookies();
 		LOGGER.log(Level.INFO, "Build browser with U: {0}", this.userAgent);
 	}
 
 	public DitzyHeadlessBrowser() {
-		this.userAgent = preferences.getUserAgent();
+		this(UserAgent.getRandomUserAgent(), 10000);
 	}
 
-	public void loadCookies() throws IOException {
+	public void configure() throws IOException {
+		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
+		setUserAgent(preferences.getUserAgent());
 		if (preferences.getCookieJar() != null) {
-			cookies.LoadCookieJar(new File(preferences.getCookieJar()));
+			Cookies().LoadCookieJar(new File(preferences.getCookieJar()));
 		}
 	}
 
