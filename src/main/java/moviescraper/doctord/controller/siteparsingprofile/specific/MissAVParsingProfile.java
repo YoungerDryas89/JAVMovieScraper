@@ -147,7 +147,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     @Nonnull
     @Override
     public Runtime scrapeRuntime() {
-        Elements durationElems = document.getElementsByClass("plyr__time--duration");
+        Elements durationElems = document.select(".plyr__time--duration");
         if(!durationElems.isEmpty()){
             String[] durationSplitByTimeUnit = durationElems.first().text().split(":");
             if(durationSplitByTimeUnit.length != 3) {
