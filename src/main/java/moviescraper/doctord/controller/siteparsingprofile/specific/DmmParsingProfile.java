@@ -41,6 +41,7 @@ import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -807,7 +808,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Document downloadDocument(SearchResult searchResult) {
+	public Connection.Response downloadDocument(SearchResult searchResult) {
 		try {
 			if (searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
@@ -817,8 +818,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				Map<String, String> cookies = new HashMap<String, String>();
 				cookies.put("age_check_done", "1");
 
-				Document doc = Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-				return doc;
+				return Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

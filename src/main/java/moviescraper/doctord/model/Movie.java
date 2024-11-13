@@ -892,7 +892,15 @@ public class Movie {
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			Document searchMatch = siteToParseFrom.downloadDocument(searchResultToUse);
+			var response = siteToParseFrom.downloadDocument(searchResultToUse);
+			if(response.statusCode() != 200 || response.statusCode() > 399){
+				System.err.println("Failed to connect to: " + searchResultToUse.getUrlPath());
+				System.err.println(response.statusCode() + " " + response.statusMessage());
+				throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.statusMessage());
+			}
+
+			Document searchMatch = response.parse();
+
 			//Handle any captchas etc that prevent us from getting our result
 			if (searchMatch != null && SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass())) {
 				SecurityPassthrough siteParsingProfileSecurityPassthrough = (SecurityPassthrough) siteToParseFrom;

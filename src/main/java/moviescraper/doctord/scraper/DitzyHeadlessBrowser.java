@@ -3,6 +3,7 @@ package moviescraper.doctord.scraper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.logging.Level;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
@@ -62,10 +63,10 @@ public class DitzyHeadlessBrowser {
 	 * get a document from an URL
 	 *
 	 * @param url URL to get
-	 * @return The document corresponding to the URL
+	 * @return The server response
 	 * @throws IOException Cannot parse the document
 	 */
-	public Document get(URL url) throws IOException {
+	public Response get(URL url) throws IOException {
 		LOGGER.log(Level.INFO, "Get request on {0}", url.toString());
 		Connection connection = connect(url, true);
 
@@ -83,7 +84,7 @@ public class DitzyHeadlessBrowser {
 			}
 		}
 
-		return response.parse();
+		return response;
 	}
 
 	public void setUserAgent(String userAgent) {

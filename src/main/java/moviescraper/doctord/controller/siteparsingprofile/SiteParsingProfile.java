@@ -25,6 +25,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 import org.jetbrains.annotations.NotNull;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -583,35 +584,22 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return null;
 	}
 
-	public static Document getDocument(SearchResult searchResult) {
+	public static Connection.Response getDocument(SearchResult searchResult) {
 		try {
-            int seconds = (int) (Math.random() * (10 - 5) + 5);
-            Thread.sleep(Duration.ofSeconds(seconds));
-			if (searchResult.isJSONSearchResult())
-				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else {
-				return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-            System.err.println(e.getMessage());
-        }
-        return null;
+			Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
+			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+		}catch (InterruptedException | IOException e){
+			System.err.println(e.getMessage());
+		}
+		return null;
 	}
 
-	public Document downloadDocument(SearchResult searchResult) {
+	public Connection.Response downloadDocument(SearchResult searchResult) {
 		try {
-			if (searchResult.isJSONSearchResult()) {
-                int seconds = (int) (Math.random() * (10 - 5) + 5);
-                Thread.sleep(Duration.ofSeconds(seconds));
-                return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-            } else {
-				return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-            }
-
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
+			Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
+			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+		}catch (InterruptedException | IOException e){
+			System.err.println(e.getMessage());
 		}
 		return null;
 	}

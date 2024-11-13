@@ -1,5 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -53,9 +54,22 @@ public class Data18SharedMethods {
 		if (document != null) {
 			Element firstLink = document.select("a").first();
 			if (firstLink != null && firstLink.attr("href") != null) {
-				Document captchaSolved = SiteParsingProfile.getDocument(new SearchResult(firstLink.attr("href")));
+				var response = SiteParsingProfile.getDocument(new SearchResult(firstLink.attr("href")));
+				if(response.statusCode() != 200 || response.statusCode() > 399){
+					System.err.println("Failed to connect to: " + response.url());
+					System.err.println(response.statusCode() + " " + response.statusMessage());
+					throw new RuntimeException("Failed to connect to: " + response.url() + "\n" + response.statusCode() + " " + response.statusMessage());
+				}
+
+				Document captchaSolved = null;
+				// FIXME: Fuck I hate this VVVVVV
+				try {
+					captchaSolved = response.parse();
+				}catch (IOException e){
+					System.err.println(e.getMessage());
+				}
 				if (captchaSolved != null) {
-					return SiteParsingProfile.getDocument(originalSearchResult);
+					return SiteParsingProfile.downloadDocumentFromURLString(originalSearchResult.getUrlPath());
 				}
 			}
 		}

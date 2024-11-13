@@ -14,6 +14,7 @@ import moviescraper.doctord.scraper.DitzyHeadlessBrowserSingle;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -392,7 +393,13 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + siteLanguageToScrape);
 
 		try {
-			Document doc = browser.get(new URL(searchString));
+			var response = browser.get(new URL(searchString));
+			if(response.statusCode() != 200 || response.statusCode() > 399){
+				System.err.println("Failed to get page: " + searchString);
+				System.err.println(response.statusCode() + " " + response.statusMessage());
+				throw new RuntimeException("Failed to get page: " + searchString + "\n" + response.statusCode() + " " + response.statusMessage());
+			}
+			Document doc = response.parse();
 
 			//The search found the page directly
 			if (doc.location().contains("/?v=")) {
@@ -464,7 +471,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
     @Override
-    public Document downloadDocument(SearchResult searchResult) {
+    public Connection.Response downloadDocument(SearchResult searchResult) {
         try {
             return browser.get(new URL(searchResult.getUrlPath()));
         } catch (IOException e) {

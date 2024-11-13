@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -36,8 +37,13 @@ public abstract class SiteParsingProfileJSON extends SiteParsingProfile {
 		return getJSONObjectFromString(getJSONStringFromURL(url));
 	}
 
-	public static Document getDocument(String url) throws IOException {
-		return Jsoup.connect(url).ignoreContentType(true).get();
+	public static Connection.Response getDocument(String url) throws IOException {
+		try {
+			return Jsoup.connect(url).ignoreContentType(true).execute();
+		}catch (IOException e){
+			System.err.println(e.getMessage());
+		}
+		return null;
 	}
 
 }
