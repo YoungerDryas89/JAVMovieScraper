@@ -35,7 +35,10 @@ public class MyTokyoHotParsingProfileTest {
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
-			Document document = SiteParsingProfile.getDocument(searchResults[0]);
+			var response = SiteParsingProfile.getDocument(searchResults[0]);
+			if(response.statusCode() == 200)
+				throw new RuntimeException(String.valueOf(response.statusCode()));
+			Document document = response.parse();
 			parser.setDocument(document);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -29,10 +29,11 @@ public class OnePondoParsingProfileTest {
 		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		Document document;
 		try {
-			document = profile.getDocument(searchString);
-			profile.setDocument(document);
+			var response = profile.getDocument(searchString);
+			if(response.statusCode() == 200)
+				throw new RuntimeException(String.valueOf(response.statusCode()));
+			profile.setDocument(response.parse());
 		} catch (IOException ex) {
 			Logger.getLogger(OnePondoParsingProfileTest.class.getName()).log(Level.SEVERE, null, ex);
 		}

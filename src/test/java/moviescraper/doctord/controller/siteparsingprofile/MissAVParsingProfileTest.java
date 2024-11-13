@@ -1,5 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
+import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -14,7 +15,10 @@ public class MissAVParsingProfileTest {
     public static void initialize() throws IOException {
         parser = new moviescraper.doctord.controller.siteparsingprofile.specific.MissAVParsingProfile();
         var result = parser.getSearchResults(parser.createSearchStringFromId("DANDY-680"));
-        parser.setDocument(SiteParsingProfile.getDocument(result[0]));
+        var response = SiteParsingProfile.getDocument(result[0]);
+        if(response.statusCode() == 200)
+            throw new RuntimeException(String.valueOf(response.statusCode()));
+        parser.setDocument(response.parse());
         parser.prepareData();
     }
 

@@ -16,8 +16,10 @@ public class NJavParsingProfileTest {
     public static void initialize() throws IOException {
         parser = new NJavParsingProfile();
         var result = parser.getSearchResults("siro-5283");
-        var doc = SiteParsingProfile.getDocument(result[0]);
-        parser.setDocument(doc);
+        var response = SiteParsingProfile.getDocument(result[0]);
+        if(response.statusCode() == 200)
+            throw new RuntimeException(String.valueOf(response.statusCode()));
+        parser.setDocument(response.parse());
         parser.prepareData();
     }
 

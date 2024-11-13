@@ -36,7 +36,11 @@ public class CaribbeancomPremiumParsingProfileTest {
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults("122716_008");
-			Document document = SiteParsingProfile.getDocument(searchResults[0]);
+
+			var response = SiteParsingProfile.getDocument(searchResults[0]);
+			if(response.statusCode() == 200)
+				throw new RuntimeException(String.valueOf(response.statusCode()));
+			Document document = response.parse();
 			System.out.println("Scrape: " + document.location());
 			parser.setDocument(document);
             parser.prepareData();

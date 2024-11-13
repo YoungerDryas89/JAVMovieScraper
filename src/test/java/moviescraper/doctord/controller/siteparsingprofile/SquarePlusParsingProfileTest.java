@@ -19,11 +19,11 @@ public class SquarePlusParsingProfileTest {
         profile = new SquarePlusParsingProfile();
         var searchString = profile.createSearchStringFromId(fn);
         try {
-            profile.setDocument(
-                    SiteParsingProfile.getDocument(
-                            profile.getSearchResults(searchString)[0]
-                    )
-            );
+            var response = SiteParsingProfile.getDocument(profile.getSearchResults(searchString)[0]);
+            if(response.statusCode() == 200)
+                throw new RuntimeException(String.valueOf(response.statusCode()));
+            profile.setDocument(response.parse());
+            profile.prepareData();
         } catch (IOException e){
             System.err.println(e.getMessage());
         }
