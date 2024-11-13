@@ -147,26 +147,20 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     @Nonnull
     @Override
     public Runtime scrapeRuntime() {
-        // TODO: Broken
-        /*try {
-            Element durationElement = document.getElementsByAttributeStarting()
-            if (durationElement != null) {
-                String[] durationSplitByTimeUnit = durationElement.text().split(":");
-                if (durationSplitByTimeUnit.length != 3) {
-                    throw new IllegalArgumentException("Invalid number of parts");
-                }
-                int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
-                int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
-                // we don't care about seconds
-
-                int totalMinutes = (hours * 60) + minutes;
-                return new Runtime(Integer.toString(totalMinutes));
+        Elements durationElems = document.getElementsByClass("plyr__time--duration");
+        if(!durationElems.isEmpty()){
+            String[] durationSplitByTimeUnit = durationElems.first().text().split(":");
+            if(durationSplitByTimeUnit.length != 3) {
+                System.err.println("Failed to gather movie duration: Invalid number of parts!");
             }
-        }catch (Exception e){
-            System.err.println(e.getMessage());
-        }*/
-        return Runtime.BLANK_RUNTIME;
-    }
+            int hours = Integer.parseInt(durationSplitByTimeUnit[0]);
+            int minutes = Integer.parseInt(durationSplitByTimeUnit[1]);
+            return new Runtime(Integer.toString((hours * 60) + minutes));
+        } else {
+            System.err.println("Couldn't find the duration element: `.plyr__time--duration`");
+        }
+    return Runtime.BLANK_RUNTIME;
+}
 
     @Override
     public Thumb[] scrapePosters(boolean cropPosters) {
