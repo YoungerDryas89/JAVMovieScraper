@@ -21,8 +21,6 @@ module moviescraper.doctord {
     requires annotations;
     requires org.jetbrains.annotations;
     requires commons.collections;
-    requires JImageHash;
-    requires commons.math3;
     requires com.github.benmanes.caffeine;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
