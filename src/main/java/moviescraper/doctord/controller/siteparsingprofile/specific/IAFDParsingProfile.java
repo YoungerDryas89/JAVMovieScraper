@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -343,7 +344,7 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		if (useSiteSearch) {
 			ArrayList<SearchResult> linksList = new ArrayList<>();
-			Document doc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+			Document doc = Jsoup.connect(searchString).userAgent(UserAgent.getRandomUserAgent()).referrer("http://www.iafd.com").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
 			        .get();
 			//check to see if we directly found the title
 			if (doc != null && doc.location().contains("title.asp?title=")) {

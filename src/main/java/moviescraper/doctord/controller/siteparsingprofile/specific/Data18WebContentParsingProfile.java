@@ -36,6 +36,7 @@ import moviescraper.doctord.model.dataitem.Top250;
 import moviescraper.doctord.model.dataitem.Votes;
 import moviescraper.doctord.model.dataitem.Year;
 
+import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -192,7 +193,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 						Data18MovieParsingProfile parser = new Data18MovieParsingProfile();
 						parser.setOverridenSearchResult(urlOfMovie);
 						try {
-							Document doc = Jsoup.connect(urlOfMovie).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
+							Document doc = Jsoup.connect(urlOfMovie).userAgent(UserAgent.getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
 							        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 							parser.setDocument(doc);
 							Plot data18FullMoviePlot = parser.scrapePlot();

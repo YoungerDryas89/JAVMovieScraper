@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -286,7 +287,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 		var searchItems = new ArrayList<SearchResult>();
 
-		var searchDoc = Jsoup.connect(searchString).userAgent(getRandomUserAgent()).get();
+		var searchDoc = Jsoup.connect(searchString).userAgent(UserAgent.getRandomUserAgent()).get();
 		var elems = searchDoc.select("div.card");
 
 		for(var elem : elems){

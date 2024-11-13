@@ -14,15 +14,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -378,7 +376,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			String encodingScheme = "UTF-8";
 			String queryToEncode = "site:" + site + " " + searchQuery;
 			String encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-			Document doc = Jsoup.connect("https://www.google.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
+			Document doc = Jsoup.connect("https://www.google.com/search?q=" + encodedSearchQuery).userAgent(UserAgent.getRandomUserAgent()).referrer("http://www.google.com").ignoreHttpErrors(true)
 			        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements sorryLink = doc.select("form[action=CaptchaRedirect] input");
 			Map<String, String> captchaData = new HashMap<>();
@@ -428,7 +426,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		String encodedSearchQuery;
 		try {
 			encodedSearchQuery = URLEncoder.encode(queryToEncode, encodingScheme);
-			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q=" + encodedSearchQuery).userAgent(getRandomUserAgent()).referrer("http://www.bing.com").ignoreHttpErrors(true)
+			Document bingResultDocument = Jsoup.connect("https://www.bing.com/search?q=" + encodedSearchQuery).userAgent(UserAgent.getRandomUserAgent()).referrer("http://www.bing.com").ignoreHttpErrors(true)
 			        .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			Elements links = bingResultDocument.select("a[href*=" + site);
 			for (Element link : links) {
@@ -455,7 +453,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			con.setRequestMethod("HEAD");
 			con.setConnectTimeout(CONNECTION_TIMEOUT_VALUE);
 			con.setReadTimeout(CONNECTION_TIMEOUT_VALUE);
-			con.setRequestProperty("User-Agent", getRandomUserAgent());
+			con.setRequestProperty("User-Agent", UserAgent.getRandomUserAgent());
 			if (!allow_redirects) {
 				return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 			} else {
@@ -546,22 +544,6 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return getParserName();
 	}
 
-	/**
-	 * Maybe we are less likely to get blocked on google if we don't always use the same user agent when searching,
-	 * so this method is designed to pick a random one from a list of valid user agent strings
-	 * 
-	 * @return a random user agent string that can be passed to .userAgent() when calling Jsoup.connect
-	 */
-	public static String getRandomUserAgent() {
-		String[] userAgent = { "Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
-		        "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36", "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
-		        "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
-		        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
-		        "Mozilla/5.0 (Windows; U; Windows NT 6.1; tr-TR) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
-		        "Mozilla/5.0 (Windows; U; Windows NT 5.0; en-en) AppleWebKit/533.16 (KHTML, like Gecko) Version/4.1 Safari/533.16" };
-		return userAgent[new Random().nextInt(userAgent.length)];
-	}
-
 	public boolean isFirstWordOfFileIsID() {
 		return firstWordOfFileIsID;
 	}
@@ -607,8 +589,9 @@ public abstract class SiteParsingProfile implements DataItemSource {
             Thread.sleep(Duration.ofSeconds(seconds));
 			if (searchResult.isJSONSearchResult())
 				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
-			else
-				return Jsoup.connect(searchResult.getUrlPath()).userAgent(getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			else {
+				return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -624,7 +607,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
                 Thread.sleep(Duration.ofSeconds(seconds));
                 return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
             } else {
-                return Jsoup.connect(searchResult.getUrlPath()).userAgent(getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
+				return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
             }
 
 		} catch (IOException | InterruptedException e) {
