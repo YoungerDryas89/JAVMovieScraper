@@ -132,7 +132,7 @@ public class AllAmalgamationOrderingPreferences {
 
 		//JAV Preferences
 
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new NJavParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(),
+		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new AV123ParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(),
 		        new SquarePlusParsingProfile(), new JavBusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile());
 
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
@@ -146,7 +146,7 @@ public class AllAmalgamationOrderingPreferences {
 
 			// R18 has the absolute best title information. Pick any english
 			// site first, fallback to machine translated DMM
-			DataItemSourceAmalgamationPreference bestContentForID = new DataItemSourceAmalgamationPreference(new NJavParsingProfile(), new JavLibraryParsingProfile(),
+			DataItemSourceAmalgamationPreference bestContentForID = new DataItemSourceAmalgamationPreference(new AV123ParsingProfile(), new JavLibraryParsingProfile(),
 			        new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
 			preferences.setCustomOrderingForField("id", bestContentForID);
 

@@ -1,6 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile;
 
-import moviescraper.doctord.controller.siteparsingprofile.specific.NJavParsingProfile;
+import moviescraper.doctord.controller.siteparsingprofile.specific.AV123ParsingProfile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -8,13 +8,13 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class NJavParsingProfileTest {
-    static NJavParsingProfile parser;
+public class AV123ParsingProfileTest {
+    static AV123ParsingProfile parser;
 
 
     @BeforeClass
     public static void initialize() throws IOException {
-        parser = new NJavParsingProfile();
+        parser = new AV123ParsingProfile();
         var result = parser.getSearchResults("siro-5283");
         var response = SiteParsingProfile.getDocument(result[0]);
         if(response.statusCode() == 200)

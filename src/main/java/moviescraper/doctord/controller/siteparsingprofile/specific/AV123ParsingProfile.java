@@ -5,18 +5,16 @@ import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NJavParsingProfile extends SiteParsingProfile implements SpecificProfile {
+public class AV123ParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
     final String titlePath = "html body div#app div#body div#page-video.container div.row div.col div.d-flex.justify-content-between.align-items-start div.mr-3 h1";
     final String posterPath = "html body div#app div#body div#page-video.container div.row div.col div#player";
@@ -245,7 +243,7 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
 
     @Override
     public String createSearchStringFromId(String id) {
-        return "https://njav.tv/en/v/" + id;
+        return "https://123av.com/en/v/" + id;
     }
 
     @Override
@@ -256,12 +254,12 @@ public class NJavParsingProfile extends SiteParsingProfile implements SpecificPr
 
     @Override
     public SiteParsingProfile newInstance() {
-        return new NJavParsingProfile();
+        return new AV123ParsingProfile();
     }
 
     @Override
     public String getParserName() {
-        return "NJav";
+        return "123AV";
     }
 
     @Nonnull
