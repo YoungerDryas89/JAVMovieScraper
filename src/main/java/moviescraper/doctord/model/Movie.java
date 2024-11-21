@@ -206,8 +206,11 @@ public class Movie {
 	 * If the appropriate preference is set, add the ID number to the end of the title field
 	 */
 	private void appendIDToStartOfTitle() {
-		if (MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle() && id != null && id.getId() != null && id.getId().trim().length() > 0 && hasValidTitle()) {
-			title.setTitle(id.getId() + " - " + title.getTitle());
+		if(id != null && id.getId() != null && id.getId().trim().length() > 0 && hasValidTitle()) {
+			if (MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle())
+				title.setTitle(id.getId() + " - " + title.getTitle());
+			else
+				title.setTitle(title.getTitle().replace(id.getId(), ""));
 		}
 	}
 
