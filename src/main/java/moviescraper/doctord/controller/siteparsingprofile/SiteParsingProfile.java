@@ -586,7 +586,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public static Connection.Response getDocument(SearchResult searchResult) {
 		try {
-			Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
+			if(searchResult.isJSONSearchResult())
+				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
 			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 		}catch (InterruptedException | IOException e){
 			System.err.println(e.getMessage());
@@ -596,7 +597,8 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public Connection.Response downloadDocument(SearchResult searchResult) {
 		try {
-			Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
+			if(searchResult.isJSONSearchResult())
+				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
 			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 		}catch (InterruptedException | IOException e){
 			System.err.println(e.getMessage());
