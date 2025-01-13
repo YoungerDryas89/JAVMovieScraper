@@ -227,7 +227,20 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePostersAndFanart(false);
+		Element fanartLinks = document.select(".previewthumbs").first();
+		if(fanartLinks != null){
+			List<Thumb> images = new ArrayList<>();
+			for(var ahref : fanartLinks.children()){
+				try {
+					images.add(new Thumb(ahref.attr("href"), false));
+				}catch (IOException e){
+					System.err.println("Something went wrong trying to obtain this image: " + ahref.attr("href"));
+					System.err.println(e.getMessage());
+				}
+			}
+			return images.toArray(new Thumb[images.size()]);
+		}
+		return new Thumb[0];
 	}
 
 	private Thumb[] scrapePostersAndFanart(boolean doCrop) {
@@ -451,7 +464,6 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		//No extra Fanart on this site is supported, for now
 		return new Thumb[0];
 	}
 
