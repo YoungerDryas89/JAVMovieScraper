@@ -285,7 +285,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
 
     @Override
     public String createSearchStringFromId(String id) {
-        return "https://missav.com/en/" + id;
+        return "https://missav.ws/en/" + id;
     }
 
     @Override
