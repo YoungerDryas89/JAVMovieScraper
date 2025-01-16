@@ -896,10 +896,15 @@ public class Movie {
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
 			var response = siteToParseFrom.downloadDocument(searchResultToUse);
-			if(response.statusCode() != 200 || response.statusCode() > 399){
-				System.err.println("Failed to connect to: " + searchResultToUse.getUrlPath());
-				System.err.println(response.statusCode() + " " + response.statusMessage());
-				throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.statusMessage());
+			if(response == null || response.statusCode() != 200 || response.statusCode() > 399){
+				if(response != null) {
+					System.err.println("Failed to connect to: " + searchResultToUse.getUrlPath());
+					System.err.println(response.statusCode() + " " + response.statusMessage());
+					throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.statusMessage());
+				} else {
+					System.err.println("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
+					throw new RuntimeException("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
+				}
 			}
 
 			Document searchMatch = response.parse();

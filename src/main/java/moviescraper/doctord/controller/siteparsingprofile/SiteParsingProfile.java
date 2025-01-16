@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 
 import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
 import org.jetbrains.annotations.NotNull;
@@ -599,11 +600,16 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		try {
 			if(searchResult.isJSONSearchResult())
 				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
-			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+			return downloadDocumentFromUrl(searchResult.getUrlPath());
 		}catch (InterruptedException | IOException e){
 			System.err.println(e.getMessage());
 		}
 		return null;
+	}
+
+	// TODO: Need to fix this whole situation with all these http request functions
+	public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
+		return Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 	}
 
 	@Override
