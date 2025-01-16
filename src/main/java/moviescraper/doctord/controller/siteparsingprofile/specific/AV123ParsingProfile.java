@@ -4,6 +4,10 @@ import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
 import moviescraper.doctord.model.dataitem.Runtime;
+import moviescraper.doctord.scraper.UserAgent;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import javax.annotation.Nonnull;
@@ -21,6 +25,8 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     final String movieDetailsPath = ".content .detail-item";
     final String plotPath = "html body div#app div#body div#page-video.container div.row div.col div#details div.content div.description p";
     Map<String, Element> movie_data = new HashMap<>();
+    String id, url;
+    Document japaneseDocument;
 
     @Override
     public void prepareData(){
@@ -36,6 +42,45 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
             }
         }
     }
+
+    private void initializeJapaneseDocument(){
+        try {
+            // TODO: FIX this hack
+            // Replace the original url since just a simple string concatenation of "https://123av.com/ja/v" might just redirect to the english page
+            var response = downloadDocumentFromUrl(url.replace("https://123av.com/en", "https://123av.com/ja")).bufferUp();
+            if (response.statusCode() == 200) {
+                japaneseDocument = response.parse();
+            }
+        }catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public Connection.Response downloadDocumentFromUrl(String url){
+        try {
+            var response = Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).followRedirects(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+            if(response.statusCode() == 200){
+
+                response = response.bufferUp();
+                var continueButton = response.parse().selectFirst("a.btn-primary");
+                if(continueButton != null && continueButton.text().equals("Click here to continue")) {
+                    String redirectUrl = continueButton.attr("href");
+
+                    System.out.println("AV123: Redirecting to: " + redirectUrl);
+                    this.url = redirectUrl;
+                    return Jsoup.connect(redirectUrl).userAgent(UserAgent.getRandomUserAgent()).followRedirects(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+                }
+            }
+            this.url = response.url().toString();
+            return response;
+        }catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
     @Nonnull
     @Override
     public Title scrapeTitle() {
@@ -45,6 +90,10 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     @Nonnull
     @Override
     public OriginalTitle scrapeOriginalTitle() {
+        initializeJapaneseDocument();
+        if(japaneseDocument != null){
+            return new OriginalTitle(japaneseDocument.select(titlePath).text());
+        }
         return OriginalTitle.BLANK_ORIGINALTITLE;
     }
 
@@ -243,6 +292,7 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
 
     @Override
     public String createSearchStringFromId(String id) {
+        this.id = id;
         return "https://123av.com/en/v/" + id;
     }
 

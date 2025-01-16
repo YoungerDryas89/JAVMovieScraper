@@ -30,6 +30,12 @@ public class AV123ParsingProfileTest {
     }
 
     @Test
+    public void originalTitle(){
+        var ogTitle = parser.scrapeOriginalTitle();
+        assertEquals("SIRO-5283 「自分のSEXが観てみたい」エロ好奇心高めの低身長美少女が応募！止まらない快感に白い肌を震わせて感じまくる！SEXが始まるとやめられない！とまらない！ 【初撮り】ネットでAV応募→AV体験撮影 2172", ogTitle.getOriginalTitle());
+    }
+
+    @Test
     public void id(){
         var id = parser.scrapeID();
         assertEquals(id.getId(), "SIRO-5283");
