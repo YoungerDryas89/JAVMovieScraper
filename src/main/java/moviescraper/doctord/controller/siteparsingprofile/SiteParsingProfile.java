@@ -589,7 +589,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		try {
 			if(searchResult.isJSONSearchResult())
 				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
-			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreContentType(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 		}catch (InterruptedException | IOException e){
 			System.err.println(e.getMessage());
 		}
@@ -609,7 +609,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	// TODO: Need to fix this whole situation with all these http request functions
 	public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
-		return Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+		return Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).ignoreContentType(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 	}
 
 	@Override
