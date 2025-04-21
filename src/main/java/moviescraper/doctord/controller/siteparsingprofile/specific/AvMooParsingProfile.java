@@ -17,6 +17,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import moviescraper.doctord.controller.languagetranslation.JapaneseCharacter;
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -44,7 +45,8 @@ import javax.annotation.Nonnull;
 
 public class AvMooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
-	private static final String siteLanguageToScrape = "en";
+	public static final String urlLanguageEnglish = "en";
+	public static final String urlLanguageJapanese = "ja";
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
@@ -148,11 +150,13 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	@Nonnull
     @Override
 	public ReleaseDate scrapeReleaseDate() {
-		Element releaseDateElement = document.select("div.container p:contains(Release Date:), div.container p:contains(發行日期:)").first();
+		Element releaseDateElement = document.select(
+			"div.container p:contains(Release Date:), div.container p:contains(發行日期:), div.container p:contains(発売日:)").first();
 		if (releaseDateElement != null) {
 			String releaseDateText = releaseDateElement.text().trim();
 			releaseDateText = releaseDateText.replace("Release Date:", "");
 			releaseDateText = releaseDateText.replace("發行日期:", "");
+			releaseDateText = releaseDateText.replace("発売日:", "");
 			if (releaseDateText != null && releaseDateText.length() > 4)
 				return new ReleaseDate(releaseDateText.trim());
 		}
@@ -197,11 +201,14 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	@Nonnull
     @Override
 	public Runtime scrapeRuntime() {
-		Element runtimeElement = document.select("div.container p:contains(Length:)").first();
+		Element runtimeElement = document.select(
+			"div.container p:contains(Length:), div.container p:contains(収録時間:)").first();
 		if (runtimeElement != null) {
 			String lengthText = runtimeElement.text().trim();
 			lengthText = lengthText.replaceFirst(Pattern.quote("Length: "), "");
 			lengthText = lengthText.replaceFirst(Pattern.quote("min"), "");
+			lengthText = lengthText.replaceFirst(Pattern.quote("収録時間: "), "");
+			lengthText = lengthText.replaceFirst(Pattern.quote("分"), "");
 			if (lengthText.length() > 0) {
 				return new Runtime(lengthText);
 			}
@@ -249,10 +256,11 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	@Nonnull
     @Override
 	public ID scrapeID() {
-		Element idElement = document.select("div.container p:contains(ID:)").first();
+		Element idElement = document.select("div.container p:contains(ID:), div.container p:contains(品番:)").first();
 		if (idElement != null) {
 			String idText = idElement.text().trim();
 			idText = idText.replaceFirst(Pattern.quote("ID: "), "");
+			idText = idText.replaceFirst(Pattern.quote("品番: "), "");
 			return new ID(idText);
 		} else
 			return ID.BLANK_ID;
@@ -318,10 +326,12 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	@Nonnull
     @Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("div.row.movie p:contains(Studio:) ~ p a").first();
+		Element studioElement = document.select(
+			"div.row.movie p:contains(Studio:) ~ p a, div.row.movie p:contains(メーカー:) ~ p a").first();
 		if (studioElement != null) {
 			String studioText = studioElement.text().trim();
 			studioText = studioText.replaceFirst(Pattern.quote("Studio: "), "");
+			studioText = studioText.replaceFirst(Pattern.quote("メーカー: "), "");
 			return new Studio(studioText);
 		} else
 			return Studio.BLANK_STUDIO;
@@ -334,13 +344,15 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
         
-        @Override
-        public String createSearchStringFromId(String Id){
-            URLCodec codec = new URLCodec();
+	@Override
+	public String createSearchStringFromId(String Id) {
+		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(Id);
-			//			String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
-			String searchTerm = "http://avmoo.online/" + siteLanguageToScrape + "/search/" + fileNameURLEncoded;
+			// String searchTerm = "http://www.javdog.com/" + siteLanguageToScrape +
+			// "/search/" + fileNameURLEncoded;
+			String searchTerm = String.format(
+				"http://avmoo.website/%s/search/%s", getUrlLanguageToUse(), fileNameURLEncoded);
 
 			return searchTerm;
 
@@ -349,7 +361,12 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 			e.printStackTrace();
 		}
 		return null;
-        }
+	}
+
+	private String getUrlLanguageToUse() {
+		String urlLanguageToUse = (scrapingLanguage == Language.ENGLISH) ? urlLanguageEnglish : urlLanguageJapanese;
+		return urlLanguageToUse;
+	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
