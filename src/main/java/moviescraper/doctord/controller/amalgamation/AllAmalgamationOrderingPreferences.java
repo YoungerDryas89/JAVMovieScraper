@@ -9,6 +9,7 @@ import com.cedarsoftware.util.io.JsonIoException;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.*;
 import org.apache.commons.io.IOUtils;
@@ -83,8 +84,9 @@ public class AllAmalgamationOrderingPreferences {
 					allAmalgamationOrderingPreferences = (Map<ScraperGroupName, ScraperGroupAmalgamationPreference>) xstream.fromXML(data);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			} catch (JsonIoException e) {
-				System.out.println("Preference file is not compatible between versions - reinitializing preference file");
+			} catch (CannotResolveClassException e) {
+				System.out.println("Warning: Failed to load AmalgamationSettings.xml; This is likely due to version mismatch");
+				System.out.println("Overwriting AmalgamationSettings.xml with default values.");
 				initializeDefaultPreferences(true);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
