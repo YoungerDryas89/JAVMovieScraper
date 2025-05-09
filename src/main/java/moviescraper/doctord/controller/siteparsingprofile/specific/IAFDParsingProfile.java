@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -395,6 +396,13 @@ public class IAFDParsingProfile extends SiteParsingProfile implements SpecificPr
 	@Override
 	public String getParserName() {
 		return "IAFD";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH
+		};
 	}
 
 	private Element findSidebarElement(String textOfSideBarElement) {

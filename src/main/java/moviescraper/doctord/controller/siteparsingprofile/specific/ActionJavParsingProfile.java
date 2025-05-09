@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -318,6 +319,13 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	@Override
 	public String getParserName() {
 		return "ActionJav";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH
+		};
 	}
 
 }

@@ -410,4 +410,11 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return "JavBus";
 	}
 
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.CHINESE
+		};
+	}
+
 }

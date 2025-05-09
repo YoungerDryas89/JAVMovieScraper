@@ -1,5 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
@@ -302,5 +303,24 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     @Override
     public String getParserName() {
         return "MissAV";
+    }
+
+    @Override
+    public Language[] getSupportedLanguages() {
+        return new Language[] {
+                Language.ENGLISH,
+                Language.JAPANESE,
+                Language.CHINESE_SIMPLIFIED,
+                Language.CHINESE,
+                Language.KOREAN,
+                Language.MALAYSIAN,
+                Language.THAI,
+                Language.GERMAN,
+                Language.FRENCH,
+                Language.VIETNAMESE,
+                Language.INDONESIAN,
+                Language.FILIPINO,
+                Language.PORTUGESE
+        };
     }
 }

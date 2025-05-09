@@ -376,6 +376,14 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.JAPANESE,
+				Language.ENGLISH
+		};
+	}
+
+	@Override
 	public SiteParsingProfile newInstance() {
 		return new CaribbeancomPremiumParsingProfile();
 	}

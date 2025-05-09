@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -532,6 +533,13 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public String getParserName() {
 		return "Data18 Movie";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[]{
+				Language.ENGLISH
+		};
 	}
 
 	@Nonnull

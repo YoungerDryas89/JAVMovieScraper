@@ -482,7 +482,17 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 		return "JAVLibrary";
 	}
 
-    @Override
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH,
+				Language.JAPANESE,
+				Language.CHINESE,
+				Language.CHINESE_SIMPLIFIED
+		};
+	}
+
+	@Override
     public Connection.Response downloadDocument(SearchResult searchResult) {
         try {
             return browser.get(new URL(searchResult.getUrlPath()));

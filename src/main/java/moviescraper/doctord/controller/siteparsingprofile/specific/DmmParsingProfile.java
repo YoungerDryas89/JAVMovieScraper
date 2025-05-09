@@ -808,6 +808,13 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.JAPANESE
+		};
+	}
+
+	@Override
 	public Connection.Response downloadDocument(SearchResult searchResult) {
 		try {
 			if (searchResult.isJSONSearchResult())

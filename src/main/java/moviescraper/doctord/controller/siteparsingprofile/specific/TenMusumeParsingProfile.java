@@ -252,6 +252,14 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
         return "10Musume";
     }
 
+    @Override
+    public Language[] getSupportedLanguages() {
+        return new Language[] {
+                Language.JAPANESE,
+                Language.ENGLISH
+        };
+    }
+
     public static String findIDTagFromFile(File file) {
         return findIDTag(FilenameUtils.getName(file.getName()));
     }

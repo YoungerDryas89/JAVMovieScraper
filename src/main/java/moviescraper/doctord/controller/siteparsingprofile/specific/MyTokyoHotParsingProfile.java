@@ -56,6 +56,15 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return "My Tokyo-Hot";
 	}
 
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.JAPANESE,
+				Language.ENGLISH,
+				Language.CHINESE,
+		};
+	}
+
 	/**
 	 * loads up the japanese version of this page into japaneseDocument
 	 */
