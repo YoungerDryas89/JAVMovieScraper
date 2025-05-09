@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -428,6 +429,13 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public String getParserName() {
 		return "Excalibur Films";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH
+		};
 	}
 
 }

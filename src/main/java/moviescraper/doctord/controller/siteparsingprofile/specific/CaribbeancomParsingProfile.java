@@ -66,6 +66,14 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return "Caribbeancom";
 	}
 
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.JAPANESE,
+				Language.ENGLISH
+		};
+	}
+
 	/**
 	 * loads up the japanese version of this page into japaneseDocument
 	 */

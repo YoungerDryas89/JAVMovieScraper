@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.json.JSONArray;
@@ -480,6 +481,13 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public String getParserName() {
 		return "The Movie Database (TMDb)";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH
+		};
 	}
 
 }

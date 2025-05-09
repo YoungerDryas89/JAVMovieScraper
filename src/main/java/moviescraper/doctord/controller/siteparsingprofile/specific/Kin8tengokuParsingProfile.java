@@ -288,6 +288,14 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH,
+				Language.JAPANESE
+		};
+	}
+
+	@Override
 	public SiteParsingProfile newInstance() {
 		return new Kin8tengokuParsingProfile();
 	}

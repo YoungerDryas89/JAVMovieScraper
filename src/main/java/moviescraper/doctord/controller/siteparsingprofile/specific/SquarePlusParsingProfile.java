@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.LinkedList;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.Actor;
@@ -343,6 +344,13 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public String getParserName() {
 		return "SquarePlus";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH
+		};
 	}
 
 }

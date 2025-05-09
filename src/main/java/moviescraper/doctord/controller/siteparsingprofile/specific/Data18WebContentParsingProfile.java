@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SecurityPassthrough;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
@@ -678,6 +679,11 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	@Override
 	public String getParserName() {
 		return "Data18 Web Content";
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[0];
 	}
 
 	@Override

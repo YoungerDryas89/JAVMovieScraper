@@ -51,6 +51,14 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 		return "1pondo";
 	}
 
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.ENGLISH,
+				Language.JAPANESE
+		};
+	}
+
 	@Nonnull
     @Override
 	public Title scrapeTitle() {

@@ -1,5 +1,6 @@
 package moviescraper.doctord.controller.siteparsingprofile.specific;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import moviescraper.doctord.model.SearchResult;
 import moviescraper.doctord.model.dataitem.*;
@@ -310,6 +311,24 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     @Override
     public String getParserName() {
         return "123AV";
+    }
+
+    @Override
+    public Language[] getSupportedLanguages() {
+        return new Language[] {
+                Language.JAPANESE,
+                Language.ENGLISH,
+                Language.CHINESE,
+                Language.KOREAN,
+                Language.MALAYSIAN,
+                Language.THAI,
+                Language.GERMAN,
+                Language.FRENCH,
+                Language.VIETNAMESE,
+                Language.INDONESIAN,
+                Language.FILIPINO,
+                Language.HINDI
+        };
     }
 
     @Nonnull

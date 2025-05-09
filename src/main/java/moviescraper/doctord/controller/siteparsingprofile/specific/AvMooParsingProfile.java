@@ -439,4 +439,14 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 		return "AvMoo";
 	}
 
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[] {
+				Language.JAPANESE,
+				Language.ENGLISH,
+				Language.CHINESE,
+				Language.CHINESE_SIMPLIFIED
+		};
+	}
+
 }
