@@ -16,6 +16,7 @@ import javax.swing.JList;
 import moviescraper.doctord.controller.DirectorySort;
 import moviescraper.doctord.controller.SelectFileListAction;
 import moviescraper.doctord.controller.amalgamation.AllAmalgamationOrderingPreferences;
+import moviescraper.doctord.controller.languagetranslation.Language;
 import moviescraper.doctord.model.IconCache;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.SearchResult;
@@ -103,6 +104,8 @@ public class GUIMain {
 	//You can comment this variable out and you will see the file browsing no longer works :)
 	@SuppressWarnings("unused")
 	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
+
+	private Language availableLanguages[] = new Language[]{};
 
 	/**
 	 * Launch the application.
@@ -519,7 +522,18 @@ public class GUIMain {
 			return null;
 	}
 
-	class FileList {
+	public void clearAvailableLanguages(){
+		availableLanguages = new Language[]{};
+	}
+    public Language[] getAvailableLanguages() {
+        return availableLanguages;
+    }
+
+    public void setAvailableLanguages(Language[] availableLanguages) {
+        this.availableLanguages = availableLanguages;
+    }
+
+    class FileList {
 
 		public JScrollPane getGui(File[] all, DefaultListModel<File> listModelFiles, boolean vertical) {
 
