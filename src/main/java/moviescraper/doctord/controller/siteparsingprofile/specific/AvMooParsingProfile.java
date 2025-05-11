@@ -45,9 +45,6 @@ import javax.annotation.Nonnull;
 
 public class AvMooParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
-	public static final String urlLanguageEnglish = "en";
-	public static final String urlLanguageJapanese = "ja";
-
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
@@ -364,8 +361,13 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 	}
 
 	private String getUrlLanguageToUse() {
-		String urlLanguageToUse = (scrapingLanguage == Language.ENGLISH) ? urlLanguageEnglish : urlLanguageJapanese;
-		return urlLanguageToUse;
+		return switch (scrapingLanguage){
+			case ENGLISH -> "en";
+			case JAPANESE -> "ja";
+			case CHINESE -> "tw";
+			case CHINESE_SIMPLIFIED -> "cn";
+			default -> "ja";
+		};
 	}
 
 	@Override

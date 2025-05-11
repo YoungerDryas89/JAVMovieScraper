@@ -326,8 +326,11 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Override
 	public String createSearchStringFromId(String id) {
-		return "http://en.caribbeancom.com/eng/moviepages/" + id + "/index.html";
-
+		if (scrapingLanguage == Language.ENGLISH) {
+			return "http://en.caribbeancom.com/eng/moviepages/" + id + "/index.html";
+		} else {
+			return "http://caribbeancom.com/moviepages/" + id + "/index.html";
+		}
 	}
 
 	@Override

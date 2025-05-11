@@ -42,10 +42,6 @@ import javax.annotation.Nonnull;
 
 public class OnePondoParsingProfile extends SiteParsingProfileJSON implements SpecificProfile {
 
-	//private boolean scrapeInEnglish;
-	private String englishPage;
-	private String japanesePage;
-
 	@Override
 	public String getParserName() {
 		return "1pondo";

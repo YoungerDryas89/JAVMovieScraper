@@ -376,19 +376,30 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			return Studio.BLANK_STUDIO;
 	}
 
+	public String getLanguagePath() {
+		return switch (scrapingLanguage){
+			case ENGLISH -> "en";
+			case JAPANESE -> "ja";
+			case CHINESE_SIMPLIFIED -> "cn";
+			case CHINESE -> "tw";
+			default -> "ja";
+		};
+	}
+
 	@Nonnull
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
                 return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
+
         
-        @Override
-        public String createSearchStringFromId(String id){
-            URLCodec codec = new URLCodec();
+	@Override
+	public String createSearchStringFromId(String id){
+		URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(id);
-			String searchTerm = "http://www.javlibrary.com/" + siteLanguageToScrape + "/vl_searchbyid.php?keyword=" + fileNameURLEncoded;
+			String searchTerm = "http://www.javlibrary.com/" + getLanguagePath() + "/vl_searchbyid.php?keyword=" + fileNameURLEncoded;
 
 			return searchTerm;
 
@@ -397,13 +408,13 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			e.printStackTrace();
 		}
 		return null;
-        }
+	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 
 		ArrayList<SearchResult> linksList = new ArrayList<>();
-		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + siteLanguageToScrape);
+		URL websiteURLBegin = new URL("http://www.javlibrary.com/" + getLanguagePath());
 
 		try {
 			var response = browser.get(new URL(searchString));

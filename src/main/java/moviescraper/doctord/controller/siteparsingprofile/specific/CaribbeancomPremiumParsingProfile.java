@@ -352,12 +352,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
 	@Override
 	public String createSearchStringFromId(String id) {
-		return null;
+		if(scrapingLanguage == Language.ENGLISH){
+			return "https://en.caribbeancompr.com/eng/moviepages/" + id + "/index.html";
+		} else {
+			return "https://caribbeancompr.com/moviepages/" + id + "/index.html";
+		}
 	}
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		return new SearchResult[]{ new SearchResult("https://en.caribbeancompr.com/eng/moviepages/" + searchString + "/index.html")};
+		return new SearchResult[]{ new SearchResult(createSearchStringFromId(searchString))};
 	}
 
 	private void initializeJapaneseDocument() {

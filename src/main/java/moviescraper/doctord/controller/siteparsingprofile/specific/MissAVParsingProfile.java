@@ -286,7 +286,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
 
     @Override
     public String createSearchStringFromId(String id) {
-        return "https://missav.ws/en/" + id;
+        return "https://missav.ws/" + getLanguagePath() + "/" + id;
     }
 
     @Override
@@ -305,6 +305,24 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
         return "MissAV";
     }
 
+    public String getLanguagePath(){
+        return switch(scrapingLanguage) {
+            case ENGLISH -> "en";
+            case JAPANESE -> "ja";
+            case CHINESE -> "";
+            case TAIWANESE -> "";
+            case KOREAN -> "ko";
+            case MALAYSIAN -> "ms";
+            case THAI -> "th";
+            case GERMAN -> "de";
+            case FRENCH -> "fr";
+            case VIETNAMESE -> "vi";
+            case INDONESIAN -> "id";
+            case FILIPINO -> "fil";
+            case PORTUGESE -> "pt";
+            default -> "ja";
+        };
+    }
     @Override
     public Language[] getSupportedLanguages() {
         return new Language[] {

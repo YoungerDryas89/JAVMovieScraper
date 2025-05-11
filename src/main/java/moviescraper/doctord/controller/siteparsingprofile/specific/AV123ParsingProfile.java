@@ -294,7 +294,26 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     @Override
     public String createSearchStringFromId(String id) {
         this.id = id;
-        return "https://123av.com/en/v/" + id;
+        return "https://123av.com/" + getLanguagePath() + "/v/" + id;
+    }
+
+
+    public String getLanguagePath(){
+        return switch (scrapingLanguage) {
+            case ENGLISH -> "en";
+            case JAPANESE -> "ja";
+            case KOREAN -> "ko";
+            case CHINESE -> "zh";
+            case MALAYSIAN -> "ms";
+            case THAI -> "th";
+            case GERMAN -> "de";
+            case FRENCH -> "fr";
+            case VIETNAMESE -> "vi";
+            case INDONESIAN -> "id";
+            case FILIPINO -> "fil";
+            case HINDI -> "hi";
+            default -> "ja";
+        };
     }
 
     @Override
