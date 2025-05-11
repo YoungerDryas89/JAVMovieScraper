@@ -343,18 +343,17 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
 	@Override
 	public String createSearchStringFromId(String Id) {
-		englishPage = "https://en.heyzo.com/moviepages/" + Id + "/index.html";
-		japanesePage = "https://www.heyzo.com/moviepages/" + Id + "/index.html";
-		try {
-			japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (scrapingLanguage == Language.ENGLISH) {
-			return englishPage;
+		if(scrapingLanguage == Language.ENGLISH) {
+			japanesePage = "https://www.heyzo.com/moviepages/" + Id + "/index.html";
+			try {
+				japaneseDocument = Jsoup.connect(japanesePage).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+			}catch (IOException e) {
+				System.out.println("Error: Failed to connect to: " + japanesePage);
+				System.out.println(e.getMessage());
+			}
+			return "https://en.heyzo.com/moviepages/" + Id + "/index.html";
 		} else {
-			return japanesePage;
+			return "https://www.heyzo.com/moviepages/" + Id + "/index.html";
 		}
 	}
 

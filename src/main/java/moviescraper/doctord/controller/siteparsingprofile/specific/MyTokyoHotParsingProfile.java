@@ -56,6 +56,15 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		return "My Tokyo-Hot";
 	}
 
+	public String getLanguagePath() {
+		return switch (scrapingLanguage){
+			case ENGLISH -> "en";
+			case JAPANESE -> "ja";
+			case CHINESE -> "zh-TW";
+			default -> "ja";
+		};
+	}
+
 	@Override
 	public Language[] getSupportedLanguages() {
 		return new Language[] {
@@ -323,9 +332,9 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
         public String createSearchStringFromId(String Id){
             Id = Id.toLowerCase();
             if (Id == null)
-		return null;
+				return null;
 
-            return "https://my.tokyo-hot.com/product/?q=" + Id + "&x=0&y=0";
+            return "https://my.tokyo-hot.com/product/?q=" + Id + "&x=0&y=0&lang=" + getLanguagePath();
         }
 
 	@Override
@@ -336,13 +345,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 		Elements movieElements = doc.select("ul.list.slider.cf li.detail");
 		SearchResult[] searchResults = new SearchResult[movieElements.size()];
 		int indexNum = 0;
-		final String languageSuffixEnglish = "?lang=en";
-		final String languageSuffixJapanese = "?lang=ja";
-		String languageSuffixToUse = "";
-		if (scrapeInEnglish)
-			languageSuffixToUse = languageSuffixEnglish;
-		else
-			languageSuffixToUse = languageSuffixJapanese;
+		String languageSuffixToUse = "?lang=" + getLanguagePath();
 		if (scrapeInEnglish)
 			for (Element movie : movieElements) {
 				SearchResult currentSearchResult = null;
