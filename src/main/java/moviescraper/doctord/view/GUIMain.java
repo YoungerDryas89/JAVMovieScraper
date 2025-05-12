@@ -105,7 +105,7 @@ public class GUIMain {
 	@SuppressWarnings("unused")
 	private final JFXPanel fxPanel = new JFXPanel(); //ensures the JavaFX library is loaded - allows us to use DirectoryChooser later on
 
-	private Language availableLanguages[] = new Language[]{};
+	private List<Language> availableLanguages = null;
 
 	/**
 	 * Launch the application.
@@ -523,14 +523,15 @@ public class GUIMain {
 	}
 
 	public void clearAvailableLanguages(){
-		availableLanguages = new Language[]{};
+		availableLanguages.clear();
 	}
-    public Language[] getAvailableLanguages() {
+    public List<Language> getAvailableLanguages() {
         return availableLanguages;
     }
 
     public void setAvailableLanguages(Language[] availableLanguages) {
-        this.availableLanguages = availableLanguages;
+
+		this.availableLanguages = new ArrayList<>(List.of(availableLanguages));
     }
 
     class FileList {
