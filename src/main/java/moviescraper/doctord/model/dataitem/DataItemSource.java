@@ -1,5 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -19,5 +21,6 @@ public interface DataItemSource {
 	public void setDisabled(boolean b);
 
 	public ImageIcon getProfileIcon();
+	Language[] getSupportedLanguages();
 
 }

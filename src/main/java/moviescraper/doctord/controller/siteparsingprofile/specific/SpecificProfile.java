@@ -8,6 +8,5 @@ public interface SpecificProfile {
 
 	//Name to show in spinner
 	String getParserName();
-	Language[] getSupportedLanguages();
 
 }

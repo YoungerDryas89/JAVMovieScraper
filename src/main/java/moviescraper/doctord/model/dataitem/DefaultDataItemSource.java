@@ -1,5 +1,7 @@
 package moviescraper.doctord.model.dataitem;
 
+import moviescraper.doctord.controller.languagetranslation.Language;
+
 import javax.swing.ImageIcon;
 
 public class DefaultDataItemSource implements DataItemSource {
@@ -39,6 +41,11 @@ public class DefaultDataItemSource implements DataItemSource {
 	public ImageIcon getProfileIcon() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Language[] getSupportedLanguages() {
+		return new Language[0];
 	}
 
 }
