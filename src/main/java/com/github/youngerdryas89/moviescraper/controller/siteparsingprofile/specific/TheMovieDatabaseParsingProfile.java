@@ -126,7 +126,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		if (pageJSON != null) {
 			try {
 				double originalTitleString = pageJSON.getDouble("vote_average");
-				return new Rating(10.0, new Double(originalTitleString).toString());
+				return new Rating(10.0, Double.valueOf(originalTitleString).toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -170,7 +170,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 			try {
 				int idString = pageJSON.getInt("vote_count");
 				if (idString >= 0)
-					return new Votes(new Integer(idString).toString());
+					return new Votes(Integer.valueOf(idString).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -225,7 +225,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 			try {
 				int runtimeString = pageJSON.getInt("runtime");
 				if (runtimeString > 0)
-					return new Runtime(new Integer(runtimeString).toString());
+					return new Runtime(Integer.valueOf(runtimeString).toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -290,7 +290,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 			try {
 				int idString = pageJSON.getInt("id");
 				if (idString >= 0)
-					return new ID(new Integer(idString).toString());
+					return new ID(Integer.valueOf(idString).toString());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
