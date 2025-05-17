@@ -5,11 +5,13 @@
 plugins {
     `java-library`
     `maven-publish`
-    `application`
+    application
     id("org.openjfx.javafxplugin").version("0.1.0")
+    id("org.gradlex.extra-java-module-info") version "1.12"
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
     mavenLocal()
     maven {
@@ -23,10 +25,9 @@ repositories {
 
 dependencies {
     compileOnly(libs.org.jetbrains.annotations)
-    compileOnly("org.apache.maven.plugins:maven-assembly-plugin:3.7.1")
     testImplementation(libs.org.junit.vintage.junit.vintage.engine)
+    testImplementation(libs.org.junit.jupiter.junit.jupiter.engine)
     // --- BEGINNING OF NON MODULE DEPENDENCIES ---
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")
     implementation("commons-io:commons-io:2.14.0")
     implementation("org.imgscalr:imgscalr-lib:4.2")
     implementation("com.jgoodies:jgoodies-forms:1.9.0")
@@ -34,6 +35,7 @@ dependencies {
     implementation("com.thoughtworks.xstream:xstream:1.4.21")
     implementation("commons-cli:commons-cli:1.9.0")
     // --- END OF NON MODULE DEPENDENCIES --
+    implementation("org.gradlex:extra-java-module-info:1.12")
     implementation(libs.org.apache.commons.commons.lang3)
     implementation(libs.commons.codec.commons.codec)
     implementation(libs.org.apache.commons.commons.csv)
@@ -52,7 +54,10 @@ group = "com.github.youngerdryas89.moviescraper"
 version = "0.9.5"
 description = "JAVMovieScraper"
 java.sourceCompatibility = JavaVersion.VERSION_21
-java.modularity.inferModulePath = true
+
+extraJavaModuleInfo {
+    deriveAutomaticModuleNamesFromFileNames = true
+}
 
 javafx {
     version = "24.0.1"
@@ -60,6 +65,7 @@ javafx {
 }
 
 application {
+    applicationDefaultJvmArgs = listOf("-Dcom.github.youngerdryas89.moviescraper.version=${version}")
     mainModule = "com.github.youngerdryas89.moviescraper"
     mainClass = "com.github.youngerdryas89.moviescraper.Main"
 }
@@ -71,9 +77,16 @@ publishing {
 }
 
 tasks.withType<JavaCompile>() {
+    options.compilerArgs = listOf("-Xlint:deprecation")
     options.encoding = "UTF-8"
 }
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes(mapOf("Main-Class" to "com.github.youngerdryas89.moviescraper.Main"))
+    }
 }
