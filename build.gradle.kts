@@ -3,9 +3,11 @@
  */
 
 plugins {
+    base
     `java-library`
     `maven-publish`
     application
+    distribution
     id("org.openjfx.javafxplugin").version("0.1.0")
     id("org.gradlex.extra-java-module-info") version "1.12"
 }
@@ -35,6 +37,15 @@ dependencies {
     implementation("com.thoughtworks.xstream:xstream:1.4.21")
     implementation("commons-cli:commons-cli:1.9.0")
     // --- END OF NON MODULE DEPENDENCIES --
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "mac")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "mac")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "mac")
     implementation("org.gradlex:extra-java-module-info:1.12")
     implementation(libs.org.apache.commons.commons.lang3)
     implementation(libs.commons.codec.commons.codec)
@@ -54,6 +65,7 @@ group = "com.github.youngerdryas89.moviescraper"
 version = "0.9.5"
 description = "JAVMovieScraper"
 java.sourceCompatibility = JavaVersion.VERSION_21
+java.targetCompatibility = JavaVersion.VERSION_21
 
 extraJavaModuleInfo {
     deriveAutomaticModuleNamesFromFileNames = true
@@ -85,7 +97,20 @@ tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
 }
 
+tasks.withType<Copy>(){
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 tasks.withType<Jar> {
+    archiveClassifier = "all"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter {
+            it.name.endsWith("jar")
+        }.map { zipTree(it) }})
+
     manifest {
         attributes(mapOf("Main-Class" to "com.github.youngerdryas89.moviescraper.Main"))
     }
