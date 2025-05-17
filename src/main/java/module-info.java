@@ -1,7 +1,7 @@
-module moviescraper.doctord {
+module com.github.youngerdryas89.moviescraper {
     requires javafx.swing;
     requires javafx.controls;
-    requires commons.cli;
+    requires org.apache.commons.cli;
     requires org.apache.commons.io;
     requires java.desktop;
     requires org.apache.commons.lang3;
@@ -22,15 +22,15 @@ module moviescraper.doctord {
     requires org.jetbrains.annotations;
     requires commons.collections;
     requires com.github.benmanes.caffeine;
-    exports moviescraper.doctord;
-    exports moviescraper.doctord.controller.amalgamation;
-    exports moviescraper.doctord.controller.siteparsingprofile;
-    exports moviescraper.doctord.controller.siteparsingprofile.specific;
-    exports moviescraper.doctord.model.dataitem;
-    opens moviescraper.doctord.controller.amalgamation to json.io, xstream;
-    opens moviescraper.doctord.controller.siteparsingprofile to xstream;
-    opens moviescraper.doctord.controller.siteparsingprofile.specific to xstream;
-    opens moviescraper.doctord.model.preferences to xstream;
-    opens moviescraper.doctord.model.dataitem to xstream;
-    opens moviescraper.doctord.controller.xmlserialization to xstream;
+    exports com.github.youngerdryas89.moviescraper;
+    exports com.github.youngerdryas89.moviescraper.controller.amalgamation;
+    exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
+    exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific;
+    exports com.github.youngerdryas89.moviescraper.model.dataitem;
+    opens com.github.youngerdryas89.moviescraper.controller.amalgamation to json.io, xstream;
+    opens com.github.youngerdryas89.moviescraper.controller.siteparsingprofile to xstream;
+    opens com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific to xstream;
+    opens com.github.youngerdryas89.moviescraper.model.preferences to xstream;
+    opens com.github.youngerdryas89.moviescraper.model.dataitem to xstream;
+    opens com.github.youngerdryas89.moviescraper.controller.xmlserialization to xstream;
 }
