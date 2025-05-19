@@ -37,18 +37,19 @@ public class MessageConsoleGUI extends JFrame {
 		this.add(somePanel);
 		JTextPane textPane = new JTextPane();
 		somePanel.add(new JScrollPane(textPane), BorderLayout.CENTER);
-		MessageConsole mc = new MessageConsole(textPane);
-		mc.redirectOut(Color.BLACK, System.out);
-		mc.redirectErr(Color.RED, System.err);
-		mc.setMessageLines(750);
-		this.setVisible(true);
+		try(MessageConsole mc = new MessageConsole(textPane)) {
+			mc.redirectOut(Color.BLACK, System.out);
+			mc.redirectErr(Color.RED, System.err);
+			mc.setMessageLines(750);
+			this.setVisible(true);
 
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent arg0) {
-				window.setVisible(false);
-			}
-		});
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent arg0) {
+					window.setVisible(false);
+				}
+			});
+		}
 	}
 
 }

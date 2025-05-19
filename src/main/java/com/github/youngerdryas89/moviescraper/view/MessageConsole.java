@@ -18,7 +18,7 @@ import javax.swing.text.*;
  * 
  * from: http://tips4java.wordpress.com/2008/11/08/message-console/
  */
-public class MessageConsole {
+public class MessageConsole implements AutoCloseable {
 	private JTextComponent textComponent;
 	private Document document;
 	private boolean isAppend;
@@ -104,14 +104,9 @@ public class MessageConsole {
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		try {
-			//make sure the PrintStream objects get closed before this object goes bye-bye
-			out.close();
-			err.close();
-		} finally {
-			super.finalize();
-		}
+	public void close() {
+		out.close();
+		err.close();
 	}
 
 	/*
