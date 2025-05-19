@@ -23,6 +23,10 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
+
+    maven {
+        url = uri("https://maven.covers1624.net/")
+    }
 }
 
 dependencies {
@@ -59,6 +63,7 @@ dependencies {
     implementation(libs.org.apache.httpcomponents.httpclient)
     implementation(libs.com.github.ben.manes.caffeine.caffeine)
     implementation(libs.com.twelvemonkeys.imageio.imageio.webp)
+    implementation("net.covers1624:curl4j:3.0.17:libcurl")
 }
 
 group = "com.github.youngerdryas89.moviescraper"
