@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -465,7 +466,7 @@ public class Movie {
 
 		if (nfoFile != null && xml.length() > 0)
 			nfoFile.delete();
-		FileUtils.writeStringToFile(nfoFile, xml, org.apache.commons.lang3.CharEncoding.UTF_8);
+		FileUtils.writeStringToFile(nfoFile, xml, StandardCharsets.UTF_8);
 
 		Thumb parentPoster = null;
 		Thumb posterToSaveToDisk = null;

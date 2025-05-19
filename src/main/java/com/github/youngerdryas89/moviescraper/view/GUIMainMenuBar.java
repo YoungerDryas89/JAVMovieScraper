@@ -1,11 +1,7 @@
 package com.github.youngerdryas89.moviescraper.view;
 
 import java.awt.Event;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -288,14 +284,14 @@ public class GUIMainMenuBar extends JMenuBar {
 		//Browse directory file menu
 		JMenuItem browseDirectory = new JMenuItem("Browse directory...");
 		browseDirectory.setMnemonic(KeyEvent.VK_B);
-		browseDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, Event.CTRL_MASK));
+		browseDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_DOWN_MASK));
 		browseDirectory.addActionListener(new BrowseDirectoryAction(guiMain));
 		fileMenu.add(browseDirectory);
 
 		//Refresh file menu
 		JMenuItem refreshDirectory = new JMenuItem("Refresh");
 		refreshDirectory.setMnemonic(KeyEvent.VK_R);
-		refreshDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, Event.CTRL_MASK));
+		refreshDirectory.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 		refreshDirectory.addActionListener(new RefreshDirectoryAction(guiMain));
 		fileMenu.add(refreshDirectory);
 
@@ -304,13 +300,13 @@ public class GUIMainMenuBar extends JMenuBar {
 		//Open file menu
 		JMenuItem openFile = new JMenuItem("Open File");
 		openFile.setMnemonic(KeyEvent.VK_O);
-		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, Event.CTRL_MASK));
+		openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK));
 		openFile.addActionListener(new OpenFileAction(guiMain));
 		fileMenu.add(openFile);
 
 		JMenuItem playMovie = new JMenuItem("Play Movie");
 		playMovie.setMnemonic(KeyEvent.VK_P);
-		playMovie.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Event.CTRL_MASK));
+		playMovie.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
 		playMovie.addActionListener(new PlayMovieAction(guiMain));
 		fileMenu.add(playMovie);
 
@@ -318,19 +314,19 @@ public class GUIMainMenuBar extends JMenuBar {
 		writeFileMenuItem.setToolTipText("Write out the .nfo file to disk. The movie must have a title for this to be enabled.");
 		writeFileMenuItem.setEnabled(false); //this becomes enabled later when there is an actual movie to write
 		writeFileMenuItem.setMnemonic(KeyEvent.VK_W);
-		writeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, Event.CTRL_MASK));
+		writeFileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
 		writeFileMenuItem.addActionListener(new WriteFileDataAction(guiMain));
 		fileMenu.add(writeFileMenuItem);
 
 		JMenuItem moveFile = new JMenuItem("Move File to New Folder");
 		moveFile.setMnemonic(KeyEvent.VK_M);
-		moveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, Event.CTRL_MASK));
+		moveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_DOWN_MASK));
 		moveFile.addActionListener(new MoveToNewFolderAction(guiMain));
 		fileMenu.add(moveFile);
 
 		JMenuItem cleanFile = new JMenuItem("Clean up File Name");
 		cleanFile.setMnemonic(KeyEvent.VK_C);
-		cleanFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Event.CTRL_MASK));
+		cleanFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
 		cleanFile.addActionListener(new FileNameCleanupAction(guiMain));
 		fileMenu.add(cleanFile);
 
@@ -339,7 +335,7 @@ public class GUIMainMenuBar extends JMenuBar {
 		//Exit file menu
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.setMnemonic(KeyEvent.VK_E);
-		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Event.CTRL_MASK));
+		exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 		exit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -406,12 +402,12 @@ public class GUIMainMenuBar extends JMenuBar {
 
 		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(
 		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
-		scrapeAdultDVDAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
+		scrapeAdultDVDAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK));
 		scrapeAdultDVDAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("App"));
 
 		JMenuItem scrapeJAVAmalgamated = new JMenuItem(
 		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)));
-		scrapeJAVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+		scrapeJAVAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		scrapeJAVAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("Japan"));
 
 		scrapeMenu.add(scrapeAdultDVDAmalgamated);
@@ -429,11 +425,11 @@ public class GUIMainMenuBar extends JMenuBar {
 				menuItem.setIcon(menuItemIcon);
 
 			if (++i < 10) {
-				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i, 10), Event.CTRL_MASK));
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i, 10), InputEvent.CTRL_DOWN_MASK));
 			} else if (i < 20) {
 				if (i == 10)
 					++i;
-				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i % 10, 10), Event.CTRL_MASK | Event.SHIFT_MASK));
+				menuItem.setAccelerator(KeyStroke.getKeyStroke(Character.forDigit(i % 10, 10), InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK));
 			}
 			menuItem.addActionListener(new ScrapeAmalgamatedAction(guiMain, item.getParser()));
 			specificMenu.add(menuItem);
