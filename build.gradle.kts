@@ -91,7 +91,8 @@ extraJavaModuleInfo {
 //}
 
 application {
-    applicationDefaultJvmArgs = listOf("-Dcom.github.youngerdryas89.moviescraper.version=${version}")
+    applicationName = "JAVMovieScraper"
+    applicationDefaultJvmArgs = listOf("-Dcom.github.youngerdryas89.moviescraper.version=$version")
     mainModule = "com.github.youngerdryas89.moviescraper"
     mainClass = "com.github.youngerdryas89.moviescraper.Main"
 }

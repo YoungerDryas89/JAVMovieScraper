@@ -13,6 +13,7 @@ module com.github.youngerdryas89.moviescraper {
     requires org.apache.httpcomponents.httpcore;
     requires org.apache.httpcomponents.httpclient;
     requires org.apache.commons.csv;
+    requires org.apache.commons.compress;
     requires org.json;
     requires java.logging;
     requires org.apache.commons.codec;
@@ -22,6 +23,7 @@ module com.github.youngerdryas89.moviescraper {
     requires org.jetbrains.annotations;
     requires commons.collections;
     requires com.github.benmanes.caffeine;
+    requires vavr;
     exports com.github.youngerdryas89.moviescraper;
     exports com.github.youngerdryas89.moviescraper.controller.amalgamation;
     exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
