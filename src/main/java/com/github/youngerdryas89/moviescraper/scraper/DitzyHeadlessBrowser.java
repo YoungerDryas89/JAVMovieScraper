@@ -3,6 +3,7 @@ package com.github.youngerdryas89.moviescraper.scraper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
@@ -17,11 +18,19 @@ public class DitzyHeadlessBrowser {
 	private DitzyCookies cookies;
 	private final int timeout;
 	private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
+	private final CurlDependencyManager curlManager = new CurlDependencyManager();
 
-	public DitzyHeadlessBrowser(String userAgent, int timeout) {
+	public DitzyHeadlessBrowser(String userAgent, int timeout){
 		this.userAgent = userAgent;
 		this.timeout = timeout;
 		this.cookies = new DitzyCookies();
+		try {
+			if (curlManager.get().get().isDefined()) {
+				LOGGER.log(Level.INFO, "Using libcurl-impersonate v1.0.0");
+			}
+		}catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error: Interrupted or Cancelled while attempting to get libcurl-impersonate!");
+		}
 		LOGGER.log(Level.INFO, "Build browser with U: {0}", this.userAgent);
 	}
 
