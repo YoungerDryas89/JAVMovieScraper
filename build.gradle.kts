@@ -10,6 +10,7 @@ plugins {
     distribution
     id("org.openjfx.javafxplugin").version("0.1.0")
     id("org.gradlex.extra-java-module-info") version "1.12"
+    id("org.beryx.jlink") version "3.1.1"
 }
 
 repositories {
@@ -34,24 +35,25 @@ dependencies {
     testImplementation(libs.org.junit.vintage.junit.vintage.engine)
     testImplementation(libs.org.junit.jupiter.junit.jupiter.engine)
     // --- BEGINNING OF NON MODULE DEPENDENCIES ---
-    implementation("commons-io:commons-io:2.14.0")
+    implementation("commons-io:commons-io:2.19.0")
     implementation("org.imgscalr:imgscalr-lib:4.2")
     implementation("com.jgoodies:jgoodies-forms:1.9.0")
     implementation("com.cedarsoftware:json-io:4.14.1")
     implementation("com.thoughtworks.xstream:xstream:1.4.21")
     implementation("commons-cli:commons-cli:1.9.0")
     // --- END OF NON MODULE DEPENDENCIES --
-    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "win")
-    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "linux")
-    implementation(group = "org.openjfx", name = "javafx-controls", version = "24.0.1", classifier = "mac")
-    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "win")
-    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "linux")
-    implementation(group = "org.openjfx", name = "javafx-graphics", version = "24.0.1", classifier = "mac")
-    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "win")
-    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "linux")
-    implementation(group = "org.openjfx", name = "javafx-swing", version = "24.0.1", classifier = "mac")
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "13", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "13", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-controls", version = "13", classifier = "mac")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "13", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "13", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-graphics", version = "13", classifier = "mac")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "20.0.2", classifier = "win")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "20.0.2", classifier = "linux")
+    implementation(group = "org.openjfx", name = "javafx-swing", version = "20.0.2", classifier = "mac")
     implementation("org.gradlex:extra-java-module-info:1.12")
     implementation(libs.org.apache.commons.commons.lang3)
+    implementation("org.apache.commons:commons-compress:1.27.1")
     implementation(libs.commons.codec.commons.codec)
     implementation(libs.org.apache.commons.commons.csv)
     implementation(libs.com.jgoodies.jgoodies.common)
@@ -64,6 +66,7 @@ dependencies {
     implementation(libs.com.github.ben.manes.caffeine.caffeine)
     implementation(libs.com.twelvemonkeys.imageio.imageio.webp)
     implementation("net.covers1624:curl4j:3.0.17:libcurl")
+    implementation("io.vavr:vavr:0.9.0")
 }
 
 group = "com.github.youngerdryas89.moviescraper"
@@ -76,10 +79,16 @@ extraJavaModuleInfo {
     deriveAutomaticModuleNamesFromFileNames = true
 }
 
-javafx {
-    version = "24.0.1"
-    modules = mutableListOf("javafx.controls", "javafx.graphics", "javafx.swing")
-}
+//javafx {
+//    version = "24.0.1"
+//    modules = mutableListOf("javafx.controls", "javafx.graphics", "javafx.swing")
+//}
+
+//jlink {
+//    launcher {
+//        name = "JAVMovieScraper"
+//    }
+//}
 
 application {
     applicationDefaultJvmArgs = listOf("-Dcom.github.youngerdryas89.moviescraper.version=${version}")
