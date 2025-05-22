@@ -28,33 +28,42 @@ import static org.apache.commons.lang3.SystemUtils.*;
 public class CurlDependencyManager {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Path curl;
-
+    private Path location;
 
     public CurlDependencyManager() {
         if(Files.notExists(getDataDirectory()))
-            Try.of(() -> Files.createDirectories(getDataDirectory())).onFailure((Void) -> System.err.println("Error: Failed to create data directory: " + getDataDirectory()));
+            Try.of(() -> location = Files.createDirectories(getDataDirectory()))
+                    .onFailure((Void) -> {
+                        System.err.println("Warning: Failed to create data directory: " + getDataDirectory());
+                        location = Path.of(".");
+                    });
     }
 
-    public Future<Option<Path>> get() {
+    public Path getCurlLocation(){
+        return curl;
+    }
+
+    public boolean isAvailable(){
+        return curl != null;
+    }
+    public Path getLocation() {
+        return location;
+    }
+
+    public Future<Either<CurlMError, Path>> get() {
         return executor.submit(() -> {
-            try {
-                if (!checkForCurl()) {
-                    var pathOfStatusCode = new GetCurlOp().get();
-                    if(pathOfStatusCode.isRight()) {
-                        var temp = copyDeps(pathOfStatusCode.right().get());
-                        curl = temp.getOrNull();
-                        return temp;
-                    } else {
-                        System.err.println("Error: Failed to download libcurl-impersonate; status code: " + pathOfStatusCode.left().toString());
-                        return Option.none();
-                    }
+            var curlLoc = checkForCurl();
+            if (curlLoc.isEmpty()) {
+                var pathOfStatusCode = new GetCurlOp().get();
+                if(pathOfStatusCode.isRight()) {
+                    var temp = copyDeps(pathOfStatusCode.right().get());
+                    curl = temp.getOrNull();
+                    return Either.right(temp.get());
+                } else if(pathOfStatusCode.isLeft()){
+                    return Either.left(pathOfStatusCode.left().get());
                 }
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                System.out.println(Arrays.toString(e.getStackTrace()));
-                System.err.println(Arrays.toString(e.getStackTrace()));
             }
-            return Option.none();
+            return Either.right(curlLoc.get());
         });
     }
     Path getDataDirectory() {
@@ -62,28 +71,40 @@ public class CurlDependencyManager {
             return Path.of(System.getenv("APPDATA") + "\\JAVMovieScraper");
         } else if(IS_OS_LINUX) {
             return Path.of(System.getenv("HOME") + "/.local/share/JAVMovieScraper");
+        } else if (IS_OS_MAC){
+            return Path.of("~/Library/Application/JAVMovieScraper");
         }
+        System.err.println("Warning: Unknown operating system: Using current working directory to store shared libraries");
         return Path.of("").toAbsolutePath();
     }
 
-    private boolean checkForCurl() throws Exception {
+    private Option<Path> checkForCurl(){
         if(IS_OS_WINDOWS) {
-            return Files.exists(getDataDirectory().resolve("libcurl.dll")) && Files.exists(getDataDirectory().resolve("zlib.dll"));
+            if(Files.exists(getDataDirectory().resolve("libcurl.dll")) && Files.exists(getDataDirectory().resolve("zlib.dll")))
+                return Option.of(getDataDirectory().resolve("libcurl.dll"));
         }else if (IS_OS_LINUX){
-            return Files.exists(getDataDirectory().resolve("libcurl-impersonate.so.4.8.0"));
+            if(Files.exists(getDataDirectory().resolve("libcurl-impersonate.so.4.8.0")))
+                return Option.of(location.resolve("libcurl-impersonate.so.4.8.0"));
+        } else if(IS_OS_MAC){
+            if(Files.exists(getDataDirectory().resolve("libcurl-impersonate.4.dylib"))){
+                return Option.of(location.resolve("libcurl-impersonate.4.dylib"));
+            }
         }
-        return false;
+        return Option.none();
     }
 
     private Option<Path> copyDeps(Path path){
         try {
             if (IS_OS_WINDOWS) {
-                Files.copy(path.resolve("bin").resolve("libcurl.dll"), getDataDirectory().resolve("libcurl.dll"), StandardCopyOption.REPLACE_EXISTING);
-                Files.copy(path.resolve("bin").resolve("zlib.dll"), getDataDirectory().resolve("zlib.dll"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(path.resolve("bin").resolve("libcurl.dll"), location.resolve("libcurl.dll"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(path.resolve("bin").resolve("zlib.dll"), location.resolve("zlib.dll"), StandardCopyOption.REPLACE_EXISTING);
                 return Option.of(getDataDirectory().resolve("libcurl.dll"));
             } else if (IS_OS_LINUX) {
-                Files.copy(path.resolve("libcurl-impersonate.so.4.8.0"), getDataDirectory().resolve("libcurl-impersonate.so.4.8.0"), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(path.resolve("libcurl-impersonate.so.4.8.0"), location.resolve("libcurl-impersonate.so.4.8.0"), StandardCopyOption.REPLACE_EXISTING);
                 return Option.of(getDataDirectory().resolve("libcurl-impersonate.so.4.8.0"));
+            } else if(IS_OS_MAC){
+                Files.copy(path.resolve("libcurl-impersonate.4.dylib"), location.resolve("libcurl-impersonate.4.dylib"));
+                return Option.of(location.resolve("libcurl-impersonate.4.dylib"));
             }
 
         } catch (Exception e){
@@ -94,34 +115,43 @@ public class CurlDependencyManager {
         }
         return Option.none();
     }
+
+    public String Version() {
+        return "1.0.0";
+    }
 }
 
 class GetCurlOp {
     private String url_ = "https://github.com/lexiforest/curl-impersonate/releases/download/v$version/libcurl-impersonate-v$version.$arch-$platform.tar.gz";
     private String version = "1.0.0";
 
-    public Either<Integer, Path> get() throws Exception {
-        var tempDir = Files.createTempDirectory("jmsTmp");
-        var url = url_.replace("$version", version).replace("$arch", getArchitecture()).replace("$platform", getPlatform());
+    public Either<CurlMError, Path> get()  {
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()){
+            var tempDir = Files.createTempDirectory("jmsTmp");
+            var url = url_.replace("$version", version).replace("$arch", getArchitecture()).replace("$platform", getPlatform());
             HttpGet request = new HttpGet(url);
             request.setHeader("User-Agent", getRandomUserAgent());
 
             httpClient.execute(request, response -> {
                int statusCode = response.getStatusLine().getStatusCode();
-               System.out.println(statusCode);
                if(statusCode == 200){
                    try(InputStream is = response.getEntity().getContent()){
                        extractTarGz(is, tempDir);
                        return Either.right(tempDir);
+                   }catch (IOException e){
+                       return Either.left(new CurlMError.CurlDependencyManagerError(
+                               "Error: Failed to failed to extract libcurl-impersonate; Exception: " + e.getMessage()
+                       ));
                    }
                }
-                return Either.left(statusCode);
+                return Either.left(new CurlMError.HTTPError(response.getStatusLine().getReasonPhrase(), statusCode));
             });
+            return Either.right(tempDir);
+        } catch (Exception e){
+            return Either.left(new CurlMError.CurlDependencyManagerError("Error: In CurlDependencyManager exception: " + e.getMessage()));
         }
 
-        return Either.right(tempDir);
     }
 
     void extractTarGz(InputStream inputStream, Path destination) throws IOException {
