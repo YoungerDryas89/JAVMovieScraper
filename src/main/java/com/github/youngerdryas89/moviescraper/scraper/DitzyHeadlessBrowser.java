@@ -24,9 +24,26 @@ public class DitzyHeadlessBrowser {
 		this.userAgent = userAgent;
 		this.timeout = timeout;
 		this.cookies = new DitzyCookies();
+
+		var curlResult = curlManager.get();
 		try {
-			if (curlManager.get().get().isDefined()) {
-				LOGGER.log(Level.INFO, "Using libcurl-impersonate v1.0.0");
+			if (curlResult.get().isRight()) {
+				LOGGER.log(Level.INFO, "U sing libcurl-impersonate v" + curlManager.Version());
+			} else {
+				LOGGER.log(Level.WARNING, "Error on getting curl-impersonate");
+				switch (curlResult.get().left().get()){
+					case CurlMError.CurlDependencyManagerError(String message): {
+						LOGGER.log(Level.WARNING, message);
+						break;
+					}
+
+					case CurlMError.HTTPError(String message, int statusCode): {
+						LOGGER.log(Level.WARNING, "HTTP Status: " + statusCode + " " + message);
+					}
+                    break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + curlResult.get().left().get());
+                }
 			}
 		}catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error: Interrupted or Cancelled while attempting to get libcurl-impersonate!");
