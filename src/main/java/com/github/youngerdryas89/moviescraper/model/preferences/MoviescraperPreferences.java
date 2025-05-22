@@ -34,7 +34,9 @@ public class MoviescraperPreferences extends Settings {
 		frequentlyUsedTags, //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
 		writeThumbTagsForPosterAndFanartToNfo, //Whether to write the <thumb> tag into the nfo,
 		userAgent, //UserAgent to use
-		cookieJar //UserAgent to use
+		cookieJar,
+		useCURL,
+		useCURLImpersonate
 		;
 
 		@Override
@@ -274,4 +276,22 @@ public class MoviescraperPreferences extends Settings {
 	public void setCookieJar(String preferenceValue) {
 		setStringValue(Key.cookieJar, preferenceValue);
 	}
+
+	public Boolean useCurl(){
+		return getBooleanValue(Key.useCURL, true);
+	}
+
+	public void setUseCurl(boolean preference){
+		setBooleanValue(Key.useCURL, preference);
+	}
+
+	public Boolean useCurlImpersonate() {
+		return getBooleanValue(Key.useCURLImpersonate, true);
+	}
+
+	public void setUseCurlImpersonate(boolean preference){
+		setBooleanValue(Key.useCURLImpersonate, true);
+	}
+
+
 }
