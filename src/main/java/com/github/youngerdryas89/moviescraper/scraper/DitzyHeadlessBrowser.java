@@ -28,7 +28,7 @@ public class DitzyHeadlessBrowser {
 		var curlResult = curlManager.get();
 		try {
 			if (curlResult.get().isRight()) {
-				LOGGER.log(Level.INFO, "U sing libcurl-impersonate v" + curlManager.Version());
+				LOGGER.log(Level.INFO, "Using libcurl-impersonate v" + curlManager.Version());
 			} else {
 				LOGGER.log(Level.WARNING, "Error on getting curl-impersonate");
 				switch (curlResult.get().left().get()){
