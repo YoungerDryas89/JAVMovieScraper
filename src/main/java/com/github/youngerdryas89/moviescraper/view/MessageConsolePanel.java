@@ -21,12 +21,11 @@ public class MessageConsolePanel extends JPanel {
 		setPreferredSize(new Dimension(100, 100));
 		setMaximumSize(new Dimension(100, 100));
 		add(new JScrollPane(textPane), BorderLayout.CENTER);
-		try(MessageConsole mc = new MessageConsole(textPane)) {
-			mc.redirectOut(Color.BLACK, System.out);
-			mc.redirectErr(Color.RED, System.err);
-			mc.setMessageLines(1000);
-			this.setVisible(false);
-		}
+		MessageConsole mc = new MessageConsole(textPane);
+		mc.redirectOut(Color.BLACK, System.out);
+		mc.redirectErr(Color.RED, System.err);
+		mc.setMessageLines(1000);
+		this.setVisible(false);
 	}
 
 }
