@@ -3,8 +3,14 @@ package com.github.youngerdryas89.moviescraper.scraper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
+import io.vavr.control.Either;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -20,34 +26,44 @@ public class DitzyHeadlessBrowser {
 	private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
 	private final CurlDependencyManager curlManager = new CurlDependencyManager();
 
+
+	private ExecutorService executor = Executors.newSingleThreadExecutor();
+
 	public DitzyHeadlessBrowser(String userAgent, int timeout){
 		this.userAgent = userAgent;
 		this.timeout = timeout;
 		this.cookies = new DitzyCookies();
 
-		var curlResult = curlManager.get();
-		try {
-			if (curlResult.get().isRight()) {
-				LOGGER.log(Level.INFO, "Using libcurl-impersonate v" + curlManager.Version());
-			} else {
-				LOGGER.log(Level.WARNING, "Error on getting curl-impersonate");
-				switch (curlResult.get().left().get()){
-					case CurlMError.CurlDependencyManagerError(String message): {
-						LOGGER.log(Level.WARNING, message);
-						break;
-					}
+		CompletableFuture<Either<CurlMError, Path>> curlManagerResults = CompletableFuture.supplyAsync(
+				() -> {
+					try {
+						var curlResult = curlManager.get();
+						if (curlResult.isRight()) {
+							System.out.println("Using libcurl-impersonate v" + curlManager.Version());
+						} else {
+							LOGGER.log(Level.WARNING, "Error on getting curl-impersonate");
+							switch (curlResult.left().get()){
+								case CurlMError.CurlDependencyManagerError(String message): {
+									LOGGER.log(Level.WARNING, message);
+									break;
+								}
 
-					case CurlMError.HTTPError(String message, int statusCode): {
-						LOGGER.log(Level.WARNING, "HTTP Status: " + statusCode + " " + message);
+								case CurlMError.HTTPError(String message, int statusCode): {
+									LOGGER.log(Level.WARNING, "HTTP Status: " + statusCode + " " + message);
+								}
+								break;
+								default:
+									throw new IllegalStateException("Unexpected value: " + curlResult.left().get());
+							}
+						}
+					} catch (Exception e) {
+						LOGGER.log(Level.WARNING, "Error: Interrupted or Cancelled while attempting to get libcurl-impersonate!");
+						LOGGER.log(Level.WARNING, "Exception: " + e.getMessage());
 					}
-                    break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + curlResult.get().left().get());
-                }
-			}
-		}catch (Exception e) {
-			LOGGER.log(Level.WARNING, "Error: Interrupted or Cancelled while attempting to get libcurl-impersonate!");
-		}
+                    return null;
+                },
+				executor
+		);
 		LOGGER.log(Level.INFO, "Build browser with U: {0}", this.userAgent);
 	}
 

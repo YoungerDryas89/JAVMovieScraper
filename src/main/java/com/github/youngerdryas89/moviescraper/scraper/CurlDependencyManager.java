@@ -2,6 +2,7 @@ package com.github.youngerdryas89.moviescraper.scraper;
 
 import com.github.youngerdryas89.moviescraper.SystemInfo;
 import io.vavr.control.Try;
+import net.covers1624.curl4j.CURL;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,19 +27,23 @@ import static com.github.youngerdryas89.moviescraper.scraper.UserAgent.getRandom
 import static org.apache.commons.lang3.ArchUtils.getProcessor;
 import static org.apache.commons.lang3.SystemUtils.*;
 
-public class CurlDependencyManager {
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+public class CurlDependencyManager implements AutoCloseable {
     private Path curl;
     private Path location;
 
     public CurlDependencyManager() {
         if(Files.notExists(getDataDirectory()))
-            Try.of(() -> location = Files.createDirectories(getDataDirectory()))
-                    .onFailure((Void) -> {
+            location = Try.of(() -> Files.createDirectories(getDataDirectory()))
+                    .getOrElseGet((Void) -> {
                         System.err.println("Warning: Failed to create data directory: " + getDataDirectory());
-                        location = Path.of(".");
+                        return Path.of(".");
                     });
+        else
+            location = getDataDirectory();
+
+        CURL.curl_global_init(CURL.CURL_GLOBAL_ALL);
     }
+
 
     public Path getCurlLocation(){
         return curl;
@@ -50,21 +56,20 @@ public class CurlDependencyManager {
         return location;
     }
 
-    public Future<Either<CurlMError, Path>> get() {
-        return executor.submit(() -> {
-            var curlLoc = checkForCurl();
-            if (curlLoc.isEmpty()) {
-                var pathOfStatusCode = new GetCurlOp().get();
-                if(pathOfStatusCode.isRight()) {
-                    var temp = copyDeps(pathOfStatusCode.right().get());
-                    curl = temp.getOrNull();
-                    return Either.right(temp.get());
-                } else if(pathOfStatusCode.isLeft()){
-                    return Either.left(pathOfStatusCode.left().get());
-                }
+    public Either<CurlMError, Path> get() {
+        var curlLoc = checkForCurl();
+        if (curlLoc.isEmpty()) {
+            var pathOfStatusCode = new GetCurlOp().get();
+            if(pathOfStatusCode.isRight()) {
+                var temp = copyDeps(pathOfStatusCode.right().get());
+                CURL.setLibCurlName(temp.get().toString());
+                curl = temp.getOrNull();
+                return Either.right(temp.get());
+            } else if(pathOfStatusCode.isLeft()){
+                return Either.left(pathOfStatusCode.left().get());
             }
-            return Either.right(curlLoc.get());
-        });
+        }
+        return Either.right(curlLoc.get());
     }
     Path getDataDirectory() {
         if(IS_OS_WINDOWS) {
@@ -118,6 +123,11 @@ public class CurlDependencyManager {
 
     public String Version() {
         return "1.0.0";
+    }
+
+    @Override
+    public void close() {
+        CURL.curl_global_cleanup();
     }
 }
 
