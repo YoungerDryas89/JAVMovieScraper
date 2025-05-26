@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.com.github.ben.manes.caffeine.caffeine)
     implementation(libs.com.twelvemonkeys.imageio.imageio.webp)
     implementation("net.covers1624:curl4j:3.0.17:libcurl")
+    implementation("net.covers1624:Quack:0.4.10.99")
     implementation("io.vavr:vavr:0.9.0")
 }
 
@@ -119,6 +120,7 @@ tasks.withType<Copy>(){
 tasks.withType<Jar> {
     archiveClassifier = "all"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude("META-INF/*.RSA", "META-INF/*.DSA", "META-INF/*.SF")
     from(sourceSets.main.get().output)
     dependsOn(configurations.runtimeClasspath)
     from({

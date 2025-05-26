@@ -24,6 +24,8 @@ module com.github.youngerdryas89.moviescraper {
     requires commons.collections;
     requires com.github.benmanes.caffeine;
     requires vavr;
+    requires curl4j;
+    requires net.covers1624.quack;
     exports com.github.youngerdryas89.moviescraper;
     exports com.github.youngerdryas89.moviescraper.controller.amalgamation;
     exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
