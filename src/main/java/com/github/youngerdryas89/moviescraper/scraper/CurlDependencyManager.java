@@ -2,7 +2,9 @@ package com.github.youngerdryas89.moviescraper.scraper;
 
 import com.github.youngerdryas89.moviescraper.SystemInfo;
 import io.vavr.control.Try;
+import net.covers1624.curl4j.CABundle;
 import net.covers1624.curl4j.CURL;
+import net.covers1624.curl4j.httpapi.Curl4jHttpEngine;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -30,6 +32,7 @@ import static org.apache.commons.lang3.SystemUtils.*;
 public class CurlDependencyManager implements AutoCloseable {
     private Path curl;
     private Path location;
+    private Curl4jHttpEngine engine;
 
     public CurlDependencyManager() {
         if(Files.notExists(getDataDirectory()))
@@ -40,8 +43,13 @@ public class CurlDependencyManager implements AutoCloseable {
                     });
         else
             location = getDataDirectory();
+    }
 
-        CURL.curl_global_init(CURL.CURL_GLOBAL_ALL);
+    public Curl4jHttpEngine getEngine(){
+        if(engine == null){
+            engine = new Curl4jHttpEngine(CABundle.builtIn());
+        }
+        return engine;
     }
 
 
@@ -63,6 +71,7 @@ public class CurlDependencyManager implements AutoCloseable {
             if(pathOfStatusCode.isRight()) {
                 var temp = copyDeps(pathOfStatusCode.right().get());
                 CURL.setLibCurlName(temp.get().toString());
+                engine = new Curl4jHttpEngine(CABundle.builtIn(), "firefox135");
                 curl = temp.getOrNull();
                 return Either.right(temp.get());
             } else if(pathOfStatusCode.isLeft()){
@@ -127,7 +136,7 @@ public class CurlDependencyManager implements AutoCloseable {
 
     @Override
     public void close() {
-        CURL.curl_global_cleanup();
+        engine.close();
     }
 }
 

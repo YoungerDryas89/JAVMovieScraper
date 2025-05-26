@@ -11,6 +11,10 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 import io.vavr.control.Either;
+import net.covers1624.curl4j.CURL;
+import net.covers1624.curl4j.httpapi.Curl4jEngineRequest;
+import net.covers1624.curl4j.httpapi.Curl4jHttpEngine;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -25,6 +29,7 @@ public class DitzyHeadlessBrowser {
 	private final int timeout;
 	private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
 	private final CurlDependencyManager curlManager = new CurlDependencyManager();
+	private final MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 
 
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -107,25 +112,12 @@ public class DitzyHeadlessBrowser {
 	 * @return The server response
 	 * @throws IOException Cannot parse the document
 	 */
-	public Response get(URL url) throws IOException {
+	public EngineResponse get(URL url) throws IOException {
 		LOGGER.log(Level.INFO, "Get request on {0}", url.toString());
-		Connection connection = connect(url, true);
-
-		connection = connection.cookies(this.cookies.getCookies(url));
-
-		Response response = connection.execute();
-
-		if (!response.cookies().isEmpty()) {
-			cookies.addCookies(url.getHost(), response.cookies());
-		}
-
-		if (response.statusCode() == 503 && response.hasHeader("Server")) {
-			if (response.header("Server").compareTo("cloudflare") == 0) {
-				throw new RuntimeException("Cannot connect to cloudflare walled url. Make sure you set and update the cookieJar");
-			}
-		}
-
-		return response;
+		var request = curlManager.getEngine().newRequest()
+				.method("GET", null)
+				.url(url);
+		return request.execute();
 	}
 
 	public void setUserAgent(String userAgent) {
