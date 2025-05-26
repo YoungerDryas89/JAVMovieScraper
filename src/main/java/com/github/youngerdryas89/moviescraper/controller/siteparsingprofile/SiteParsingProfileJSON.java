@@ -1,7 +1,10 @@
 package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
 
 import java.io.IOException;
+import java.net.URL;
 
+import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -36,9 +39,10 @@ public abstract class SiteParsingProfileJSON extends SiteParsingProfile {
 		return getJSONObjectFromString(getJSONStringFromURL(url));
 	}
 
-	public static Connection.Response getDocument(String url) throws IOException {
+	public static EngineResponse getDocument(String url) throws IOException {
 		try {
-			return Jsoup.connect(url).ignoreContentType(true).execute();
+			return DitzyHeadlessBrowserSingle.getBrowser().get(new URL(url));
+//			return Jsoup.connect(url).ignoreContentType(true).execute();
 		}catch (IOException e){
 			System.err.println(e.getMessage());
 		}

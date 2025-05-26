@@ -28,6 +28,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.github.youngerdryas89.moviescraper.controller.FileDownloaderUtilities;
@@ -895,19 +896,19 @@ public class Movie {
 			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
 			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
 			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			var response = siteToParseFrom.downloadDocument(searchResultToUse);
+			var response = siteToParseFrom.downloadDocument(searchResultToUse.getUrlPath(), searchResultToUse.isJSONSearchResult);
 			if(response == null || response.statusCode() != 200 || response.statusCode() > 399){
 				if(response != null) {
 					System.err.println("Failed to connect to: " + searchResultToUse.getUrlPath());
-					System.err.println(response.statusCode() + " " + response.statusMessage());
-					throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.statusMessage());
+					System.err.println(response.statusCode() + " " + response.message());
+					throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.message());
 				} else {
 					System.err.println("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
 					throw new RuntimeException("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
 				}
 			}
 
-			Document searchMatch = response.parse();
+			Document searchMatch = Jsoup.parse(response.body().asString());
 
 			//Handle any captchas etc that prevent us from getting our result
 			if (searchMatch != null && SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass())) {

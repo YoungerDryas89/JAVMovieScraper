@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
+import io.vavr.control.Try;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -49,22 +52,23 @@ public class Data18SharedMethods {
 	}
 
 	//Used to implement the SecurityPassthrough interface for both data18 scrapers
-	public static Document runSecurityPassthrough(Document document, SearchResult originalSearchResult) {
+	public static Document runSecurityPassthrough(Document document, SearchResult originalSearchResult){
 		//find the first link in the document, download the href, then try to download the original result again
 		if (document != null) {
 			Element firstLink = document.select("a").first();
 			if (firstLink != null && firstLink.attr("href") != null) {
-				var response = SiteParsingProfile.getDocument(new SearchResult(firstLink.attr("href")));
+				var searchResult = new SearchResult(firstLink.attr("href")).getUrlPath();
+				var response = Try.of(() -> DitzyHeadlessBrowserSingle.getBrowser().get(new URL(searchResult))).getOrElseThrow(() -> new RuntimeException("Malformed URL!"));
 				if(response.statusCode() != 200 || response.statusCode() > 399){
-					System.err.println("Failed to connect to: " + response.url());
-					System.err.println(response.statusCode() + " " + response.statusMessage());
-					throw new RuntimeException("Failed to connect to: " + response.url() + "\n" + response.statusCode() + " " + response.statusMessage());
+					System.err.println("Failed to connect to: " + response.request().getUrl());
+					System.err.println(response.statusCode() + " " + response.message());
+					throw new RuntimeException("Failed to connect to: " + response.request().getUrl() + "\n" + response.statusCode() + " " + response.message());
 				}
 
 				Document captchaSolved = null;
 				// FIXME: Fuck I hate this VVVVVV
 				try {
-					captchaSolved = response.parse();
+					captchaSolved = Jsoup.parse(response.body().asString());
 				}catch (IOException e){
 					System.err.println(e.getMessage());
 				}

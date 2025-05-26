@@ -3,11 +3,7 @@ package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import java.net.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +16,10 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
+import io.vavr.control.Try;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -577,38 +576,25 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public static Document downloadDocumentFromURLString(String url) {
 		try {
-			return Jsoup.connect(url).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).get();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+			var handle = DitzyHeadlessBrowserSingle.getBrowser();
+			var response = handle.get(new URL(url));
+			if(response.statusCode() == 200) {
+				return Jsoup.parse(response.body().asString());
+			}
+			return null;
+		} catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-	public static Connection.Response getDocument(SearchResult searchResult) {
-		try {
-			if(searchResult.isJSONSearchResult())
-				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
-			return Jsoup.connect(searchResult.getUrlPath()).userAgent(UserAgent.getRandomUserAgent()).ignoreContentType(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
-		}catch (InterruptedException | IOException e){
-			System.err.println(e.getMessage());
-		}
-		return null;
-	}
+	public EngineResponse downloadDocument(String url, boolean isJson) {
+		if(isJson)
+			Try.of(() -> { Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5))); return null;}).getOrElseThrow((e) -> new RuntimeException(e));
 
-	public Connection.Response downloadDocument(SearchResult searchResult) {
-		try {
-			if(searchResult.isJSONSearchResult())
-				Thread.sleep(Duration.ofSeconds((int) (Math.random() * (10 - 5) + 5)));
-			return downloadDocumentFromUrl(searchResult.getUrlPath());
-		}catch (InterruptedException | IOException e){
-			System.err.println(e.getMessage());
-		}
-		return null;
-	}
-
-	// TODO: Need to fix this whole situation with all these http request functions
-	public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
-		return Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).ignoreContentType(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+		var handle = DitzyHeadlessBrowserSingle.getBrowser();
+		return Try.of(() -> handle.get(new URL(url))).getOrElseThrow((e) -> new RuntimeException(e));
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
-import org.jsoup.Connection;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,12 +44,9 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     }
 
     private void initializeJapaneseDocument(){
-        try {
-            // TODO: FIX this hack
-            // Replace the original url since just a simple string concatenation of "https://123av.com/ja/v" might just redirect to the english page
-            var response = downloadDocumentFromUrl(url.replace("https://123av.com/en", "https://123av.com/ja")).bufferUp();
+        try (var response = downloadDocument(url.replace("https://123av.com/en", "https://123av.com/ja"), false)) {
             if (response.statusCode() == 200) {
-                japaneseDocument = response.parse();
+                japaneseDocument = Jsoup.parse(response.body().asString());
             }
         }catch (IOException e){
             System.err.println(e.getMessage());
@@ -58,22 +55,22 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     }
 
     @Override
-    public Connection.Response downloadDocumentFromUrl(String url){
+    public EngineResponse downloadDocument(String url, boolean isJson){
         try {
-            var response = Jsoup.connect(url).userAgent(UserAgent.getRandomUserAgent()).followRedirects(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+            var response = super.downloadDocument(url, false);
             if(response.statusCode() == 200){
 
-                response = response.bufferUp();
-                var continueButton = response.parse().selectFirst("a.btn-primary");
+                var doc = Jsoup.parse(response.body().asString());
+                var continueButton = doc.selectFirst("a.btn-primary");
                 if(continueButton != null && continueButton.text().equals("Click here to continue")) {
                     String redirectUrl = continueButton.attr("href");
 
                     System.out.println("AV123: Redirecting to: " + redirectUrl);
                     this.url = redirectUrl;
-                    return Jsoup.connect(redirectUrl).userAgent(UserAgent.getRandomUserAgent()).followRedirects(true).ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+                    return super.downloadDocument(redirectUrl, false);
                 }
             }
-            this.url = response.url().toString();
+            this.url = url;
             return response;
         }catch (IOException e){
             System.err.println(e.getMessage());

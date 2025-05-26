@@ -11,10 +11,11 @@ import java.util.regex.Pattern;
 
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowser;
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Connection;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -409,10 +410,11 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 			var response = browser.get(new URL(searchString));
 			if(response.statusCode() != 200 || response.statusCode() > 399){
 				System.err.println("Failed to get page: " + searchString);
-				System.err.println(response.statusCode() + " " + response.statusMessage());
-				throw new RuntimeException("Failed to get page: " + searchString + "\n" + response.statusCode() + " " + response.statusMessage());
+				System.err.println(response.statusCode() + " " + response.statusCode());
+				throw new RuntimeException("Failed to get page: " + searchString + "\n" + response.statusCode() + " " + response.message());
 			}
-			Document doc = response.parse();
+//			Document doc = response.parse();
+			Document doc = Jsoup.parse(response.body().asString());
 
 			//The search found the page directly
 			if (doc.location().contains("/?v=")) {
@@ -481,16 +483,6 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public String getParserName() {
 		return "JAVLibrary";
 	}
-
-    @Override
-    public Connection.Response downloadDocument(SearchResult searchResult) {
-        try {
-            return browser.get(new URL(searchResult.getUrlPath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private void browserConfigure() {
         if (browser == null) {

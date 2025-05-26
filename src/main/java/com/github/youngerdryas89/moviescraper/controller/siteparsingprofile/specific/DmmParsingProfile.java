@@ -10,8 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.TranslateString;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileJSON;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
@@ -37,11 +35,12 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
+import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
+import net.covers1624.quack.net.httpapi.EngineResponse;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -808,17 +807,17 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Connection.Response downloadDocument(SearchResult searchResult) {
+	public EngineResponse downloadDocument(String url, boolean isJson) {
 		try {
-			if (searchResult.isJSONSearchResult())
-				return SiteParsingProfileJSON.getDocument(searchResult.getUrlPath());
+			if (isJson)
+				return SiteParsingProfileJSON.getDocument(url);
 			else {
 
 				//setup cookie to bypass age check on DMM site
 				Map<String, String> cookies = new HashMap<String, String>();
 				cookies.put("age_check_done", "1");
-
-				return Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
+				return DitzyHeadlessBrowserSingle.getBrowser().get(new URL(url));
+//				return Jsoup.connect(searchResult.getUrlPath()).cookies(cookies).userAgent("Mozilla").ignoreHttpErrors(true).timeout(CONNECTION_TIMEOUT_VALUE).execute();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
