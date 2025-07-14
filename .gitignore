@@ -6,3 +6,4 @@ settings.xml
 JAVMovieScraper.iml
 /.*-gradle/
 gradle.properties
+/target/

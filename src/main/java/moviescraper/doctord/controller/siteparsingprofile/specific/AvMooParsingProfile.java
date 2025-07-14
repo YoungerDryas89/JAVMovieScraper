@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -380,8 +381,18 @@ public class AvMooParsingProfile extends SiteParsingProfile implements SpecificP
 					Element videoLinksElements = currentDivVideoLink.select("a[href*=/movie/]").last();
 					String idFromSearchResult = currentDivVideoLink.select("span").first().text();
 					String currentLink = videoLinksElements.attr("href");
+
+					String linkPrefixPath = currentLink.substring(0, currentLink.lastIndexOf('/'));
+					String linkToken = currentLink.substring(currentLink.lastIndexOf('/') + 1);
+					
+					URLCodec codec = new URLCodec();
 					if(!currentLink.startsWith("http")){
-						currentLink = "https:" + currentLink;
+						try {
+							currentLink = "https:" + linkPrefixPath + "/" + codec.encode(linkToken);
+						} catch (EncoderException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					String currentLabel = idFromSearchResult + " " + videoLinksElements.text();
 					String currentThumb = currentDivVideoLink.select("img").first().attr("src");
