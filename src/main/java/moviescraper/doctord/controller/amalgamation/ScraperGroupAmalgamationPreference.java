@@ -41,6 +41,16 @@ public class ScraperGroupAmalgamationPreference {
 		}
 	}
 
+    public DataItemSourceAmalgamationPreference getPreference(String field) {
+        assert field != null;
+        assert !field.isEmpty();
+
+        if(customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field))
+            return customAmalgamationOrderPerField.get(field);
+        else
+            return overallOrdering;
+    }
+
 	/**
 	 * @return the list of scrapers this scraper group should scrape when doing amalgamating
 	 */
@@ -92,7 +102,7 @@ public class ScraperGroupAmalgamationPreference {
 	public static List<Field> getMoviefieldNames() {
 		LinkedList<Field> fieldNames = new LinkedList<>();
 		Movie currentMovie = Movie.getEmptyMovie();
-		String[] disallowedFieldNames = { "readTimeout", "connectionTimeout", "preferredFanartToWriteToDisk", "allTitles", "fileName" };
+		String[] disallowedFieldNames = { "readTimeout", "connectionTimeout", "preferredFanartToWriteToDisk", "allTitles", "fileName", "$assertionsDisabled" };
 		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<>(Arrays.asList(disallowedFieldNames));
 		for (Field field : currentMovie.getClass().getDeclaredFields()) {
 			String fieldName = field.getName();

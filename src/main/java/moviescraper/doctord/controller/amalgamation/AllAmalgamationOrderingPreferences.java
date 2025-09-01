@@ -1,6 +1,8 @@
 package moviescraper.doctord.controller.amalgamation;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,7 +14,17 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.*;
+import moviescraper.doctord.model.Movie;
+import moviescraper.doctord.model.dataitem.DataItemSource;
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 public class AllAmalgamationOrderingPreferences {
 
@@ -69,6 +81,69 @@ public class AllAmalgamationOrderingPreferences {
 	public void putScraperGroupAmalgamationPreference(ScraperGroupName scraperGroupName, ScraperGroupAmalgamationPreference pref) {
 		allAmalgamationOrderingPreferences.put(scraperGroupName, pref);
 	}
+
+    public void parseOrdering() {
+
+    }
+
+    public void writePreferences() throws ParserConfigurationException, TransformerException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document doc = builder.newDocument();
+        var root = doc.createElement("OrderingPreferences");
+
+        var meta = doc.createElement("version");
+        meta.setTextContent("v0.9.5");
+        root.appendChild(meta);
+
+//        var attributes = Arrays.stream(Movie.class.getDeclaredFields()).map(Field::getName).toList();
+        var attributes = ScraperGroupAmalgamationPreference.getMoviefieldNames().stream().map(Field::getName).toList();
+
+        var ordering = doc.createElement("ordering");
+
+        var western = doc.createElement("western");
+        for(var elem : attributes) {
+            var attrib = doc.createElement(elem);
+            var order = allAmalgamationOrderingPreferences.get(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP).getPreference(elem).getAmalgamationPreferenceOrder().stream().map(DataItemSource::getDataItemSourceName).toList();
+            for(var item : order){
+                var tag = doc.createElement("scraper");
+                tag.setTextContent(item);
+                attrib.appendChild(tag);
+            }
+            western.appendChild(attrib);
+        }
+
+        ordering.appendChild(western);
+
+        var asian = doc.createElement("asian");
+        for(var elem : attributes) {
+            var attrib = doc.createElement(elem);
+            var order = allAmalgamationOrderingPreferences.get(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP).getPreference(elem).getAmalgamationPreferenceOrder().stream().map(DataItemSource::getDataItemSourceName).toList();
+            for(var item : order){
+                var tag = doc.createElement("scraper");
+                tag.setTextContent(item);
+                attrib.appendChild(tag);
+            }
+            asian.appendChild(attrib);
+        }
+        ordering.appendChild(asian);
+        root.appendChild(ordering);
+
+        doc.appendChild(root);
+
+
+        DOMSource ds = new DOMSource(doc);
+        TransformerFactory trnsfct = TransformerFactory.newInstance();
+        trnsfct.setAttribute("indent-number", 4);
+
+        Transformer trns = trnsfct.newTransformer();
+        trns.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        trns.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        trns.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        StreamResult result = new StreamResult(new File(settingsFileName));
+        trns.transform(ds, result);
+
+    }
 
 	public void initializeValuesFromPreferenceFile() {
 
