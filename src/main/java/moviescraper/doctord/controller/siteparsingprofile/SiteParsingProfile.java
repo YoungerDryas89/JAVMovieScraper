@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import moviescraper.doctord.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -69,18 +70,24 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
 	 */
 	public enum ScraperGroupName {
+
+        @JsonProperty("Japanese")
 		JAV_CENSORED_SCRAPER_GROUP {
 			@Override
 			public String toString() {
 				return "JAV Censored Group";
 			}
 		},
+
+        @JsonProperty("American")
 		AMERICAN_ADULT_DVD_SCRAPER_GROUP {
 			@Override
 			public String toString() {
 				return "American Adult DVD";
 			}
 		},
+
+        @JsonProperty("Default")
 		DEFAULT_SCRAPER_GROUP {
 			@Override
 			public String toString() {

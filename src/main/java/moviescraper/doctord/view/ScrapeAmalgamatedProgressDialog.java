@@ -79,7 +79,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	//private final PropertyChangeSupport propertyChangeSupport;
 
 	public static void main(String[] args) {
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile());
+		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile());
 		ScraperGroupAmalgamationPreference amalgamationPreferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, overallOrdering);
 		GUIMain guiMain = new GUIMain();
 		ScrapeAmalgamatedProgressDialog action = new ScrapeAmalgamatedProgressDialog(guiMain, guiMain.getAllAmalgamationOrderingPreferences(), amalgamationPreferences);
@@ -206,7 +206,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 		for (ScraperGroupName currentName : ScraperGroupName.values()) {
 			ScraperGroupAmalgamationPreference currentPref = allAmalgamationOrderingPreferences.getScraperGroupAmalgamationPreference(currentName);
 
-			LinkedList<DataItemSource> overallPrefs = currentPref.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
+			var overallPrefs = currentPref.getOverallAmalgamationPreference();
 
 			for (DataItemSource currentDataItemSource : overallPrefs) {
 				if (currentDataItemSource.getDataItemSourceName().equals(parsingProfile.getDataItemSourceName())) {

@@ -36,11 +36,11 @@ public class ScrapeAmalgamatedAction extends AbstractAction {
 	//Used for just scraping from one specific site. Allows us to reuse code, even though we are just amalgamating from one movie source
 	public ScrapeAmalgamatedAction(GUIMain guiMain, SiteParsingProfile siteParsingProfile) {
 		this.guiMain = guiMain;
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(siteParsingProfile);
+		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(siteParsingProfile);
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.DEFAULT_SCRAPER_GROUP, overallOrdering);
 		this.scraperGroupAmalgamationPreference = preferences;
 		if (this.guiMain != null)
-			this.guiMain.getAllAmalgamationOrderingPreferences().allAmalgamationOrderingPreferences.put(ScraperGroupName.DEFAULT_SCRAPER_GROUP, this.scraperGroupAmalgamationPreference);
+			this.guiMain.getAllAmalgamationOrderingPreferences().getAllAmalgamationOrderingPreferences().put(ScraperGroupName.DEFAULT_SCRAPER_GROUP, this.scraperGroupAmalgamationPreference);
 		initializeDefaultValues("Scrape " + siteParsingProfile.getDataItemSourceName());
 		putValue(SCRAPE_KEY, siteParsingProfile.getDataItemSourceName());
 	}

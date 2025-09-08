@@ -22,6 +22,9 @@ module moviescraper.doctord {
     requires org.jetbrains.annotations;
     requires commons.collections;
     requires com.github.benmanes.caffeine;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.core;
     exports moviescraper.doctord;
     exports moviescraper.doctord.controller.amalgamation;
     exports moviescraper.doctord.controller.siteparsingprofile;
