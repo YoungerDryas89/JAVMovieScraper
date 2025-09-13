@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.DataItemSource;
@@ -18,7 +17,7 @@ public class ScraperGroupAmalgamationPreference {
     @JsonProperty("name")
 	private ScraperGroupName scraperGroupName;
 
-    @JsonProperty("overallOrdering")
+    @JsonProperty("defaultOverallOrdering")
 	List<DataItemSource> overallOrdering;
 
    @JsonProperty("customOrder")
