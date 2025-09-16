@@ -10,6 +10,9 @@ import java.io.IOException;
 public class DataItemSourceJsonSerializer extends JsonSerializer<DataItemSource> {
     @Override
     public void serialize(DataItemSource value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(value.getDataItemSourceName());
+        gen.writeStartObject();
+        gen.writeStringField("name", value.getDataItemSourceName());
+        gen.writeBooleanField("enabled", value.isDisabled());
+        gen.writeEndObject();
     }
 }
