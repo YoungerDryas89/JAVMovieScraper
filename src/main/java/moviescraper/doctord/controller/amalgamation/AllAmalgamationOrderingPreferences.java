@@ -1,14 +1,11 @@
 package moviescraper.doctord.controller.amalgamation;
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.controller.siteparsingprofile.specific.*;
 import moviescraper.doctord.model.dataitem.DataItemSource;
@@ -20,19 +17,7 @@ public class AllAmalgamationOrderingPreferences {
 
 	private static final String settingsFileName = "AmalgamationSettings.json";
 
-    private static final ObjectMapper MAPPER = createConfiguredObjectMapper();
 
-    private static ObjectMapper createConfiguredObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(DataItemSource.class, new DataItemSourceJsonSerializer());
-        module.addDeserializer(DataItemSource.class, new DataItemSourceJsonDeserializer());
-        mapper.registerModule(module);
-
-        return mapper;
-    }
 
 	public AllAmalgamationOrderingPreferences() {
 		allAmalgamationOrderingPreferences = new Hashtable<>();
@@ -70,12 +55,21 @@ public class AllAmalgamationOrderingPreferences {
 	}
 
 	public void initializeValuesFromPreferenceFile() {
-        File settingsFile = new File(settingsFileName);
-        if (!settingsFile.exists()) {
+        if (!Files.exists(Path.of(settingsFileName))) {
+            if(Files.exists(Path.of("AmalgamationSettings.xml"))) {
+                AmalgamationOrderingLegacyHandler handler = new AmalgamationOrderingLegacyHandler();
+                var data = handler.loadData();
+                if (data != null) {
+                    allAmalgamationOrderingPreferences = data;
+                    return;
+                }
+            }
+
             initializeDefaultPreferences(true);
         } else {
             try {
-                allAmalgamationOrderingPreferences = MAPPER.readValue(settingsFile, new TypeReference<>() {});
+               AmalgamationOrderingPreferencesWrapper wrapper = new AmalgamationOrderingPreferencesWrapper();
+               allAmalgamationOrderingPreferences = wrapper.loadData(settingsFileName);
             } catch (IOException e) {
                 System.err.println("Could not read amalgamation settings file, loading defaults. Error: " + e.getMessage());
                 // If file is corrupt or structure changed, load defaults and overwrite.
@@ -90,9 +84,8 @@ public class AllAmalgamationOrderingPreferences {
 
 	public void saveToPreferencesFile() {
 		try {
-            File out = new File(settingsFileName);
-            MAPPER.writeValue(out, allAmalgamationOrderingPreferences);
-			System.out.println("Saved amalgamation preferences to " + settingsFileName);
+            AmalgamationOrderingPreferencesWrapper wrapper = new AmalgamationOrderingPreferencesWrapper(this);
+            wrapper.saveData(settingsFileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -188,3 +181,4 @@ public class AllAmalgamationOrderingPreferences {
 	}
 
 }
+
