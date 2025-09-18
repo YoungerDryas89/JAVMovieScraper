@@ -3,7 +3,6 @@ package moviescraper.doctord.controller.amalgamation;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import moviescraper.doctord.model.Movie;
 import moviescraper.doctord.model.dataitem.DataItemSource;
@@ -14,13 +13,10 @@ import moviescraper.doctord.model.dataitem.DataItemSource;
  */
 public class ScraperGroupAmalgamationPreference {
 
-    @JsonProperty("name")
 	private ScraperGroupName scraperGroupName;
 
-    @JsonProperty("defaultOverallOrdering")
 	List<DataItemSource> overallOrdering;
 
-   @JsonProperty("customOrder")
 	Map<String, List<DataItemSource>> customAmalgamationOrderPerField;
 
 

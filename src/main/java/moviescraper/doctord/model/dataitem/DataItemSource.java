@@ -1,6 +1,5 @@
 package moviescraper.doctord.model.dataitem;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.swing.ImageIcon;
 
@@ -9,7 +8,6 @@ import javax.swing.ImageIcon;
  */
 public interface DataItemSource {
 
-    @JsonValue
 	public String getDataItemSourceName();
 
 	/**
@@ -18,7 +16,6 @@ public interface DataItemSource {
 	 */
 	public DataItemSource createInstanceOfSameType();
 
-    @JsonValue
 	public boolean isDisabled();
 
 	public void setDisabled(boolean b);
