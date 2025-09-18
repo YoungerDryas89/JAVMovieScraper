@@ -17,6 +17,8 @@ public class AllAmalgamationOrderingPreferences {
 
 	private static final String settingsFileName = "AmalgamationSettings.json";
 
+    boolean loaded = false;
+
 
 
 	public AllAmalgamationOrderingPreferences() {
@@ -32,6 +34,10 @@ public class AllAmalgamationOrderingPreferences {
 	public String toString() {
 		return allAmalgamationOrderingPreferences.toString();
 	}
+
+    public boolean isLoaded(){
+        return loaded;
+    }
 
 	public ScraperGroupAmalgamationPreference getScraperGroupAmalgamationPreference(ScraperGroupName scraperGroupName) {
 		//make an attempt to reinitialize things if we added a new type of scraping group 
@@ -61,6 +67,7 @@ public class AllAmalgamationOrderingPreferences {
                 var data = handler.loadData();
                 if (data != null) {
                     allAmalgamationOrderingPreferences = data;
+                    loaded = true;
                     return;
                 }
             }
@@ -69,7 +76,12 @@ public class AllAmalgamationOrderingPreferences {
         } else {
             try {
                AmalgamationOrderingPreferencesWrapper wrapper = new AmalgamationOrderingPreferencesWrapper();
-               allAmalgamationOrderingPreferences = wrapper.loadData(settingsFileName);
+               var returnMap = wrapper.loadData(settingsFileName);
+
+               if(returnMap.isEmpty())
+                   initializeDefaultPreferences(true);
+               else
+                   loaded = true;
             } catch (IOException e) {
                 System.err.println("Could not read amalgamation settings file, loading defaults. Error: " + e.getMessage());
                 // If file is corrupt or structure changed, load defaults and overwrite.
@@ -103,6 +115,8 @@ public class AllAmalgamationOrderingPreferences {
 		if (saveToDisk) {
 			saveToPreferencesFile();
 		}
+
+        loaded = true;
 	}
 
 	private void initializeAmericanAdultDVDScraperGroupDefaultPreferences() {
