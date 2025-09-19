@@ -39,8 +39,6 @@ public class ScrapeAmalgamatedAction extends AbstractAction {
 		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(siteParsingProfile);
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.DEFAULT_SCRAPER_GROUP, overallOrdering);
 		this.scraperGroupAmalgamationPreference = preferences;
-		if (this.guiMain != null)
-			this.guiMain.getAllAmalgamationOrderingPreferences().getAllAmalgamationOrderingPreferences().put(ScraperGroupName.DEFAULT_SCRAPER_GROUP, this.scraperGroupAmalgamationPreference);
 		initializeDefaultValues("Scrape " + siteParsingProfile.getDataItemSourceName());
 		putValue(SCRAPE_KEY, siteParsingProfile.getDataItemSourceName());
 	}
