@@ -54,8 +54,8 @@ public class AmalgamationOrderingPreferencesWrapper {
             root.put("version", version);
 
             var preferences = root.putObject("OrderingPreferences");
-            var american = writeAmalgamationDataForGroup(SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, preferences);
-            var japanese = writeAmalgamationDataForGroup(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, preferences);
+            var american = writeAmalgamationDataForGroup("American", preferences);
+            var japanese = writeAmalgamationDataForGroup("Japanese", preferences);
 
             var json = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(root);
             os.write(json);
@@ -63,21 +63,24 @@ public class AmalgamationOrderingPreferencesWrapper {
         System.out.println("Saved amalgamation preferences to " + settingsFileName);
     }
 
-    ObjectNode writeAmalgamationDataForGroup(SiteParsingProfile.@NotNull ScraperGroupName groupName, ObjectNode root){
+    ObjectNode writeAmalgamationDataForGroup(String groupName, ObjectNode root){
 
         assert root != null;
 
+        ScraperGroupAmalgamationPreference items;
+
         ObjectNode groupNode;
-        if (groupName.equals(SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)) {
-            groupNode = root.putObject("American");
+        if (groupName.equals("American")) {
+            groupNode = root.putObject(groupName);
+            items = allAmalgamationOrderingPreferences.get(SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
         } else {
             groupNode = root.putObject("Japanese");
+            items = allAmalgamationOrderingPreferences.get(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
         }
 
         var overall = groupNode.putArray("default");
         var custom = groupNode.putObject("custom");
 
-        var items = allAmalgamationOrderingPreferences.get(groupName);
 
         items.overallOrdering.forEach(e -> {
             var entry = overall.addObject();
@@ -102,7 +105,7 @@ public class AmalgamationOrderingPreferencesWrapper {
     }
 
     public ObjectMapper createConfiguredObjectMapper() {
-        ObjectMapper mapper = createConfiguredObjectMapper();
+        ObjectMapper mapper = new ObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule module = new SimpleModule();

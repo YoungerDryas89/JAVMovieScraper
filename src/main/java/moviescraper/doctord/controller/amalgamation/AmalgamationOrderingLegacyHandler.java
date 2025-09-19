@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.CannotResolveClassException;
 import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfile;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONPropertyName;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class AmalgamationOrderingLegacyHandler {
         xstream.alias("OrderingSettings", AllAmalgamationOrderingPreferences.class);
     }
 
+    @Nullable
     public Map<SiteParsingProfile.ScraperGroupName, ScraperGroupAmalgamationPreference> loadData() {
         try (FileInputStream inputFromFile = new FileInputStream("AmalgamationSettings.xml");) {
             var data = IOUtils.toString(inputFromFile, "UTF-8");
