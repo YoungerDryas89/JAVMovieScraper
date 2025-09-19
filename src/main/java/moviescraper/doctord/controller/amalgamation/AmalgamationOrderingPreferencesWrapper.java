@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import static moviescraper.doctord.controller.amalgamation.ScraperGroupAmalgamationPreference.getMoviefieldNames;
 
-@JsonRootName(value = "OrderingPreferences")
 public class AmalgamationOrderingPreferencesWrapper {
 
     public Long version = 1L;
@@ -47,12 +46,8 @@ public class AmalgamationOrderingPreferencesWrapper {
 
     public void saveData(String settingsFileName) throws IOException {
 
-        ObjectMapper MAPPER = createConfiguredObjectMapper();
-//        File out = new File(settingsFileName);
-//        MAPPER.writeValue(out, this);
         try (FileOutputStream os = new FileOutputStream(settingsFileName)){
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            ObjectMapper mapper = createConfiguredObjectMapper();
 
             var root = mapper.createObjectNode();
 
@@ -107,12 +102,10 @@ public class AmalgamationOrderingPreferencesWrapper {
     }
 
     public ObjectMapper createConfiguredObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createConfiguredObjectMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         SimpleModule module = new SimpleModule();
-        module.addSerializer(DataItemSource.class, new DataItemSourceJsonSerializer());
-        module.addDeserializer(DataItemSource.class, new DataItemSourceJsonDeserializer());
         mapper.registerModule(module);
 
         return mapper;

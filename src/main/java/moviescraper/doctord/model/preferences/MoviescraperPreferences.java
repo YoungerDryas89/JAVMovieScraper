@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import moviescraper.doctord.scraper.UserAgent;
 import moviescraper.doctord.view.FavoriteGenrePickerPanel;
 import org.apache.commons.lang3.SystemUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -44,12 +45,9 @@ public class MoviescraperPreferences {
     public String cookieJar = null; //UserAgent to use
 
     @JsonIgnore
-    Path configFile = Path.of("preferences.json");
+    static Path configFile = Path.of("preferences.json");
 
 	private MoviescraperPreferences() {
-        if(!Files.exists(configFile)){
-            savePreferences();
-        }
 	}
 
 	public static synchronized MoviescraperPreferences getInstance() {
@@ -57,6 +55,10 @@ public class MoviescraperPreferences {
 			INSTANCE = new MoviescraperPreferences();
 			INSTANCE.setSanitizerForFilename(getSanitizerForFilename());
 			INSTANCE.setRenamerString(getRenamerString());
+
+            if(!Files.exists(configFile)){
+                savePreferences();
+            }
 		}
 		return INSTANCE;
 	}
@@ -302,6 +304,24 @@ public class MoviescraperPreferences {
         cookieJar = preferenceValue;
         savePreferences();
 	}
+
+    @Nullable
+    public static MoviescraperPreferences loadPreferencesOrInitialize(){
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        SimpleModule module = new SimpleModule();
+        mapper.registerModule(module);
+        if(!Files.exists(configFile)) {
+            try (FileInputStream fis = new FileInputStream(configFile.toFile())) {
+                return mapper.readValue(fis, MoviescraperPreferences.class);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return getInstance();
+    }
 
     public static void savePreferences() {
         var instance = getInstance();

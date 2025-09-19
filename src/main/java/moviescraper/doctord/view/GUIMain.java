@@ -152,7 +152,8 @@ public class GUIMain {
 	 */
 	private void initialize() {
 
-		preferences = MoviescraperPreferences.getInstance();
+
+		preferences = MoviescraperPreferences.loadPreferencesOrInitialize();
 		guiSettings = GuiSettings.getInstance();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
