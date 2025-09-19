@@ -78,10 +78,12 @@ public class AllAmalgamationOrderingPreferences {
                AmalgamationOrderingPreferencesWrapper wrapper = new AmalgamationOrderingPreferencesWrapper();
                var returnMap = wrapper.loadData(settingsFileName);
 
-               if(returnMap.isEmpty())
+               if(returnMap.isEmpty()) {
                    initializeDefaultPreferences(true);
-               else
+               }else {
+                   allAmalgamationOrderingPreferences = returnMap;
                    loaded = true;
+               }
             } catch (IOException e) {
                 System.err.println("Could not read amalgamation settings file, loading defaults. Error: " + e.getMessage());
                 // If file is corrupt or structure changed, load defaults and overwrite.
