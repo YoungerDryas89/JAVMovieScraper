@@ -10,6 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
+import com.github.youngerdryas89.moviescraper.controller.languagetranslation.TranslateString;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileJSON;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;

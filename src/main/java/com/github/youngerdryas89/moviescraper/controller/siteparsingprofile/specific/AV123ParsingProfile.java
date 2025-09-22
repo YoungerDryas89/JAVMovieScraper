@@ -6,6 +6,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import net.covers1624.quack.net.httpapi.EngineResponse;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

@@ -1,8 +1,9 @@
 package com.github.youngerdryas89.moviescraper.controller.amalgamation;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DefaultDataItemSource;
 
@@ -11,53 +12,21 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.DefaultDataItemSour
  */
 public class DataItemSourceAmalgamationPreference {
 
-	private LinkedList<DataItemSource> amalgamationPreferenceOrder;
 
-	/**
-	 * @param dataItemSources - the list of preferred items to use to amalgamate. the first parameter passed
-	 * in is the most preferred item, the second the second most preferred, and so on
-	 */
-	public DataItemSourceAmalgamationPreference(DataItemSource... dataItemSources) {
-		amalgamationPreferenceOrder = new LinkedList<>();
-		for (DataItemSource dis : dataItemSources) {
-			amalgamationPreferenceOrder.add(dis);
-		}
+    /**
+     * @param dataItemSources - the list of preferred items to use to amalgamate. the first parameter passed
+     * in is the most preferred item, the second the second most preferred, and so on
+     */
+    public static List<DataItemSource> createPreferenceOrdering(DataItemSource... dataItemSources){
 
-		//Always put this at the end as a fall back for items which didn't get their data item source set another way
-		//to allow us to still pick them in case no other item from a more preferred source was found first when amalgamating
-		if (!amalgamationPreferenceOrder.contains(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE))
-			amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
-	}
+        var amalgamationPreferenceOrder = new ArrayList<DataItemSource>();
+        amalgamationPreferenceOrder.addAll(Arrays.asList(dataItemSources));
 
-	public DataItemSourceAmalgamationPreference(LinkedList<DataItemSource> amalgamationPreferenceOrder) {
-		this.amalgamationPreferenceOrder = amalgamationPreferenceOrder;
-	}
+        //Always put this at the end as a fall back for items which didn't get their data item source set another way
+        //to allow us to still pick them in case no other item from a more preferred source was found first when amalgamating
+        if (!amalgamationPreferenceOrder.contains(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE))
+            amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
 
-	public LinkedList<DataItemSource> getAmalgamationPreferenceOrder() {
-		return amalgamationPreferenceOrder;
-	}
-
-	public void setAmalgamationPreferenceOrder(LinkedList<DataItemSource> amalgamationPreferenceOrder) {
-		this.amalgamationPreferenceOrder = amalgamationPreferenceOrder;
-	}
-
-	public void setAmalgamationPreferenceOrder(SiteParsingProfileItem[] parsingProfileItems) {
-		if (parsingProfileItems != null) {
-			amalgamationPreferenceOrder = new LinkedList<>();
-			for (SiteParsingProfileItem currentParsingProfileItem : parsingProfileItems) {
-				if (!currentParsingProfileItem.isDisabled())
-					amalgamationPreferenceOrder.add(currentParsingProfileItem.getParser());
-			}
-			if (!amalgamationPreferenceOrder.contains(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE))
-				amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
-		} else {
-			amalgamationPreferenceOrder = new LinkedList<>();
-			amalgamationPreferenceOrder.add(DefaultDataItemSource.DEFAULT_DATA_ITEM_SOURCE);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return amalgamationPreferenceOrder.toString();
-	}
+        return amalgamationPreferenceOrder;
+    }
 }

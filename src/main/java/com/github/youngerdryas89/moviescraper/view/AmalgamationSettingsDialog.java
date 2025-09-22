@@ -6,10 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -215,18 +212,17 @@ public class AmalgamationSettingsDialog {
 
 	private void synchronizeAmalgamationPreferenceListToDataItemSourceAmalgamationPreference(final DefaultListModel<DataItemSource> amalgamationPreferenceListModel, boolean isOverallPrefSync) {
 		if (amalgamationPreferenceListModel != null) {
-			LinkedList<DataItemSource> sppiAllValues = new LinkedList<>();
+			List<DataItemSource> sppiAllValues = new ArrayList<>();
 			for (int i = 0; i < amalgamationPreferenceListModel.getSize(); i++) {
 				sppiAllValues.add(amalgamationPreferenceListModel.get(i));
 			}
 			if (isOverallPrefSync) {
-				DataItemSourceAmalgamationPreference overallAmalgamationPreference = amalgamationPreferences
+				var overallAmalgamationPreference = amalgamationPreferences
 				        .getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).getOverallAmalgamationPreference();
-				overallAmalgamationPreference.setAmalgamationPreferenceOrder(sppiAllValues);
+				overallAmalgamationPreference = sppiAllValues;
 			} else {
-				DataItemSourceAmalgamationPreference preferenceToSet = new DataItemSourceAmalgamationPreference(sppiAllValues);
 				amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem()).setCustomOrderingForField(selectedMovieField,
-				        preferenceToSet);
+				        sppiAllValues);
 				panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			}
 		}
@@ -328,7 +324,7 @@ public class AmalgamationSettingsDialog {
 			overallAmalgamationPreferenceList.setCellRenderer(new DataItemSourceRenderer());
 		}
 		Collection<DataItemSource> listData = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
-		        .getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
+		        .getOverallAmalgamationPreference();
 		for (DataItemSource currentItem : listData) {
 			overallAmalgamationPreferenceListModel.addElement(currentItem);
 		}
@@ -362,20 +358,19 @@ public class AmalgamationSettingsDialog {
 		}
 
 		Collection<DataItemSource> listData;
-		DataItemSourceAmalgamationPreference orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
+		var orderingForField = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
 		        .getSpecificAmalgamationPreference(selectedMovieField);
 
 		if (orderingForField != null) {
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html> Using <b>Specific</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
-			listData = orderingForField.getAmalgamationPreferenceOrder();
+			listData = orderingForField;
 		} else {
 			panelHeaderSpecificFieldAmalgamationPreference.setText("<html>Using <b>Default</b> Ordering for " + getNameOfCurrentMovieFieldSelected() + "</html>");
 			//we need to create a new object for this field copied from the overall ordering using the same type as the original items
 			listData = new LinkedList<>();
-			DataItemSourceAmalgamationPreference overallPrefs = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
+			var overallPrefs = amalgamationPreferences.getScraperGroupAmalgamationPreference((ScraperGroupName) scraperGroupNameComboBox.getSelectedItem())
 			        .getOverallAmalgamationPreference();
-			LinkedList<DataItemSource> overallPrefsDataItems = overallPrefs.getAmalgamationPreferenceOrder();
-			for (DataItemSource currentItem : overallPrefsDataItems) {
+			for (DataItemSource currentItem : overallPrefs) {
 				listData.add(currentItem.createInstanceOfSameType());
 			}
 		}

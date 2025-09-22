@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,6 +46,8 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
 
 import javax.annotation.Nonnull;
 
+import static org.jsoup.Jsoup.newSession;
+
 public class JavBusParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	public static final String urlLanguageEnglish = "en";
@@ -52,6 +56,15 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	//All censored movies need cropping of their poster
 	private boolean isCensoredSearch = true;
 	private Document japaneseDocument;
+
+    Connection session = newSession()
+            .userAgent(UserAgent.getRandomUserAgent())
+            .ignoreHttpErrors(true)
+            .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+            .cookie("dv", "1")
+            .cookie("age", "verified")
+            .cookie("existmag", "mag");
+
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
@@ -221,7 +234,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		Element posterElement = document.select("a.bigImage").first();
 		if (posterElement != null) {
 			try {
-				Thumb posterImage = new Thumb(posterElement.attr("href"), (isCensoredSearch && isPosterScrape));
+				Thumb posterImage = new Thumb("https://www.javbus.com" + posterElement.attr("href"), (isCensoredSearch && isPosterScrape));
 				Thumb[] posterArray = { posterImage };
 				return posterArray;
 			} catch (IOException e) {
@@ -372,26 +385,22 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
 		ArrayList<SearchResult> linksList = new ArrayList<>();
 		try {
-			Document doc = Jsoup.connect(searchString).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
+            var doc = downloadDocumentFromUrl(searchString).parse();
 			Elements videoLinksElements = doc.select("div.item");
-			String secondPage = searchString;
-			if (videoLinksElements == null || videoLinksElements.size() == 0) {
-				secondPage = searchString.replace("/search/", "/uncensored/search/");
+			if (videoLinksElements.isEmpty()) {
+				doc = downloadDocumentFromUrl(searchString.replace("/search/", "/uncensored/search/")).parse();
 				isCensoredSearch = false;
 			}
-			doc = Jsoup.connect(secondPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
 			videoLinksElements = doc.select("div.item");
-			if (videoLinksElements != null) {
-				for (Element videoLink : videoLinksElements) {
-					String currentLink = videoLink.select("a").attr("href");
-					String currentLinkLabel = videoLink.select("a").text().trim();
-					String currentLinkImage = videoLink.select("img").attr("src");
-					if (currentLink.length() > 1) {
-						linksList.add(new SearchResult(currentLink, currentLinkLabel, new Thumb(currentLinkImage)));
-					}
-				}
-			}
-			return linksList.toArray(new SearchResult[linksList.size()]);
+            for (Element videoLink : videoLinksElements) {
+                String currentLink = videoLink.select("a").attr("href");
+                String currentLinkLabel = videoLink.select("a").text().trim();
+                String currentLinkImage = "https://www.javbus.com" + videoLink.select("img").attr("src");
+                if (currentLink.length() > 1) {
+                    linksList.add(new SearchResult(currentLink, currentLinkLabel, new Thumb(currentLinkImage)));
+                }
+            }
+            return linksList.toArray(new SearchResult[linksList.size()]);
 		}
 
 		catch (IOException e) {
@@ -400,7 +409,13 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		}
 	}
 
-	@Override
+    @Override
+    public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
+
+        return session.newRequest().url(url).ignoreHttpErrors(true).execute();
+    }
+
+    @Override
 	public SiteParsingProfile newInstance() {
 		return new JavBusParsingProfile();
 	}

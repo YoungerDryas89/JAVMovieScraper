@@ -26,6 +26,9 @@ module com.github.youngerdryas89.moviescraper {
     requires vavr;
     requires curl4j;
     requires net.covers1624.quack;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.core;
     exports com.github.youngerdryas89.moviescraper;
     exports com.github.youngerdryas89.moviescraper.controller.amalgamation;
     exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;

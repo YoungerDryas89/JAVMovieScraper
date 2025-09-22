@@ -1,54 +1,52 @@
 package com.github.youngerdryas89.moviescraper.model.preferences;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import com.github.youngerdryas89.moviescraper.view.FavoriteGenrePickerPanel;
+import org.jetbrains.annotations.Nullable;
 
-public class MoviescraperPreferences extends Settings {
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class MoviescraperPreferences {
 
 	private static MoviescraperPreferences INSTANCE;
+    public boolean writeFanartAndPosters = true; //fanart and poster files will be downloaded and then written to disk when writing the movie's metadata.
+    public boolean overwriteFanartAndPosters = true; //overwrites existing fanart and poster files when writing the metadata to disk
+    public boolean downloadActorImagesToActorFolder = true; //creates .actor thumbnail files when writing the metadata
+    public boolean extraFanartScrapingEnabled = true; //will attempt to scrape and write extrafanart
+    public boolean createFolderJpg = false; //Folder.jpg will be created when writing the file. This is a copy of the movie's poster file. Used in windows to show a thumbnail of the folder in Windows Explorer.
+    public boolean noMovieNameInImageFiles = false;  //fanart and poster will be called fanart.jpg and poster.jpg instead of also containing with the movie's name within the file
+    public boolean writeTrailerToFile = true; //Download the trailer file from the internet and write it to a file when writing the rest of the metadata.
+    public boolean nfoNamedMovieDotNfo = false; //.nfo file written out will always be called "movie.nfo"
+    public boolean useIAFDForActors = false; //No longer used. Replaced by Amalgamation settings.
+    public static String sanitizerForFilename = "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)"; //Used to help remove illegal characters when renaming the file. For the most part; the user does not need to change this.
+    public static String renamerString = "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]"; //Renamer string set in the renamer configuration gui to apply a renamer rule to the file's name
+    public static String folderRenamerString = "<BASEDIRECTORY><PATHSEPERATOR>"; // Renamer string set in the renamer configuration gui to apply a renamer rule to the file's folder name
+    public boolean renameMovieFile = false; //File will be renamed according to renamer rules when writing the movie file's metadata out to disk.
+    public boolean scrapeInJapanese = false; //For sites that support it; downloaded info will be in Japanese instead of English
+    public boolean promptForUserProvidedURLWhenScraping = false; //Prompt user to manually provide their own url when scraping a file. Useful if search just can't find a file; but the user knows what to use anyways. Not intended to be left on all the time.
+    public boolean considerUserSelectionOneURLWhenScraping = false; //Consider all selected items to be one 'movie'.  To keep from being prompted for each CD/Scene
+    public boolean isFirstWordOfFileID = false; //Usually the scraper expects the last word of the file to be the ID. This option if enabled will instead look at the first word.
+    public boolean appendIDToStartOfTitle = false; //Scraped ID will be put as the first word of the title if enabled. Useful for people who like to keep releases from the same company alphabetically together.
+    public boolean useFilenameAsTitle = false; //Filename will be writen to the title field of the nfo file instead of using the scraped result
+    public boolean selectArtManuallyWhenScraping = true; //Confirmation dialog to allow user to select art will be shown. If false; art is still picked; but it will be automatically chosen.
+    public boolean selectSearchResultManuallyWhenScraping = false; //Confirmation dialog to allow user to pick which search result they want to use will be shown.
+    public boolean confirmCleanUpFileNameNameBeforeRenaming = true; // Show a dialog asking the user to confirm the rename of a file each time using the File Name Cleanup feature
+    public String frequentlyUsedGenres = "Adult" + FavoriteGenrePickerPanel.listSeperator + "JAV"; //Used in genre editing to store user's list of frequently used genres to aid in quickly adding genres to a movie
+    public String frequentlyUsedTags = "Feature"; //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
+    public boolean writeThumbTagsForPosterAndFanartToNfo = true; //Whether to write the <thumb> tag into the nfo;
+    public String userAgent = UserAgent.getRandomUserAgent(); //UserAgent to use
+    public String cookieJar = null; //UserAgent to use
 
-	enum Key implements Settings.Key {
-		writeFanartAndPosters, //fanart and poster files will be downloaded and then written to disk when writing the movie's metadata.
-		overwriteFanartAndPosters, //overwrites existing fanart and poster files when writing the metadata to disk
-		downloadActorImagesToActorFolder, //creates .actor thumbnail files when writing the metadata
-		extraFanartScrapingEnabled, //will attempt to scrape and write extrafanart
-		createFolderJpg, //Folder.jpg will be created when writing the file. This is a copy of the movie's poster file. Used in windows to show a thumbnail of the folder in Windows Explorer.
-		noMovieNameInImageFiles, //fanart and poster will be called fanart.jpg and poster.jpg instead of also containing with the movie's name within the file
-		writeTrailerToFile, //Download the trailer file from the internet and write it to a file when writing the rest of the metadata.
-		nfoNamedMovieDotNfo, //.nfo file written out will always be called "movie.nfo"
-		useIAFDForActors, //No longer used. Replaced by Amalgamation settings.
-		sanitizerForFilename, //Used to help remove illegal characters when renaming the file. For the most part, the user does not need to change this.
-		renamerString, //Renamer string set in the renamer configuration gui to apply a renamer rule to the file's name
-		folderRenamerString, ////Renamer string set in the renamer configuration gui to apply a renamer rule to the file's folder name
-		renameMovieFile, //File will be renamed according to renamer rules when writing the movie file's metadata out to disk.
-		scrapeInJapanese, //For sites that support it, downloaded info will be in Japanese instead of English
-		promptForUserProvidedURLWhenScraping, //Prompt user to manually provide their own url when scraping a file. Useful if search just can't find a file, but the user knows what to use anyways. Not intended to be left on all the time.
-		considerUserSelectionOneURLWhenScraping, //Consider all selected items to be one 'movie'.  To keep from being prompted for each CD/Scene
-		isFirstWordOfFileID, //Usually the scraper expects the last word of the file to be the ID. This option if enabled will instead look at the first word.
-		appendIDToStartOfTitle, //Scraped ID will be put as the first word of the title if enabled. Useful for people who like to keep releases from the same company alphabetically together.
-		useFilenameAsTitle, //Filename will be writen to the title field of the nfo file instead of using the scraped result
-		selectArtManuallyWhenScraping, //Confirmation dialog to allow user to select art will be shown. If false, art is still picked, but it will be automatically chosen.
-		selectSearchResultManuallyWhenScraping, //Confirmation dialog to allow user to pick which search result they want to use will be shown.
-		confirmCleanUpFileNameNameBeforeRenaming, // Show a dialog asking the user to confirm the rename of a file each time using the File Name Cleanup feature
-		frequentlyUsedGenres, //Used in genre editing to store user's list of frequently used genres to aid in quickly adding genres to a movie
-		frequentlyUsedTags, //Used in tag editing to store user's list of frequently used tags to aid in quickly adding tags to a movie
-		writeThumbTagsForPosterAndFanartToNfo, //Whether to write the <thumb> tag into the nfo,
-		userAgent, //UserAgent to use
-		cookieJar,
-		useCURL,
-		useCURLImpersonate
-		;
-
-		@Override
-		public String getKey() {
-			return "Preferences:" + toString();
-		}
-	}
+    @JsonIgnore
+    static Path configFile = Path.of("preferences.json");
 
 	private MoviescraperPreferences() {
-
-		//initialize default values that must exist in the settings file
-
 	}
 
 	public static synchronized MoviescraperPreferences getInstance() {
@@ -56,242 +54,290 @@ public class MoviescraperPreferences extends Settings {
 			INSTANCE = new MoviescraperPreferences();
 			INSTANCE.setSanitizerForFilename(getSanitizerForFilename());
 			INSTANCE.setRenamerString(getRenamerString());
+
+            if(!Files.exists(configFile)){
+                savePreferences();
+            }
 		}
 		return INSTANCE;
 	}
 
 	public void setOverWriteFanartAndPostersPreference(Boolean preferenceValue) {
-		setBooleanValue(Key.overwriteFanartAndPosters, preferenceValue);
+        overwriteFanartAndPosters = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getOverWriteFanartAndPostersPreference() {
-		return getBooleanValue(Key.overwriteFanartAndPosters, Boolean.TRUE);
+        return overwriteFanartAndPosters;
 	}
 
 	public void setWriteFanartAndPostersPreference(Boolean preferenceValue) {
-		setBooleanValue(Key.writeFanartAndPosters, preferenceValue);
+        writeFanartAndPosters = preferenceValue;
+        savePreferences();
 	}
 
 	public void setDownloadActorImagesToActorFolderPreference(Boolean preferenceValue) {
-		setBooleanValue(Key.downloadActorImagesToActorFolder, preferenceValue);
+        downloadActorImagesToActorFolder = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getDownloadActorImagesToActorFolderPreference() {
-		return getBooleanValue(Key.downloadActorImagesToActorFolder, true);
+        return downloadActorImagesToActorFolder;
 	}
 
 	public Boolean getWriteFanartAndPostersPreference() {
-		return getBooleanValue(Key.writeFanartAndPosters, true);
+        return writeFanartAndPosters;
 	}
 
 	public Boolean getExtraFanartScrapingEnabledPreference() {
-		return getBooleanValue(Key.extraFanartScrapingEnabled, false);
+        return extraFanartScrapingEnabled;
 	}
 
 	public void setExtraFanartScrapingEnabledPreference(Boolean preferenceValue) {
-		setBooleanValue(Key.extraFanartScrapingEnabled, preferenceValue);
+        extraFanartScrapingEnabled = preferenceValue;
+        savePreferences();
 	}
 
 	public void setCreateFolderJpgEnabledPreference(Boolean preferenceValue) {
-		setBooleanValue(Key.createFolderJpg, preferenceValue);
-
+        createFolderJpg = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getCreateFolderJpgEnabledPreference() {
-		return getBooleanValue(Key.createFolderJpg, false);
+        return createFolderJpg;
 	}
 
 	public Boolean getNoMovieNameInImageFiles() {
-		return getBooleanValue(Key.noMovieNameInImageFiles, Boolean.FALSE);
+        return noMovieNameInImageFiles;
 	}
 
 	public void setNoMovieNameInImageFiles(Boolean preferenceValue) {
-		setBooleanValue(Key.noMovieNameInImageFiles, preferenceValue);
+        noMovieNameInImageFiles = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getWriteTrailerToFile() {
-		return getBooleanValue(Key.writeTrailerToFile, Boolean.FALSE);
+        return writeTrailerToFile;
 	}
 
 	public void setWriteTrailerToFile(Boolean preferenceValue) {
-		setBooleanValue(Key.writeTrailerToFile, preferenceValue);
+        writeTrailerToFile = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getNfoNamedMovieDotNfo() {
-		return getBooleanValue(Key.nfoNamedMovieDotNfo, Boolean.FALSE);
+        return nfoNamedMovieDotNfo;
 	}
 
 	public void setNfoNamedMovieDotNfo(Boolean preferenceValue) {
-		setBooleanValue(Key.nfoNamedMovieDotNfo, preferenceValue);
+        nfoNamedMovieDotNfo = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getUseIAFDForActors() {
-		return getBooleanValue(Key.useIAFDForActors, Boolean.FALSE);
+        return useIAFDForActors;
 	}
 
 	public void setUseIAFDForActors(Boolean preferenceValue) {
-		setBooleanValue(Key.useIAFDForActors, preferenceValue);
+        useIAFDForActors = preferenceValue;
+        savePreferences();
 	}
 
 	public static String getSanitizerForFilename() {
-		return getStringValue(Key.sanitizerForFilename, "[\\\\/:*?\"<>|\\r\\n]|[ ]+$|(?<=[^.])[.]+$|(?<=.{250})(.+)(?=[.]\\p{Alnum}{3}$)");
+        return sanitizerForFilename;
 	}
 
 	public void setSanitizerForFilename(String preferenceValue) {
-		setStringValue(Key.sanitizerForFilename, preferenceValue);
+        sanitizerForFilename = preferenceValue;
+        savePreferences();
 	}
 
 	public static String getRenamerString() {
-		return getStringValue(Key.renamerString, "<TITLE> [<ACTORS>] (<YEAR>) [<ID>]");
+        return renamerString;
 	}
 
 	public void setRenamerString(String preferenceValue) {
-		setStringValue(Key.renamerString, preferenceValue);
+        renamerString = preferenceValue;
+        savePreferences();
 	}
 
 	public static String getFolderRenamerString() {
-		return getStringValue(Key.folderRenamerString, "<BASEDIRECTORY><PATHSEPERATOR>");
+        return folderRenamerString;
 	}
 
 	public void setFolderRenamerString(String preferenceValue) {
-		setStringValue(Key.folderRenamerString, preferenceValue);
+        folderRenamerString = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getRenameMovieFile() {
-		return getBooleanValue(Key.renameMovieFile, Boolean.FALSE);
+        return renameMovieFile;
 	}
 
 	public void setRenameMovieFile(Boolean preferenceValue) {
-		setBooleanValue(Key.renameMovieFile, preferenceValue);
+        renameMovieFile = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getScrapeInJapanese() {
-		return getBooleanValue(Key.scrapeInJapanese, Boolean.FALSE);
+        return scrapeInJapanese;
 	}
 
 	public void setScrapeInJapanese(Boolean preferenceValue) {
-		setBooleanValue(Key.scrapeInJapanese, preferenceValue);
+        scrapeInJapanese = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getPromptForUserProvidedURLWhenScraping() {
-		return getBooleanValue(Key.promptForUserProvidedURLWhenScraping, Boolean.FALSE);
+        return promptForUserProvidedURLWhenScraping;
 	}
 
 	public void setPromptForUserProvidedURLWhenScraping(Boolean preferenceValue) {
-		setBooleanValue(Key.promptForUserProvidedURLWhenScraping, preferenceValue);
+        promptForUserProvidedURLWhenScraping = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getConsiderUserSelectionOneURLWhenScraping() {
-		return getBooleanValue(Key.considerUserSelectionOneURLWhenScraping, Boolean.FALSE);
+        return considerUserSelectionOneURLWhenScraping;
 	}
 
 	public void setConsiderUserSelectionOneURLWhenScraping(Boolean preferenceValue) {
-		setBooleanValue(Key.considerUserSelectionOneURLWhenScraping, preferenceValue);
+        considerUserSelectionOneURLWhenScraping = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getIsFirstWordOfFileID() {
-		return getBooleanValue(Key.isFirstWordOfFileID, Boolean.FALSE);
+        return isFirstWordOfFileID;
 	}
 
 	public void setIsFirstWordOfFileID(Boolean preferenceValue) {
-		setBooleanValue(Key.isFirstWordOfFileID, preferenceValue);
+        isFirstWordOfFileID = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getAppendIDToStartOfTitle() {
-		return getBooleanValue(Key.appendIDToStartOfTitle, Boolean.FALSE);
+        return appendIDToStartOfTitle;
 	}
 
 	public void setAppendIDToStartOfTitle(Boolean preferenceValue) {
-		setBooleanValue(Key.appendIDToStartOfTitle, preferenceValue);
+        appendIDToStartOfTitle = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getUseFileNameAsTitle() {
-		return getBooleanValue(Key.useFilenameAsTitle, Boolean.FALSE);
+        return useFilenameAsTitle;
 	}
 
 	public void setUseFileNameAsTitle(Boolean preferenceValue) {
-		setBooleanValue(Key.useFilenameAsTitle, preferenceValue);
+        useFilenameAsTitle = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getSelectArtManuallyWhenScraping() {
-		return getBooleanValue(Key.selectArtManuallyWhenScraping, Boolean.TRUE);
+        return selectArtManuallyWhenScraping;
 	}
 
 	public void setSelectArtManuallyWhenScraping(Boolean preferenceValue) {
-		setBooleanValue(Key.selectArtManuallyWhenScraping, preferenceValue);
+        selectArtManuallyWhenScraping = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getSelectSearchResultManuallyWhenScraping() {
-		return getBooleanValue(Key.selectSearchResultManuallyWhenScraping, Boolean.FALSE);
+        return selectSearchResultManuallyWhenScraping;
 	}
 
 	public void setSelectSearchResultManuallyWhenScraping(Boolean preferenceValue) {
-		setBooleanValue(Key.selectSearchResultManuallyWhenScraping, preferenceValue);
+        selectArtManuallyWhenScraping = preferenceValue;
+        savePreferences();
 	}
 
 	public Boolean getConfirmCleanUpFileNameNameBeforeRenaming() {
-		return getBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, Boolean.TRUE);
+        return confirmCleanUpFileNameNameBeforeRenaming;
 	}
 
 	public void setConfirmCleanUpFileNameNameBeforeRenaming(Boolean preferenceValue) {
-		setBooleanValue(Key.confirmCleanUpFileNameNameBeforeRenaming, preferenceValue);
+        confirmCleanUpFileNameNameBeforeRenaming = preferenceValue;
+        savePreferences();
 	}
 
 	public String getfrequentlyUsedGenres() {
-		return getStringValue(Key.frequentlyUsedGenres, "Adult" + FavoriteGenrePickerPanel.listSeperator + "JAV");
+        return frequentlyUsedGenres;
 	}
 
 	public void setFrequentlyUsedGenres(String value) {
-		setStringValue(Key.frequentlyUsedGenres, value);
+        frequentlyUsedGenres = value;
+        savePreferences();
 	}
 
 	public String getfrequentlyUsedTags() {
-		return getStringValue(Key.frequentlyUsedTags, "Feature");
+        return frequentlyUsedTags;
 	}
 
 	public void setFrequentlyUsedTags(String value) {
-		setStringValue(Key.frequentlyUsedTags, value);
+        frequentlyUsedTags = value;
 	}
 
 	public Boolean getWriteThumbTagsForPosterAndFanartToNfo() {
-		return getBooleanValue(Key.writeThumbTagsForPosterAndFanartToNfo, true);
+        return writeThumbTagsForPosterAndFanartToNfo;
 	}
 
 	public void setWriteThumbTagsForPosterAndFanartToNfo(Boolean preferenceValue) {
-		setBooleanValue(Key.writeThumbTagsForPosterAndFanartToNfo, preferenceValue);
+        writeThumbTagsForPosterAndFanartToNfo = preferenceValue;
+        savePreferences();
 	}
 
 	public String getUserAgent() {
-		return getStringValue(Key.userAgent, UserAgent.getRandomUserAgent());
+        return userAgent;
 	}
 
 	public void setUserAgent(String preferenceValue) {
-		setStringValue(Key.userAgent, preferenceValue);
+        userAgent = preferenceValue;
+        savePreferences();
 	}
 
 	public String getCookieJar() {
-		return getStringValue(Key.cookieJar, null);
+        return cookieJar;
 	}
 
 	public void setCookieJar(String preferenceValue) {
-		setStringValue(Key.cookieJar, preferenceValue);
+        cookieJar = preferenceValue;
+        savePreferences();
 	}
 
-	public Boolean useCurl(){
-		return getBooleanValue(Key.useCURL, true);
-	}
+    @Nullable
+    public static MoviescraperPreferences loadPreferencesOrInitialize(){
 
-	public void setUseCurl(boolean preference){
-		setBooleanValue(Key.useCURL, preference);
-	}
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-	public Boolean useCurlImpersonate() {
-		return getBooleanValue(Key.useCURLImpersonate, true);
-	}
+        SimpleModule module = new SimpleModule();
+        mapper.registerModule(module);
+        if(!Files.exists(configFile)) {
+            try (FileInputStream fis = new FileInputStream(configFile.toFile())) {
+                return mapper.readValue(fis, MoviescraperPreferences.class);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
+        }
+        return getInstance();
+    }
 
-	public void setUseCurlImpersonate(boolean preference){
-		setBooleanValue(Key.useCURLImpersonate, true);
-	}
+    public static void savePreferences() {
+        var instance = getInstance();
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
+        SimpleModule module = new SimpleModule();
+        mapper.registerModule(module);
+
+        try(FileOutputStream osw = new FileOutputStream("preferences.json")) {
+            var data = mapper.writeValueAsBytes(instance);
+            osw.write(data);
+        }catch (IOException e){
+            System.err.println(e.getMessage());
+        }
+
+    }
 }
+

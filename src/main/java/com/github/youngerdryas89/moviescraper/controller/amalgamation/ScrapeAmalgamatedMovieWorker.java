@@ -3,7 +3,6 @@ package com.github.youngerdryas89.moviescraper.controller.amalgamation;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,7 +93,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		for (ScraperGroupName currentName : ScraperGroupName.values()) {
 			ScraperGroupAmalgamationPreference currentPref = allAmalgamationOrderingPreferences.getScraperGroupAmalgamationPreference(currentName);
 
-			LinkedList<DataItemSource> overallPrefs = currentPref.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
+			var overallPrefs = currentPref.getOverallAmalgamationPreference();
 
 			for (DataItemSource currentDataItemSource : overallPrefs) {
 				if (currentDataItemSource.getDataItemSourceName().equals(parsingProfile.getDataItemSourceName())) {
@@ -120,7 +119,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 		if (scraperGroupAmalgamationPreferenceNew != null)
 			scraperGroupAmalgamationPreference = scraperGroupAmalgamationPreferenceNew;
 
-		LinkedList<DataItemSource> scraperList = scraperGroupAmalgamationPreference.getOverallAmalgamationPreference().getAmalgamationPreferenceOrder();
+		var scraperList = scraperGroupAmalgamationPreference.getOverallAmalgamationPreference();
 		//calculate progress amount per worker
 
 		for (DataItemSource currentScraper : scraperList) {

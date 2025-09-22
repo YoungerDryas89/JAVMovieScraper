@@ -20,6 +20,8 @@ import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import io.vavr.control.Try;
 import net.covers1624.quack.net.httpapi.EngineResponse;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -67,18 +69,24 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
 	 */
 	public enum ScraperGroupName {
+
+        @JsonProperty("Japanese")
 		JAV_CENSORED_SCRAPER_GROUP {
 			@Override
 			public String toString() {
 				return "JAV Censored Group";
 			}
 		},
+
+        @JsonProperty("American")
 		AMERICAN_ADULT_DVD_SCRAPER_GROUP {
 			@Override
 			public String toString() {
 				return "American Adult DVD";
 			}
 		},
+
+        @JsonProperty("Default")
 		DEFAULT_SCRAPER_GROUP {
 			@Override
 			public String toString() {

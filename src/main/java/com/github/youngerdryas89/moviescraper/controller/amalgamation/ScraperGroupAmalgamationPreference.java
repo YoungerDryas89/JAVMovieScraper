@@ -1,12 +1,7 @@
 package com.github.youngerdryas89.moviescraper.controller.amalgamation;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.model.Movie;
@@ -19,12 +14,35 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 public class ScraperGroupAmalgamationPreference {
 
 	private ScraperGroupName scraperGroupName;
-	DataItemSourceAmalgamationPreference overallOrdering;
-	Map<String, DataItemSourceAmalgamationPreference> customAmalgamationOrderPerField;
 
-	public ScraperGroupAmalgamationPreference(ScraperGroupName scraperGroupName, DataItemSourceAmalgamationPreference overallOrdering) {
+	List<DataItemSource> overallOrdering;
+
+	Map<String, List<DataItemSource>> customAmalgamationOrderPerField;
+
+
+    public ScraperGroupAmalgamationPreference(){
+        overallOrdering = new ArrayList<>();
+        customAmalgamationOrderPerField = new HashMap<>();
+    }
+
+	public ScraperGroupAmalgamationPreference(ScraperGroupName scraperGroupName, List<DataItemSource> overallOrdering) {
 		this.scraperGroupName = scraperGroupName;
 		this.overallOrdering = overallOrdering;
+	}
+
+	public ScraperGroupAmalgamationPreference(ScraperGroupAmalgamationPreference other) {
+		this.scraperGroupName = other.scraperGroupName;
+		if (other.overallOrdering != null) {
+			this.overallOrdering = new ArrayList<>(other.overallOrdering);
+		} else {
+			this.overallOrdering = new ArrayList<>();
+		}
+		if (other.customAmalgamationOrderPerField != null) {
+			this.customAmalgamationOrderPerField = new HashMap<>();
+			other.customAmalgamationOrderPerField.forEach((key, value) -> this.customAmalgamationOrderPerField.put(key, new ArrayList<>(value)));
+		} else {
+			this.customAmalgamationOrderPerField = new HashMap<>();
+		}
 	}
 
 	/**
@@ -33,7 +51,7 @@ public class ScraperGroupAmalgamationPreference {
 	 * @param field
 	 * @return
 	 */
-	public DataItemSourceAmalgamationPreference getAmalgamationPreference(Field field) {
+	public List<DataItemSource> getAmalgamationPreference(Field field) {
 		if (field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field.getName())) {
 			return customAmalgamationOrderPerField.get(field.getName());
 		} else {
@@ -41,12 +59,22 @@ public class ScraperGroupAmalgamationPreference {
 		}
 	}
 
+    public List<DataItemSource> getPreference(String field) {
+        assert field != null;
+        assert !field.isEmpty();
+
+        if(customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field))
+            return customAmalgamationOrderPerField.get(field);
+        else
+            return overallOrdering;
+    }
+
 	/**
 	 * @return the list of scrapers this scraper group should scrape when doing amalgamating
 	 */
-	public LinkedList<DataItemSource> getActiveScrapersUsedInOverallPreference() {
-		LinkedList<DataItemSource> activeScrapers = new LinkedList<>();
-		for (DataItemSource currentItemSource : overallOrdering.getAmalgamationPreferenceOrder()) {
+	public List<DataItemSource> getActiveScrapersUsedInOverallPreference() {
+		List<DataItemSource> activeScrapers = new ArrayList<>();
+		for (DataItemSource currentItemSource : overallOrdering) {
 			System.out.println("currentItemSource = " + currentItemSource + " with disabled = " + currentItemSource.isDisabled());
 			//create a new instance may cause a problem if we depend on local state set in the parsing profile
 			//so I may need to revisit this. I did this because there was a problem with the TMDB scraper saving local state inside itself as it was scraping
@@ -63,25 +91,25 @@ public class ScraperGroupAmalgamationPreference {
 	 * 
 	 * @param field - field to look up the ordering on
 	 */
-	public DataItemSourceAmalgamationPreference getSpecificAmalgamationPreference(Field field) {
+	public List<DataItemSource> getSpecificAmalgamationPreference(Field field) {
 		if (field != null && customAmalgamationOrderPerField != null && customAmalgamationOrderPerField.containsKey(field.getName())) {
 			return customAmalgamationOrderPerField.get(field.getName());
 		}
 		return null;
 	}
 
-	public DataItemSourceAmalgamationPreference getOverallAmalgamationPreference() {
+	public List<DataItemSource> getOverallAmalgamationPreference() {
 		return overallOrdering;
 	}
 
-	public void setCustomOrderingForField(Field field, DataItemSourceAmalgamationPreference newValue) {
+	public void setCustomOrderingForField(Field field, List<DataItemSource> newValue) {
 		if (customAmalgamationOrderPerField == null) {
 			customAmalgamationOrderPerField = new Hashtable<>(Movie.class.getDeclaredFields().length);
 		}
 		customAmalgamationOrderPerField.put(field.getName(), newValue);
 	}
 
-	public void setCustomOrderingForField(String fieldName, DataItemSourceAmalgamationPreference newValue) throws NoSuchFieldException, SecurityException {
+	public void setCustomOrderingForField(String fieldName, List<DataItemSource> newValue) throws NoSuchFieldException, SecurityException {
 		setCustomOrderingForField(Movie.class.getDeclaredField(fieldName), newValue);
 	}
 
@@ -92,7 +120,7 @@ public class ScraperGroupAmalgamationPreference {
 	public static List<Field> getMoviefieldNames() {
 		LinkedList<Field> fieldNames = new LinkedList<>();
 		Movie currentMovie = Movie.getEmptyMovie();
-		String[] disallowedFieldNames = { "readTimeout", "connectionTimeout", "preferredFanartToWriteToDisk", "allTitles", "fileName" };
+		String[] disallowedFieldNames = { "readTimeout", "connectionTimeout", "preferredFanartToWriteToDisk", "allTitles", "fileName", "$assertionsDisabled" };
 		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<>(Arrays.asList(disallowedFieldNames));
 		for (Field field : currentMovie.getClass().getDeclaredFields()) {
 			String fieldName = field.getName();

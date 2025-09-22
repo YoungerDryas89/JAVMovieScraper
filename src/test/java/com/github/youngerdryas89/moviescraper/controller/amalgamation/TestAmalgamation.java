@@ -29,10 +29,10 @@ public class TestAmalgamation {
 	@BeforeClass
 	public static void initialize() throws URISyntaxException, NoSuchFieldException, SecurityException {
 		System.out.println("Testing amalgamation");
-		DataItemSourceAmalgamationPreference overallOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new DmmParsingProfile());
-		DataItemSourceAmalgamationPreference actorOdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile());
-		DataItemSourceAmalgamationPreference posterOrdering = new DataItemSourceAmalgamationPreference(new DmmParsingProfile(), new JavLibraryParsingProfile());
-		DataItemSourceAmalgamationPreference titleOrdering = new DataItemSourceAmalgamationPreference(new JavLibraryParsingProfile(), new DmmParsingProfile());
+		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new JavLibraryParsingProfile(), new DmmParsingProfile());
+		var actorOdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new DmmParsingProfile(), new JavLibraryParsingProfile());
+		var posterOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new DmmParsingProfile(), new JavLibraryParsingProfile());
+		var titleOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new JavLibraryParsingProfile(), new DmmParsingProfile());
 
 		ScraperGroupAmalgamationPreference orderingPreference = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
 
