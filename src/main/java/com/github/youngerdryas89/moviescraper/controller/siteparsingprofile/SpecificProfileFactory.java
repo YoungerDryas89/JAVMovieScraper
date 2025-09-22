@@ -108,7 +108,7 @@ public class SpecificProfileFactory {
 				List<Class> classNames = new ArrayList<>();
 				try (ZipInputStream zip = new ZipInputStream(new FileInputStream(thisJarFile.getPath()))) {
 					for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry())
-						if (entry.getName().endsWith(".class") && !entry.isDirectory()) {
+						if (entry.getName().endsWith(".class") && !entry.isDirectory() && !entry.getName().contains("$")) {
 							// This ZipEntry represents a class. Now, what class does it represent?
 							StringBuilder className = new StringBuilder();
 							for (String part : entry.getName().split("/")) {
