@@ -210,7 +210,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.moviescraper.Main</mainClass>
                         </configuration>
                     </execution>
                 </executions>
@@ -223,7 +223,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.moviescraper.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -233,7 +233,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>moviescraper.doctord.Main</mainClass>
+                            <mainClass>com.github.youngerdryas89.moviescraper.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
