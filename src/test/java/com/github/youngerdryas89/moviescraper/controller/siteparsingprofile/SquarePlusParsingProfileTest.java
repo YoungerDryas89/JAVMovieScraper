@@ -18,10 +18,8 @@ public class SquarePlusParsingProfileTest {
         profile = new SquarePlusParsingProfile();
         var searchString = profile.createSearchStringFromId(fn);
         try {
-            var response = SiteParsingProfile.getDocument(profile.getSearchResults(searchString)[0]);
-            if(response.statusCode() == 200)
-                throw new RuntimeException(String.valueOf(response.statusCode()));
-            profile.setDocument(response.parse());
+            var document = SiteParsingProfile.downloadDocumentFromURLString(profile.getSearchResults(searchString)[0].getUrlPath());
+            profile.setDocument(document);
             profile.prepareData();
         } catch (IOException e){
             System.err.println(e.getMessage());

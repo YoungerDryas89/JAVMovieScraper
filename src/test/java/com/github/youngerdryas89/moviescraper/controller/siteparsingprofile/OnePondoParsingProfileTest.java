@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.OnePondoParsingProfile;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.SpecificProfile;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
@@ -28,16 +29,10 @@ public class OnePondoParsingProfileTest {
 		profile = new OnePondoParsingProfile();
 		String searchString = profile.createSearchString(file);
 		System.out.println(searchString);
-		try {
-			var response = profile.getDocument(searchString);
-			if(response.statusCode() == 200)
-				throw new RuntimeException(String.valueOf(response.statusCode()));
-			profile.setDocument(response.parse());
-		} catch (IOException ex) {
-			Logger.getLogger(OnePondoParsingProfileTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
+        var document = SiteParsingProfile.downloadDocumentFromURLString(searchString);
+        profile.setDocument(document);
 
-	}
+    }
 
 	@SuppressWarnings("static-access")
 	@Test

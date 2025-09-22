@@ -20,6 +20,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,10 +36,7 @@ public class MyTokyoHotParsingProfileTest {
 		String searchString = parser.createSearchString(file);
 		try {
 			SearchResult[] searchResults = parser.getSearchResults(searchString);
-			var response = SiteParsingProfile.getDocument(searchResults[0]);
-			if(response.statusCode() == 200)
-				throw new RuntimeException(String.valueOf(response.statusCode()));
-			Document document = response.parse();
+			var document = SiteParsingProfile.downloadDocumentFromURLString(searchResults[0].getUrlPath());
 			parser.setDocument(document);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

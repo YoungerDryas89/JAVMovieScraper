@@ -41,13 +41,9 @@ public class JavBusParsingProfileTest {
 		String searchString = profile.createSearchString(file);
 		System.out.println("searchString = " + searchString);
 		try {
-			var response = SiteParsingProfile.getDocument(profile.getSearchResults(searchString)[0]);
-			if(response.statusCode() == 200)
-				throw new RuntimeException(String.valueOf(response.statusCode()));
-
-			Document doc = response.parse();
-			profile.setDocument(doc);
-			System.out.println("document set to " + doc.baseUri());
+			var document = SiteParsingProfile.downloadDocumentFromURLString(profile.getSearchResults(searchString)[0].getUrlPath());
+			profile.setDocument(document);
+			System.out.println("document set to " + document.baseUri());
 			profile.prepareData();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
