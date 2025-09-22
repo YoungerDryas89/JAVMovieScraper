@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>moviescraper.doctord</groupId>
+    <groupId>com.github.youngerdryas89.moviescraper</groupId>
     <artifactId>JAVMovieScraper</artifactId>
     <version>0.9.5</version>
     <properties>
@@ -185,12 +185,28 @@
             <artifactId>vavr</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.covers1624</groupId>
+            <artifactId>curl4j</artifactId>
+            <version>3.0.17</version>
+            <classifier>libcurl</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.covers1624</groupId>
+            <artifactId>Quack</artifactId>
+            <version>0.4.10.117</version>
+        </dependency>
     </dependencies>
     <repositories>
         <repository>
             <id>sonatype</id>
             <name>Sonatype</name>
             <url>https://repository.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>covers1624</id>
+            <name>covers1624</name>
+            <url>https://maven.covers1624.net/</url>
         </repository>
     </repositories>
     <build>
