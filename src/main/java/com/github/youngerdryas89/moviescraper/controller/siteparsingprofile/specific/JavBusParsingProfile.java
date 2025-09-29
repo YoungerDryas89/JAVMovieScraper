@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.text.WordUtils;
@@ -55,7 +56,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	//JavBus divides movies into two categories - censored and uncensored.
 	//All censored movies need cropping of their poster
 	private boolean isCensoredSearch = true;
-	private Document japaneseDocument;
+    MoviescraperPreferences prefs = MoviescraperPreferences.getInstance();
 
     Connection session = newSession()
             .userAgent(UserAgent.getRandomUserAgent())
@@ -63,8 +64,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
             .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
             .followRedirects(true)
             .cookie("dv", "1")
-            .cookie("age", "verified")
-            .cookie("existmag", "mag");
+            .cookie("age", "verified");
 
 
 	@Override
@@ -74,42 +74,20 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		return groupNames;
 	}
 
-	private void initializeJapaneseDocument() {
-		if (japaneseDocument == null) {
-			String urlOfCurrentPage = document.location();
-			if (urlOfCurrentPage != null && urlOfCurrentPage.contains("/en/")) {
-				//the genres are only available on the japanese version of the page
-				urlOfCurrentPage = urlOfCurrentPage.replaceFirst(Pattern.quote("http://www.javbus.com/en/"), "http://www.javbus.com/ja/");
-				if (urlOfCurrentPage.length() > 1) {
-					try {
-						japaneseDocument = Jsoup.connect(urlOfCurrentPage).userAgent("Mozilla").ignoreHttpErrors(true).timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE).get();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			} else if (document != null)
-				japaneseDocument = document;
-		}
-	}
-
 	@Nonnull
     @Override
 	public Title scrapeTitle() {
-		Element titleElement = document.select("title").first();
+		Element titleElement = document.select("h3").first();
 		if (titleElement != null) {
 			String titleText = titleElement.text();
-			titleText = titleText.replace("- JavBus", "");
+
 			//Remove the ID from the front of the title
-			if (titleText.contains(" "))
-				titleText = titleText.substring(titleText.indexOf(" "), titleText.length());
-			//Translate the element using google translate if needed
-			// FIXME: Broken
-			/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(titleText))
-				titleText = TranslateString.translateStringJapaneseToEnglish(titleText);*/
+			if (!prefs.appendIDToStartOfTitle && titleText.contains(" "))
+				titleText = titleText.substring(titleText.indexOf(" "), titleText.length()).trim();
+
 			return new Title(titleText);
-		} else
-			return new Title("");
+		}
+        return Title.BLANK_TITLE;
 	}
 
 	@Nonnull
@@ -127,16 +105,9 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public Set scrapeSet() {
-		String seriesWord = (scrapingLanguage == Language.ENGLISH) ? "Series:" : "シリーズ:";
-		Element setElement = document.select("span.header:containsOwn(" + seriesWord + ") ~ a").first();
-		if (setElement != null && setElement.text().length() > 0) {
-			String setText = setElement.text();
-			// FIXME: Broken
-			/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(setText)) {
-				setText = TranslateString.translateStringJapaneseToEnglish(setText);
-			}*/
-			return new Set(setText);
-		}
+		Element setElement = document.select("span.header:matchesOwn((?i)Series:|シリーズ:|시리즈:|系列:) + a").first();
+		if (setElement != null && !setElement.text().isEmpty())
+			return new Set(setElement.text());
 		return Set.BLANK_SET;
 	}
 
@@ -155,12 +126,9 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public ReleaseDate scrapeReleaseDate() {
-		String releaseDateWord = (scrapingLanguage == Language.ENGLISH) ? "Release Date:" : "発売日:";
-		Element releaseDateElement = document.select("p:contains(" + releaseDateWord + ")").first();
-		if (releaseDateElement != null && releaseDateElement.ownText().trim().length() > 4) {
-			String releaseDateText = releaseDateElement.ownText().trim();
-			return new ReleaseDate(releaseDateText);
-		}
+		Element releaseDateElement = document.select("p:matches(Release Date:|発売日:|출시일:|發行日期:)").first();
+		if (releaseDateElement != null && releaseDateElement.ownText().trim().length() > 4)
+			return new ReleaseDate(releaseDateElement.ownText().trim());
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
@@ -197,9 +165,8 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public Runtime scrapeRuntime() {
-		String lengthWord = (scrapingLanguage == Language.ENGLISH) ? "Length:" : "収録時間:";
-		Element lengthElement = document.select("p:contains(" + lengthWord + ")").first();
-		if (lengthElement != null && lengthElement.ownText().trim().length() >= 0) {
+		Element lengthElement = document.select("p:contains(Length:|収録時間:|길이:|長度:)").first();
+		if (lengthElement != null && !lengthElement.ownText().trim().isEmpty()) {
 			//Getting rid of the word "min" in both Japanese and English
 			String runtimeText = lengthElement.ownText().trim().replace("min", "");
 			runtimeText = runtimeText.replace("分", "");
@@ -331,22 +298,18 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
     @Override
 	public ArrayList<Director> scrapeDirectors() {
 		ArrayList<Director> directorList = new ArrayList<>();
-		String directorWord = (scrapingLanguage == Language.ENGLISH) ? "Director:" : "監督:";
-		Element directorElement = document.select("span.header:containsOwn(" + directorWord + ") ~ a").first();
-		if (directorElement != null && directorElement.text().length() > 0) {
+		Element directorElement = document.select("span.header:containsOwn(Director:|監督:|관리자:|導演:) ~ a").first();
+		if (directorElement != null && !directorElement.text().isEmpty())
 			directorList.add(new Director(directorElement.text(), null));
-		}
 		return directorList;
 	}
 
 	@Nonnull
     @Override
 	public Studio scrapeStudio() {
-		String studioWord = (scrapingLanguage == Language.ENGLISH) ? "Studio:" : "メーカー:";
-		Element studioElement = document.select("span.header:containsOwn(" + studioWord + ") ~ a").first();
-		if (studioElement != null && studioElement.text().length() > 0) {
+		Element studioElement = document.select("span.header:containsOwn(Studio:) ~ a").first();
+		if (studioElement != null && !studioElement.text().isEmpty())
 			return new Studio(studioElement.text());
-		}
 		return Studio.BLANK_STUDIO;
 	}
 
