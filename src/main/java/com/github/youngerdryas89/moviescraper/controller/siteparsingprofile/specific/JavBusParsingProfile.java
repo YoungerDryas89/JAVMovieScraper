@@ -294,7 +294,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
     @Override
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
-		Elements genreElements = document.select("span.genre a[href*=/genre/");
+		Elements genreElements = document.select("span.genre");
 		if (genreElements != null) {
 			for (Element genreElement : genreElements) {
 				String genreText = genreElement.text();
