@@ -2,6 +2,7 @@ package com.github.youngerdryas89.moviescraper.model.dataitem;
 
 public class Title extends MovieDataItem {
 
+    public final static Title BLANK_TITLE = new Title("");
 	private String title;
 
 	public String getTitle() {
