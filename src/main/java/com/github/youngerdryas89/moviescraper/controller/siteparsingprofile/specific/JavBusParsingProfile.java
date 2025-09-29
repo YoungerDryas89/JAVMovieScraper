@@ -61,6 +61,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
             .userAgent(UserAgent.getRandomUserAgent())
             .ignoreHttpErrors(true)
             .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+            .followRedirects(true)
             .cookie("dv", "1")
             .cookie("age", "verified")
             .cookie("existmag", "mag");
@@ -234,7 +235,14 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 		Element posterElement = document.select("a.bigImage").first();
 		if (posterElement != null) {
 			try {
-				Thumb posterImage = new Thumb("https://www.javbus.com" + posterElement.attr("href"), (isCensoredSearch && isPosterScrape));
+                var imgResponse = downloadDocumentFromUrl("https://www.javbus.com" + posterElement.attr("href"));
+                if(imgResponse.statusCode() != 200){
+                    System.err.println("Error failed to download image: " + imgResponse.url() + "; " + imgResponse.statusCode() + " " + imgResponse.statusMessage());
+                    return new Thumb[0];
+                }
+
+
+				Thumb posterImage = new Thumb(imgResponse.url().toString(), imgResponse.bodyAsBytes(), (isCensoredSearch && isPosterScrape));
 				Thumb[] posterArray = { posterImage };
 				return posterArray;
 			} catch (IOException e) {
@@ -411,8 +419,12 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
     @Override
     public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
-
-        return session.newRequest().url(url).ignoreHttpErrors(true).execute();
+        try {
+            return session.newRequest().url(url).ignoreHttpErrors(true).execute();
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
