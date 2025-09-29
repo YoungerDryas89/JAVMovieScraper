@@ -115,18 +115,6 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public OriginalTitle scrapeOriginalTitle() {
-		initializeJapaneseDocument();
-		if (japaneseDocument != null) {
-			Element titleElement = japaneseDocument.select("title").first();
-			if (titleElement != null) {
-				String titleText = titleElement.text();
-				titleText = titleText.replace("- JavBus", "");
-				//Remove the ID from the front of the title
-				if (titleText.contains(" "))
-					titleText = titleText.substring(titleText.indexOf(" "), titleText.length());
-				return new OriginalTitle(titleText);
-			}
-		}
 		return OriginalTitle.BLANK_ORIGINALTITLE;
 	}
 
