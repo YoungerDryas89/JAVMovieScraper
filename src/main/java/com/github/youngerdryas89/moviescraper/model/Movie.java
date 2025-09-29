@@ -133,7 +133,7 @@ public class Movie {
 		releaseDate = siteToScrapeFrom.scrapeReleaseDate();
 		runtime = siteToScrapeFrom.scrapeRuntime();
 		posters = siteToScrapeFrom.scrapePosters(parent.getFileDetailPanel().cropPosters());
-		if(posters[0].hasDerivations())
+		if(posters.length > 0 && posters[0].hasDerivations())
 			posters[0] = posters[0].derivedChild();
 
 		fanart = siteToScrapeFrom.scrapeFanart();
