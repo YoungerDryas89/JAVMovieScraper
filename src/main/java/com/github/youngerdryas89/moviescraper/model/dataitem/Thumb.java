@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -96,6 +97,20 @@ public class Thumb extends MovieDataItem {
 		setThumbURL(url);
 		//Delay the call to actually reading in the thumbImage until it is needed
 	}
+
+    public Thumb(String url, byte[] imageData, boolean useJavCoverCropRoutine) throws IOException {
+        thumbURL = new URL(url);
+        try(ByteArrayInputStream bais = new ByteArrayInputStream(imageData)){
+
+            var img = ImageIO.read(bais);
+
+            thumbImage = new SoftReference<>(img);
+            imageIconThumbImage = new SoftReference<>(new ImageIcon(img));
+            if(useJavCoverCropRoutine){
+                createCroppedImage();
+            }
+        }
+    }
 
 	//TODO: Generate an empty thumbnail that points to nowhere
 	public Thumb() {
