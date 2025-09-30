@@ -307,7 +307,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public Studio scrapeStudio() {
-		Element studioElement = document.select("span.header:containsOwn(Studio:) ~ a").first();
+		Element studioElement = document.select("span.header:matchesOwn(Studio:|メーカー:|메이커:|製作商:) ~ a").first();
 		if (studioElement != null && !studioElement.text().isEmpty())
 			return new Studio(studioElement.text());
 		return Studio.BLANK_STUDIO;
