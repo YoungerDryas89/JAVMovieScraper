@@ -83,7 +83,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 			//Remove the ID from the front of the title
 			if (!prefs.appendIDToStartOfTitle && titleText.contains(" "))
-				titleText = titleText.substring(titleText.indexOf(" "), titleText.length()).trim();
+				titleText = titleText.substring(titleText.indexOf(" ")).trim();
 
 			return new Title(titleText);
 		}
@@ -198,8 +198,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 
 				Thumb posterImage = new Thumb(imgResponse.url().toString(), imgResponse.bodyAsBytes(), (isCensoredSearch && isPosterScrape));
-				Thumb[] posterArray = { posterImage };
-				return posterArray;
+                return new Thumb[]{ posterImage };
 			} catch (IOException e) {
 				e.printStackTrace();
 				return new Thumb[0];
@@ -211,7 +210,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public Thumb[] scrapeExtraFanart() {
 		Elements extraFanartElements = document.select("div.sample-box ul li a");
-		if (extraFanartElements != null && extraFanartElements.size() > 0) {
+		if (extraFanartElements != null && !extraFanartElements.isEmpty()) {
 			Thumb[] extraFanart = new Thumb[extraFanartElements.size()];
 			int i = 0;
 			for (Element extraFanartElement : extraFanartElements) {
@@ -250,15 +249,12 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	public ArrayList<Genre> scrapeGenres() {
 		ArrayList<Genre> genreList = new ArrayList<>();
 		Elements genreElements = document.select("span.genre");
-		if (genreElements != null) {
+
+        genreElements.stream().map(Element::text).map(WordUtils::capitalize).map(Genre::new).toList();
+		if (!genreElements.isEmpty()) {
 			for (Element genreElement : genreElements) {
 				String genreText = genreElement.text();
-				if (genreElement.text().length() > 0) {
-					//some genre elements are untranslated, even on the english site, so we need to do it ourselves
-					// FIXME: Broken
-					/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(genreText)) {
-						genreText = TranslateString.translateStringJapaneseToEnglish(genreText);
-					}*/
+				if (!genreElement.text().isEmpty()) {
 					genreList.add(new Genre(WordUtils.capitalize(genreText)));
 				}
 			}
@@ -325,8 +321,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
             URLCodec codec = new URLCodec();
 		try {
 			String fileNameURLEncoded = codec.encode(Id);
-			String searchTerm = "http://www.javbus.com/" + getUrlLanguageToUse() + "/search/" + fileNameURLEncoded;
-			return searchTerm;
+            return "http://www.javbus.com/" + getUrlLanguageToUse() + "/search/" + fileNameURLEncoded;
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -336,8 +331,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
         }
 
 	private String getUrlLanguageToUse() {
-		String urlLanguageToUse = (scrapingLanguage == Language.ENGLISH) ? urlLanguageEnglish : urlLanguageJapanese;
-		return urlLanguageToUse;
+        return (scrapingLanguage == Language.ENGLISH) ? urlLanguageEnglish : urlLanguageJapanese;
 	}
 
 	@Override
