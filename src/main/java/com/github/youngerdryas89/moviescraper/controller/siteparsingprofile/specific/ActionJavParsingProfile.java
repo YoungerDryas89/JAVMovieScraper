@@ -125,51 +125,13 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	@Nonnull
     @Override
 	public Runtime scrapeRuntime() {
-		// Find text elements that contain the word "min"
-		// We might get some duplicates here if the movie is offered in multiple
-		// codecs
-		// but we can do some filtering later on to fix things by using a
-		// HashTable to take care of the duplicate format problems
-		Elements movieDownloadParts = document
-		        .select("html body table tbody tr td table tbody tr td div table tbody tr td table tbody tr td table tbody tr td table tbody tr td p:has(font:containsOwn(min, ))");
-		ArrayList<String> movieFileName = new ArrayList<>(movieDownloadParts.size());
-		Hashtable<String, Integer> runtimesByPart = new Hashtable<>(movieDownloadParts.size());
-		// we got to do some processing to get the unique runtime per part,
-		// ignoring file extension
-		for (Element movieElement : movieDownloadParts) {
-			// get the filename without extension
-			// System.out.println("movieElement: " + movieElement);
-			Element movieElementLink = movieElement.select("a").first();
-			if (movieElementLink != null) {
-				String filePath = movieElementLink.attr("href");
-				String[] splitBySlash = filePath.split("/");
-				//get just the file
-				String fileNameNoExtension = splitBySlash[splitBySlash.length - 1];
+		Elements runtime = document
+		        .select("td:containsOwn(Runtime) + td");
 
-				fileNameNoExtension = fileNameNoExtension.substring(0, fileNameNoExtension.length() - 4); // strip the extension
-
-				movieFileName.add(filePath);
-
-				// get the runtime
-				String runtimeText = movieElement.select("font").last().text();
-
-				//get whole text element
-				Integer runtimeAmt = Integer.valueOf(runtimeText.substring(1, runtimeText.indexOf('m') - 1));
-				//narrow it down to just the numeric part since we want to ignore the other garbage in the string
-				runtimesByPart.put(fileNameNoExtension, runtimeAmt);
-			}
-		}
-		int totalRuntime = 0;
-		// Our hastable has automatically taken care of the duplicate format
-		// problem with listing each runtime part twice
-		for (Integer uniqueRuntime : runtimesByPart.values()) {
-			totalRuntime += uniqueRuntime.intValue();
-		}
-
-		if (totalRuntime != 0) {
-			return new Runtime(Integer.toString(totalRuntime));
-		} else
-			return Runtime.BLANK_RUNTIME;
+        if(runtime != null && !runtime.isEmpty()){
+            return new Runtime(runtime.first().text().split(" ")[0]);
+        }
+        return Runtime.BLANK_RUNTIME;
 	}
 	@Override
 	public Thumb[] scrapePosters(boolean cropPosters) {
