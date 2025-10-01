@@ -1,4 +1,4 @@
-module moviescraper.doctord {
+module com.github.youngerdryas89.moviescraper {
     requires javafx.swing;
     requires javafx.controls;
     requires commons.cli;
