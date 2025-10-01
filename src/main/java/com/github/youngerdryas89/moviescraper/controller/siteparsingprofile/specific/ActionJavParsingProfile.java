@@ -88,15 +88,6 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	@Nonnull
     @Override
 	public ReleaseDate scrapeReleaseDate() {
-		// NOTE: This attribute doesn't appear on any of the movie entries I've seen from ActionJav ... yet
-//		Element releaseDateElement = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > span:nth-child(1)").first();
-//		if (releaseDateElement != null && releaseDateElement.text().length() > 4) {
-//			String releaseDateText = releaseDateElement.text().trim();
-//			if (!Character.isAlphabetic(releaseDateText.charAt(0))) //fix for weird white space trim() is not getting rid of
-//				releaseDateText = releaseDateText.substring(1);
-//			if (releaseDateText.length() > 4)
-//				return new ReleaseDate(releaseDateText.trim(), actionJavReleaseDateFormat);
-//		}
 		return ReleaseDate.BLANK_RELEASEDATE;
 	}
 
@@ -218,14 +209,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 	@Nonnull
     @Override
 	public ArrayList<Genre> scrapeGenres() {
-		Element genreElements = document.select("table.p-2 > tbody:nth-child(1) > tr:nth-child(9) > td:nth-child(2) > span:nth-child(1)").first();
-		var genres = new ArrayList<Genre>();
-        assert genreElements != null;
-        for(var genre : genreElements.text().split(" ")){
-			Genre gen = new Genre(genre);
-			genres.add(gen);
-		}
-		return genres;
+        return new ArrayList<>();
 	}
 
 	@Nonnull
