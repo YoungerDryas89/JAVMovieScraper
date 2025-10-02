@@ -397,11 +397,11 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			SearchResult[] directResultArray = { result };
 			return directResultArray;
 		}
-		System.out.println("On result page");
-		//This selector in particular tends to break when they update their site. 
+
+		//This selector in particular tends to break when they update their site.
 		//Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to 
 		//hackery like width=600 stuff
-		Elements foundMovies = doc.select(".searchTitle13");
+		Elements foundMovies = doc.select(".searchTitle18");
 		LinkedList<SearchResult> searchList = new LinkedList<>();
 
 		System.out.println("Found" + foundMovies.size());
@@ -410,7 +410,6 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			String urlPath = movie.select("a").first().attr("href");
 			String thumb = parent.select("img").first().attr("src");
 			String label = parent.select("img").first().attr("alt");
-			System.out.println("Found" + urlPath);
 			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
 			if (!searchList.contains(searchResult))
 				searchList.add(searchResult);
