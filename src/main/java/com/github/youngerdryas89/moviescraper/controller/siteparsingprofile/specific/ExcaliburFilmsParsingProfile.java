@@ -165,24 +165,14 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public Thumb[] scrapePosters(boolean cropPosters) {
-		String movieID = scrapeID().getId();
-		String thumbPath = getPosterPathFromIDString(movieID);
-		if (thumbPath == null)
-			return new Thumb[0];
-		try {
-			Thumb posterThumb = new Thumb(thumbPath, cropPosters);
-			Thumb[] thumbsToReturn = { posterThumb };
-			return thumbsToReturn;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return new Thumb[0];
-		}
-	}
-
-	private String getPosterPathFromIDString(String movieID) {
-		if (movieID == null)
-			return null;
-		return "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + ".jpg";
+        try {
+            var imageUrl = document.select("center > img").first();
+            var thumb = new Thumb(imageUrl.attr("src"), false);
+            return new Thumb[]{thumb};
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return new Thumb[0];
 	}
 
 	private String getPosterPreviewPathFromIDString(String movieID) {
