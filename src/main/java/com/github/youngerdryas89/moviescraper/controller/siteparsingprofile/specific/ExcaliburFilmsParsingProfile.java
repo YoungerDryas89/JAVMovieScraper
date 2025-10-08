@@ -377,7 +377,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 			fileBaseName = file.getName();
 
         fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");
-        fileBaseName = fileBaseName.replaceAll("[()]", "");
+        fileBaseName = fileBaseName.replaceAll("[()\\[\\]\\.\\-_#]", "");
         fileBaseName = fileBaseName.replaceAll("(1080p?|720p?|480p?|360p?|240p?|144p?|4k|4K|2160p?)", "");
 		String[] splitBySpace = fileBaseName.split(" ");
 		if (splitBySpace.length > 1) {
@@ -454,3 +454,4 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
 }
+
