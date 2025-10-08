@@ -166,14 +166,44 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public Thumb[] scrapePosters(boolean cropPosters) {
         try {
-            var imageUrl = document.select("center > img").first();
-            var thumb = new Thumb(imageUrl.attr("src"), false);
-            return new Thumb[]{thumb};
+            List<Thumb> posters = new ArrayList<>();
+            if(fileExistsAtURL(getPosterPathFromIDString(movieId))) {
+                var thumb = new Thumb(getPosterPathFromIDString(movieId));
+                posters.add(thumb);
+                if(fileExistsAtURL(getBackPosterPathFromIDString(movieId))){
+                    var back = new Thumb(getBackPosterPathFromIDString(movieId));
+                    posters.add(back);
+                }
+
+                return posters.toArray(new Thumb[posters.size()]);
+            } else {
+
+                var imageUrl = document.select("center > img").first();
+                var thumb = new Thumb(imageUrl.attr("src"), false);
+                posters.add(thumb);
+
+                return posters.toArray(new Thumb[posters.size()]);
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
         return new Thumb[0];
 	}
+
+    private String getPosterPathFromIDString(String movieID) {
+        if (movieID == null)
+            throw new RuntimeException("getPosterPathFromIDString: `movieID` is null");
+
+        return "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + ".jpg";
+    }
+
+
+    private String getBackPosterPathFromIDString(String movieID) {
+        if (movieID == null)
+            throw new RuntimeException("getPosterPathFromIDString: `movieID` is null");
+
+        return "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + "-b.jpg";
+    }
 
 	private String getPosterPreviewPathFromIDString(String movieID) {
 		if (movieID == null)
@@ -220,6 +250,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	public ID scrapeID() {
 		String id = getIDStringFromDocumentLocation(document);
 		if (id != null) {
+            this.movieId = id;
 			return new ID(id);
 		}
 		return ID.BLANK_ID;
