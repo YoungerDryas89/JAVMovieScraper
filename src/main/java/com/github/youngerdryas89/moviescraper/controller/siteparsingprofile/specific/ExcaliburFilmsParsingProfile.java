@@ -46,6 +46,7 @@ import javax.annotation.Nonnull;
 
 public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
+    String movieId;
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
