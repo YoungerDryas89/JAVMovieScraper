@@ -10,10 +10,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
-import org.jsoup.Jsoup;
+import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,9 +45,20 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
 
 import javax.annotation.Nonnull;
 
+import static org.jsoup.Jsoup.newSession;
+
 public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
     String movieId;
+    Connection session = newSession()
+            .userAgent(UserAgent.getRandomUserAgent())
+            .ignoreHttpErrors(true)
+            .timeout(SiteParsingProfile.CONNECTION_TIMEOUT_VALUE)
+            .followRedirects(true)
+            .cookie("ITEMPERPAGE", "75")
+            .cookie("MYPERPAGE", "75")
+            .cookie("SELECTEDFORMAT", "AdultDVDMovies");
+
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
@@ -404,43 +416,52 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-		System.out.println(searchString);
-		Document doc = Jsoup.connect(searchString).timeout(CONNECTION_TIMEOUT_VALUE).referrer("https://www.excaliburfilms.com").get();
-		boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
-		//found the movie without a search results page
-		if (doc.location() != null && !onSearchResultsPage) {
-			String idOfPage = getIDStringFromDocumentLocation(doc);
-			String posterPath = getPosterPreviewPathFromIDString(idOfPage);
-			String label = doc.select("title").first().text();
-			Thumb previewImage = new Thumb(posterPath);
-			//SearchResult directResult = new SearchResult(doc.location());
-			SearchResult result = null;
-			if (posterPath != null)
-				result = new SearchResult(doc.location(), label, previewImage);
-			else
-				result = new SearchResult(doc.location(), label, null);
+        var request =
+                session.newRequest()
+                        .url(searchString)
+                        .referrer("https://www.excaliburfilms.com")
+                        .execute();
+        if(request.statusCode() == 200) {
+            var doc = request.parse();
+            boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
+            //found the movie without a search results page
+            if (doc.location() != null && !onSearchResultsPage) {
+                String idOfPage = getIDStringFromDocumentLocation(doc);
+                String posterPath = getPosterPreviewPathFromIDString(idOfPage);
+                String label = doc.select("title").first().text();
+                Thumb previewImage = new Thumb(posterPath);
+                //SearchResult directResult = new SearchResult(doc.location());
+                SearchResult result = null;
+                if (posterPath != null)
+                    result = new SearchResult(doc.location(), label, previewImage);
+                else
+                    result = new SearchResult(doc.location(), label, null);
 
-			SearchResult[] directResultArray = { result };
-			return directResultArray;
-		}
+                SearchResult[] directResultArray = {result};
+                return directResultArray;
+            }
 
-		//This selector in particular tends to break when they update their site.
-		//Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to 
-		//hackery like width=600 stuff
-		Elements foundMovies = doc.select(".searchTitle18");
-		LinkedList<SearchResult> searchList = new LinkedList<>();
+            //This selector in particular tends to break when they update their site.
+            //Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to
+            //hackery like width=600 stuff
+            Elements foundMovies = doc.select(".searchTitle18");
+            LinkedList<SearchResult> searchList = new LinkedList<>();
 
-		System.out.println("Found" + foundMovies.size());
-		for (Element movie : foundMovies) {
-			Element parent = movie.parent().parent().parent();
-			String urlPath = movie.select("a").first().attr("href");
-			String thumb = parent.select("img").first().attr("src");
-			String label = parent.select("img").first().attr("alt");
-			SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
-			if (!searchList.contains(searchResult))
-				searchList.add(searchResult);
-		}
-		return searchList.toArray(new SearchResult[searchList.size()]);
+            System.out.println("Found " + foundMovies.size());
+            for (Element movie : foundMovies) {
+                Element parent = movie.parent().parent().parent();
+                String urlPath = movie.select("a").first().attr("href");
+                String thumb = parent.select("img").first().attr("src");
+                String label = parent.select("img").first().attr("alt");
+                SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
+                if (!searchList.contains(searchResult))
+                    searchList.add(searchResult);
+            }
+            return searchList.toArray(new SearchResult[searchList.size()]);
+        } else {
+            System.err.println(request.statusCode() + " " + request.statusMessage());
+        }
+        return new SearchResult[0];
 	}
 
 	@Override
