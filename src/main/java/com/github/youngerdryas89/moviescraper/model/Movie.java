@@ -119,6 +119,7 @@ public class Movie {
 		title = siteToScrapeFrom.scrapeTitle();
 
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
+        id = siteToScrapeFrom.scrapeID();
 		sortTitle = siteToScrapeFrom.scrapeSortTitle();
 		set = siteToScrapeFrom.scrapeSet();
 		rating = siteToScrapeFrom.scrapeRating();
@@ -139,7 +140,6 @@ public class Movie {
 		fanart = siteToScrapeFrom.scrapeFanart();
 		extraFanart = siteToScrapeFrom.scrapeExtraFanart();
 		mpaa = siteToScrapeFrom.scrapeMPAA();
-		id = siteToScrapeFrom.scrapeID();
 		actors = siteToScrapeFrom.scrapeActors();
 		genres = siteToScrapeFrom.scrapeGenres();
 		tags = siteToScrapeFrom.scrapeTags();
