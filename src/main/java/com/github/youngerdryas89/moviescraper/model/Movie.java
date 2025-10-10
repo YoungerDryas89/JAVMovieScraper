@@ -10,10 +10,7 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -21,6 +18,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
+import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
 import com.github.youngerdryas89.moviescraper.view.FileDetailPanel;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 import org.apache.commons.io.FileUtils;
@@ -855,20 +853,32 @@ public class Movie {
 				System.err.println("No title could be found with the provided Id.");
 			}
 			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
-			for (int i = 0; i < searchResults.length; i++) {
-				String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
-				String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
-				//System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-				if (urltoMatch.contains(idFromMovieFileToMatch) || (searchResults.length < 2)) {
-					//let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
-					//and update the variables accordingly so we know what our best match so far is
-					int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-					if ((candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch) ) {
-						levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
-						searchResultNumberToUse = i;
-					}
-				}
-			}
+            if(siteToParseFrom.getScraperGroupNames().contains(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)) {
+                for (int i = 0; i < searchResults.length; i++) {
+                    String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
+                    String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
+                    //System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
+                    if (urltoMatch.contains(idFromMovieFileToMatch) || (searchResults.length < 2)) {
+                        //let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
+                        //and update the variables accordingly so we know what our best match so far is
+                        int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
+                        if ((candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch)) {
+                            levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
+                            searchResultNumberToUse = i;
+                        }
+                    }
+                }
+            }else {
+                String title = siteToParseFrom.cleanseFilename(movieFile).toLowerCase();
+                for(int i = 0; i < searchResults.length; i++){
+                    var resultLabel = searchResults[i].getLabel();
+                    int candidateLev = StringUtils.getLevenshteinDistance(resultLabel.toLowerCase(), title);
+                    if(candidateLev < levDistanceOfCurrentMatch){
+                        levDistanceOfCurrentMatch = candidateLev;
+                        searchResultNumberToUse = i;
+                    }
+                }
+            }
 		}
 		//just use the URL to parse from the parameter
 		else if (useURLtoScrapeFrom) {
