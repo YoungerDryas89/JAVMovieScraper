@@ -658,4 +658,13 @@ public abstract class SiteParsingProfile implements DataItemSource {
     // Intended for classes that need to do extra preparation after this.document is assigned with a new page
     public void prepareData(){
     }
+
+    public String cleanseFilename(File file){
+        String fileBaseName;
+        if (file.isFile())
+            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+        else
+            fileBaseName = file.getName();
+        return fileBaseName;
+    }
 }
