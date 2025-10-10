@@ -382,15 +382,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Nonnull
     @Override
 	public String createSearchString(File file) {
-		String fileBaseName;
-		if (file.isFile())
-			fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
-		else
-			fileBaseName = file.getName();
+		String fileBaseName = cleanseFilename(file);
 
-        fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");
-        fileBaseName = fileBaseName.replaceAll("[()\\[\\]\\.\\-_#]", "");
-        fileBaseName = fileBaseName.replaceAll("(1080p?|720p?|480p?|360p?|240p?|144p?|4k|4K|2160p?)", "");
 		String[] splitBySpace = fileBaseName.split(" ");
 		if (splitBySpace.length > 1) {
 			// check if last word in filename contains a year like (2012) or [2012]
@@ -473,6 +466,19 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	public String getParserName() {
 		return "Excalibur Films";
 	}
+
+    @Override
+    public String cleanseFilename(File file){
+        String fileBaseName;
+        if (file.isFile())
+            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+        else
+            fileBaseName = file.getName();
+        fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");
+        fileBaseName = fileBaseName.replaceAll("[()\\[\\]\\.\\-_#]", "");
+        fileBaseName = fileBaseName.replaceAll("(1080p?|720p?|480p?|360p?|240p?|144p?|4k|4K|2160p?)", "");
+        return fileBaseName;
+    }
 
 }
 
