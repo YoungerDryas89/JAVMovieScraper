@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -343,4 +344,8 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		return new AvEntertainmentParsingProfile();
 	}
 
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
 }

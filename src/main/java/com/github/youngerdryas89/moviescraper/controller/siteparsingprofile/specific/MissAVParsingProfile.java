@@ -4,15 +4,14 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MissAVParsingProfile extends SiteParsingProfile implements SpecificProfile {
     final String titleTablePath = "div.space-y-2";
@@ -303,4 +302,11 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     public String getParserName() {
         return "MissAV";
     }
+
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
 }

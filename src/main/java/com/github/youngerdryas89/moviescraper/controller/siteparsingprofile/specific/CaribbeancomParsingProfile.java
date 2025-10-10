@@ -347,4 +347,10 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 		return new CaribbeancomParsingProfile();
 	}
 
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
+
 }

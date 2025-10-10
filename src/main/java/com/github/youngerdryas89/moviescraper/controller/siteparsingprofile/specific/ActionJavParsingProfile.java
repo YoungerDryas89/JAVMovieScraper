@@ -3,9 +3,7 @@ package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.spe
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Locale;
+import java.util.*;
 
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.jsoup.Jsoup;
@@ -259,4 +257,8 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 		return "ActionJav";
 	}
 
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
 }

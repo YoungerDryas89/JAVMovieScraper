@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -368,5 +370,11 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	public SiteParsingProfile newInstance() {
 		return new MyTokyoHotParsingProfile();
 	}
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
 
 }

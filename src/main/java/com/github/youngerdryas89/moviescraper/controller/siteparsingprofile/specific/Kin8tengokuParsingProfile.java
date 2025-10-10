@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -291,5 +293,11 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	public SiteParsingProfile newInstance() {
 		return new Kin8tengokuParsingProfile();
 	}
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
 
 }

@@ -389,4 +389,11 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		return document.baseUri().split("/")[id_index];
 	}
 
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
+
 }

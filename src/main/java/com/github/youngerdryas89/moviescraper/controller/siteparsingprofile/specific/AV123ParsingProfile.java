@@ -4,6 +4,7 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -13,10 +14,7 @@ import org.jsoup.nodes.Element;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AV123ParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
@@ -322,5 +320,10 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
             }
         }
         return tags;
+    }
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 }

@@ -8,6 +8,9 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class PacoPacoMamaParsingProfile extends TenMusumeParsingProfile {
     @Override
     public String createSearchStringFromId(String id) {
@@ -29,4 +32,10 @@ public class PacoPacoMamaParsingProfile extends TenMusumeParsingProfile {
     public String getParserName() {
         return "PacoPacoMama";
     }
+
+    @Override
+    public List<ScraperGroupName> getScraperGroupNames() {
+        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+    }
+
 }
