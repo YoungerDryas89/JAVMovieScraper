@@ -440,7 +440,6 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
             Elements foundMovies = doc.select(".searchTitle18");
             LinkedList<SearchResult> searchList = new LinkedList<>();
 
-            System.out.println("Found " + foundMovies.size());
             for (Element movie : foundMovies) {
                 Element parent = movie.parent().parent().parent();
                 String urlPath = movie.select("a").first().attr("href");
