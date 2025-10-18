@@ -4,24 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.*;
 
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.JapaneseCharacter;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.TranslateString;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
@@ -177,55 +170,42 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Override
 	public Thumb[] scrapePosters(boolean cropPosters) {
-		// TODO: crop posters for this scraper
-		return scrapePostersAndFanart(true);
+        var images = document.select("a.bigImage").stream()
+                .map(posterElem -> "https://www.javbus.com" + posterElem.attr("href"))
+                .map(this::downloadImage)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .peek(response -> {
+                    if(response.statusCode() != 200)
+                        System.err.println("JavBus scraper error: Couldn't fetch image: " + response.url().toString() + "; " + response.statusCode() + " " + response.statusMessage());
+                })
+                .filter(res -> res.statusCode() == 200)
+                .map(resp -> new Thumb(resp.url().toString(), resp.bodyAsBytes(), (isCensoredSearch && cropPosters)))
+                .toList();
+        return images.toArray(new Thumb[images.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeFanart() {
-		return scrapePostersAndFanart(false);
-	}
 
-	private Thumb[] scrapePostersAndFanart(boolean isPosterScrape) {
-		Element posterElement = document.select("a.bigImage").first();
-		if (posterElement != null) {
-			try {
-                var imgResponse = downloadDocumentFromUrl("https://www.javbus.com" + posterElement.attr("href"));
-                if(imgResponse.statusCode() != 200){
-                    System.err.println("Error failed to download image: " + imgResponse.url() + "; " + imgResponse.statusCode() + " " + imgResponse.statusMessage());
-                    return new Thumb[0];
-                }
-
-
-				Thumb posterImage = new Thumb(imgResponse.url().toString(), imgResponse.bodyAsBytes(), (isCensoredSearch && isPosterScrape));
-                return new Thumb[]{ posterImage };
-			} catch (IOException e) {
-				e.printStackTrace();
-				return new Thumb[0];
-			}
-		} else
-			return new Thumb[0];
+        var images = document.select("a.sample-box").stream()
+                .map((urlElem) -> urlElem.attr("href"))
+                .map(this::downloadImage)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .peek(response -> {
+                    if(response.statusCode() != 200)
+                        System.err.println("JavBus scraper error: Couldn't fetch image: " + response.url().toString() + "; " + response.statusCode() + " " + response.statusMessage());
+                })
+                .filter(res -> res.statusCode() == 200)
+                .map(resp -> new Thumb(resp.url().toString(), resp.bodyAsBytes(), false))
+                .toList();
+        return images.toArray(new Thumb[images.size()]);
 	}
 
 	@Override
 	public Thumb[] scrapeExtraFanart() {
-		Elements extraFanartElements = document.select("div.sample-box ul li a");
-		if (extraFanartElements != null && !extraFanartElements.isEmpty()) {
-			Thumb[] extraFanart = new Thumb[extraFanartElements.size()];
-			int i = 0;
-			for (Element extraFanartElement : extraFanartElements) {
-				String href = extraFanartElement.attr("href");
-				try {
-					extraFanart[i] = new Thumb(href);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				i++;
-			}
-			return extraFanart;
-		}
-		return new Thumb[0];
+        return new Thumb[0];
 	}
 
 	@Nonnull
@@ -370,6 +350,32 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    Optional<Connection.Response> downloadImage(String url){
+        try {
+            var url_ = new URL(url);
+            var response = session.newRequest()
+                    .header("Accept", "image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5")
+                    .header("Accept-Language", "en-US,en;q=0.5")
+                    .header("Host", url_.getHost())
+                    .header("referer", document.location())
+                    .header("Sec-Fetch-Dest", "image")
+                    .header("Sec-Fetch-Mode", "no-cors")
+                    .method(Connection.Method.GET)
+                    .url(url)
+                    .ignoreContentType(true)
+                    .followRedirects(true);
+            if(document.location().contains(url_.getHost()) ){
+                response = response.header("Sec-Fetch-Site", "same-origin");
+            } else {
+                response = response.header("Sec-Fetch-Site", "cross-site");
+            }
+            return Optional.of(response.execute());
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return Optional.empty();
     }
 
     @Override
