@@ -98,9 +98,9 @@ public class Thumb extends MovieDataItem {
 		//Delay the call to actually reading in the thumbImage until it is needed
 	}
 
-    public Thumb(String url, byte[] imageData, boolean useJavCoverCropRoutine) throws IOException {
-        thumbURL = new URL(url);
+    public Thumb(String url, byte[] imageData, boolean useJavCoverCropRoutine) {
         try(ByteArrayInputStream bais = new ByteArrayInputStream(imageData)){
+            thumbURL = new URL(url);
 
             var img = ImageIO.read(bais);
 
@@ -109,6 +109,9 @@ public class Thumb extends MovieDataItem {
             if(useJavCoverCropRoutine){
                 createCroppedImage();
             }
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
