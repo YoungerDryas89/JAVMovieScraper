@@ -365,7 +365,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
     @Override
     public Connection.Response downloadDocumentFromUrl(String url) throws IOException {
         try {
-            return session.newRequest().url(url).ignoreHttpErrors(true).execute();
+            return session.newRequest().url(url).ignoreHttpErrors(true).ignoreContentType(true).execute();
         }catch (Exception e){
             System.err.println(e.getMessage());
         }
