@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
@@ -383,23 +379,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
     @Override
 	public String createSearchString(File file) {
 		String fileBaseName = cleanseFilename(file);
-
-		String[] splitBySpace = fileBaseName.split(" ");
-		if (splitBySpace.length > 1) {
-			// check if last word in filename contains a year like (2012) or [2012]
-			// we want to remove this from our search because it freaks out the search on excalibur films and gives no results
-			if (splitBySpace[splitBySpace.length - 1].matches("[\\(\\[]\\d{4}[\\)\\]]")) {
-				fileBaseName = fileBaseName.replaceFirst("[\\(\\[]\\d{4}[\\)\\]]", "").trim();
-			}
-		}
-		URLCodec codec = new URLCodec();
-		try {
-			fileBaseName = codec.encode(fileBaseName);
-		} catch (EncoderException e) {
-			e.printStackTrace();
-		}
-		fileBaseName = "http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + fileBaseName + "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x";
-		return fileBaseName;
+        return fileBaseName;
 	}
 
 	@Override
@@ -409,50 +389,79 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
 	@Override
 	public SearchResult[] getSearchResults(String searchString) throws IOException {
-        var request =
-                session.newRequest()
-                        .url(searchString)
-                        .referrer("https://www.excaliburfilms.com")
-                        .execute();
-        if(request.statusCode() == 200) {
-            var doc = request.parse();
-            boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
-            //found the movie without a search results page
-            if (doc.location() != null && !onSearchResultsPage) {
-                String idOfPage = getIDStringFromDocumentLocation(doc);
-                String posterPath = getPosterPreviewPathFromIDString(idOfPage);
-                String label = doc.select("title").first().text();
-                Thumb previewImage = new Thumb(posterPath);
-                //SearchResult directResult = new SearchResult(doc.location());
-                SearchResult result = null;
-                if (posterPath != null)
-                    result = new SearchResult(doc.location(), label, previewImage);
-                else
-                    result = new SearchResult(doc.location(), label, null);
+        try {
+            URLCodec codec = new URLCodec();
+            var request =
+                    session.newRequest()
+                            .url("https://www.excaliburfilms.com/search/adultSearch.htm")
+                            .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                            .header("Accept-Language", "en-US,en;q=0.5")
+                            .header("Content-Type", "application/x-www-form-urlencoded")
+                            .header("Origin", "https://www.excaliburfilms.com")
+                            .header("Connection", "keep-alive")
+                            .header("Upgrade-Insecure-Requests", "1")
+                            .header("Sec-Fetch-Dest", "document")
+                            .header("Sec-Fetch-Mode", "navigate")
+                            .header("Sec-Fetch-Site", "same-origin")
+                            .header("Sec-Fetch-User", "?1")
+                            .referrer("http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + codec.encode(searchString) + "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x")
+                            .data("sortBy", "title")
+                            .data("searchCT", "ALL")
+                            .data("searchSN", "")
+                            .data("searchST", "")
+                            .data("searchKW", "")
+                            .data("searchStar", "")
+                            .data("searchWord", searchString)
+                            .data("Year_In", "")
+                            .data("searchFor", "Title.x")
+                            .data("LetterIn", "")
+                            .method(Connection.Method.POST);
 
-                SearchResult[] directResultArray = {result};
-                return directResultArray;
+            var response = request.execute();
+
+            if (response.statusCode() == 200) {
+                var doc = response.parse();
+                boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
+                //found the movie without a search results page
+                if (doc.location() != null && !onSearchResultsPage) {
+                    String idOfPage = getIDStringFromDocumentLocation(doc);
+                    String posterPath = getPosterPreviewPathFromIDString(idOfPage);
+                    String label = doc.select("title").first().text();
+                    Thumb previewImage = new Thumb(posterPath);
+                    //SearchResult directResult = new SearchResult(doc.location());
+                    SearchResult result = null;
+                    if (posterPath != null)
+                        result = new SearchResult(doc.location(), label, previewImage);
+                    else
+                        result = new SearchResult(doc.location(), label, null);
+
+                    SearchResult[] directResultArray = {result};
+                    return directResultArray;
+                }
+
+                //This selector in particular tends to break when they update their site.
+                //Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to
+                //hackery like width=600 stuff
+                Elements foundMovies = doc.select(".searchTitle18");
+                LinkedList<SearchResult> searchList = new LinkedList<>();
+
+                for (Element movie : foundMovies) {
+                    Element parent = movie.parent().parent().parent();
+                    String urlPath = movie.select("a").first().attr("href");
+                    String thumb = parent.select("img").first().attr("src");
+                    String label = parent.select("img").first().attr("alt");
+                    SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
+                    if (!searchList.contains(searchResult))
+                        searchList.add(searchResult);
+                }
+                return searchList.toArray(new SearchResult[searchList.size()]);
+            } else {
+                System.err.println(response.statusCode() + " " + response.statusMessage());
             }
-
-            //This selector in particular tends to break when they update their site.
-            //Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to
-            //hackery like width=600 stuff
-            Elements foundMovies = doc.select(".searchTitle18");
-            LinkedList<SearchResult> searchList = new LinkedList<>();
-
-            for (Element movie : foundMovies) {
-                Element parent = movie.parent().parent().parent();
-                String urlPath = movie.select("a").first().attr("href");
-                String thumb = parent.select("img").first().attr("src");
-                String label = parent.select("img").first().attr("alt");
-                SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
-                if (!searchList.contains(searchResult))
-                    searchList.add(searchResult);
-            }
-            return searchList.toArray(new SearchResult[searchList.size()]);
-        } else {
-            System.err.println(request.statusCode() + " " + request.statusMessage());
+        }catch (EncoderException e){
+            System.err.println(e.getMessage());
         }
+
         return new SearchResult[0];
 	}
 
