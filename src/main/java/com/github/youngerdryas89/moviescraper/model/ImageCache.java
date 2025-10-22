@@ -95,11 +95,8 @@ public class ImageCache {
         }
     }
 
-	public static void replaceIfPresent(URL url, boolean derived, Image image) {
-		var cacheToUse = derived? modifiedImageCache : cache;
-		if(cacheToUse.asMap().containsKey(url)) {
-			cache.invalidate(url);
-			cache.put(url, image);
-		}
-	}
+    public static void clearAllOf(URL url){
+        modifiedImageCache.invalidate(url);
+        cache.invalidate(url);
+    }
 }
