@@ -52,8 +52,7 @@ public class Thumb extends MovieDataItem {
 
 		thumbURL = new URL(url);
 
-		// Remove any existing entries in the cache
-		ImageCache.removeImageFromCache(thumbURL, false);
+        ImageCache.clearAllOf(thumbURL);
 
 		BufferedImage tempImage = (BufferedImage) ImageCache.getImageFromCache(thumbURL, false, referrerURL); //get the unmodified, uncropped image
 		//just get the jpg from the url
@@ -74,10 +73,7 @@ public class Thumb extends MovieDataItem {
 		this.originalImage = parentThumb;
 		this.isImageModified = true;
 
-		if(ImageCache.isImageCached(thumbURL, true))
-			ImageCache.replaceIfPresent(thumbURL, true, img);
-		else
-			ImageCache.putImageInCache(thumbURL, img, true);
+        ImageCache.putImageInCache(thumbURL, img, true);
 	}
 
 	/**
@@ -102,10 +98,14 @@ public class Thumb extends MovieDataItem {
         try(ByteArrayInputStream bais = new ByteArrayInputStream(imageData)){
             thumbURL = new URL(url);
 
+            ImageCache.clearAllOf(thumbURL);
+
             var img = ImageIO.read(bais);
 
             thumbImage = new SoftReference<>(img);
             imageIconThumbImage = new SoftReference<>(new ImageIcon(img));
+
+            ImageCache.putImageInCache(thumbURL, img, false);
             if(useJavCoverCropRoutine){
                 createCroppedImage();
             }
