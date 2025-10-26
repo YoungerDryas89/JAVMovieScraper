@@ -88,7 +88,7 @@ public class ImageCache {
 		return cacheToUse.asMap().containsKey(url);
 	}
 
-    public static void replaceIfPresent(URL url, Image image) throws URISyntaxException, MalformedURLException {
+    public static void replaceIfPresent(URL url, Image image) {
         if(cache.asMap().containsKey(url)){
 			cache.invalidate(url);
 			cache.put(url, image);
