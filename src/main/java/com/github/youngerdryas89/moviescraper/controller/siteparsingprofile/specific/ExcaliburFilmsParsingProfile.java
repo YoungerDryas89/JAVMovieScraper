@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -387,8 +390,8 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 		return null;
 	}
 
-	@Override
-	public SearchResult[] getSearchResults(String searchString) throws IOException {
+    @NotNull
+    public Connection createRequestWithPageN(@NotNull  String searchString, @Nullable String referer, int page){
         try {
             URLCodec codec = new URLCodec();
             var request =
@@ -404,7 +407,6 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
                             .header("Sec-Fetch-Mode", "navigate")
                             .header("Sec-Fetch-Site", "same-origin")
                             .header("Sec-Fetch-User", "?1")
-                            .referrer("http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + codec.encode(searchString) + "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x")
                             .data("sortBy", "title")
                             .data("searchCT", "ALL")
                             .data("searchSN", "")
@@ -417,49 +419,106 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
                             .data("LetterIn", "")
                             .method(Connection.Method.POST);
 
-            var response = request.execute();
-
-            if (response.statusCode() == 200) {
-                var doc = response.parse();
-                boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
-                //found the movie without a search results page
-                if (doc.location() != null && !onSearchResultsPage) {
-                    String idOfPage = getIDStringFromDocumentLocation(doc);
-                    String posterPath = getPosterPreviewPathFromIDString(idOfPage);
-                    String label = doc.select("title").first().text();
-                    Thumb previewImage = new Thumb(posterPath);
-                    //SearchResult directResult = new SearchResult(doc.location());
-                    SearchResult result = null;
-                    if (posterPath != null)
-                        result = new SearchResult(doc.location(), label, previewImage);
-                    else
-                        result = new SearchResult(doc.location(), label, null);
-
-                    SearchResult[] directResultArray = {result};
-                    return directResultArray;
-                }
-
-                //This selector in particular tends to break when they update their site.
-                //Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to
-                //hackery like width=600 stuff
-                Elements foundMovies = doc.select(".searchTitle18");
-                LinkedList<SearchResult> searchList = new LinkedList<>();
-
-                for (Element movie : foundMovies) {
-                    Element parent = movie.parent().parent().parent();
-                    String urlPath = movie.select("a").first().attr("href");
-                    String thumb = parent.select("img").first().attr("src");
-                    String label = parent.select("img").first().attr("alt");
-                    SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
-                    if (!searchList.contains(searchResult))
-                        searchList.add(searchResult);
-                }
-                return searchList.toArray(new SearchResult[searchList.size()]);
-            } else {
-                System.err.println(response.statusCode() + " " + response.statusMessage());
+            if(page > 0){
+                request = request.data("PaginationPage", Integer.toString(page));
             }
-        }catch (EncoderException e){
-            System.err.println(e.getMessage());
+
+            if(referer != null)
+                request = request.referrer(referer);
+            else
+                request = request.referrer("http://www.excaliburfilms.com/search/adultSearch.htm?searchString=" + codec.encode(searchString) + "&Case=ExcalMovies&Search=AdultDVDMovies&SearchFor=Title.x");
+            return request;
+        } catch (EncoderException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    void randomWait(){
+        try {
+            var waitTime = (long) (Math.random() * (1 - 2)) + 1;
+            TimeUnit.SECONDS.sleep(waitTime);
+        }catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    List<SearchResult> extractSearchResults(Document doc){
+        List<SearchResult> results = new ArrayList<>();
+        try {
+            boolean onSearchResultsPage = doc.location().contains("adultSearch.htm");
+            //found the movie without a search results page
+            if (doc.location() != null && !onSearchResultsPage) {
+                String idOfPage = getIDStringFromDocumentLocation(doc);
+                String posterPath = getPosterPreviewPathFromIDString(idOfPage);
+                String label = doc.select("title").first().text();
+                Thumb previewImage = new Thumb(posterPath);
+                //SearchResult directResult = new SearchResult(doc.location());
+                SearchResult result = null;
+                if (posterPath != null)
+                    result = new SearchResult(doc.location(), label, previewImage);
+                else
+                    result = new SearchResult(doc.location(), label, null);
+
+                results.add(result);
+                return results;
+            }
+
+            //This selector in particular tends to break when they update their site.
+            //Unfortunately, they don't use things like ids or classes much which makes it hard to get the right element without resorting to
+            //hackery like width=600 stuff
+            Elements foundMovies = doc.select(".searchTitle18");
+
+            for (Element movie : foundMovies) {
+                Element parent = movie.parent().parent().parent();
+                String urlPath = movie.select("a").first().attr("href");
+                String thumb = parent.select("img").first().attr("src");
+                String label = parent.select("img").first().attr("alt");
+                SearchResult searchResult = new SearchResult(urlPath, label, new Thumb(thumb));
+                if (!results.contains(searchResult))
+                    results.add(searchResult);
+            }
+            return results;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+	@Override
+	public SearchResult[] getSearchResults(String searchString) throws IOException {
+        var request = createRequestWithPageN(searchString, null, 0);
+        var response = request.execute();
+
+        if (response.statusCode() == 200) {
+            var doc = response.parse();
+            var results = extractSearchResults(doc);
+            if(!doc.select("div.pagination").isEmpty()){
+                var totalPages = Integer.valueOf(doc.select("div.pagination > a")
+                        .stream()
+                        .filter(e -> {
+                            return !e.hasAttr("class");
+                        }).toList().getLast().text());
+
+                for(int i = 2; i < totalPages; i++){
+                    var referrer = (i > 2? searchString : searchString + "&PaginationPage=" + i);
+                    var newRequest = createRequestWithPageN(searchString, referrer, i);
+                    randomWait();
+                    var newResponse = newRequest.execute();
+                    if(newResponse.statusCode() == 200){
+                        var doc_ = newResponse.parse();
+                        var results_ = extractSearchResults(doc_);
+                        if(results_.isEmpty())
+                            System.err.println("WARNING: " + newResponse.url() + " returned no results.");
+                        else
+                            results.addAll(results_);
+
+                    }
+                }
+
+            }
+            return results.toArray(new SearchResult[results.size()]);
+        } else {
+            System.err.println(response.statusCode() + " " + response.statusMessage());
         }
 
         return new SearchResult[0];
