@@ -2,6 +2,7 @@ package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.spe
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -10,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +60,30 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
             .cookie("ITEMPERPAGE", "75")
             .cookie("MYPERPAGE", "75")
             .cookie("SELECTEDFORMAT", "AdultDVDMovies");
+    Map<String, String[]> studioNames;
+
+    public ExcaliburFilmsParsingProfile(){
+        try {
+            studioNames = new HashMap<>();
+
+            CSVFormat csvf = CSVFormat.DEFAULT.builder()
+                    .setHeader(new String[]{
+                            "Original Studio Name", "Common Filename Variations", "Acronym"
+                    })
+                    .build();
+
+            var in = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("excalibur-studios.csv"));
+
+            Iterable<CSVRecord> records = csvf.parse(in);
+            for(var record : records){
+                var name = record.get("Original Studio Name");
+                var aliases = record.get("Common Filename Variations");
+                studioNames.put(name, aliases.split(","));
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
@@ -544,6 +571,13 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
         fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");
         fileBaseName = fileBaseName.replaceAll("[()\\[\\]\\.\\-_#]", "");
         fileBaseName = fileBaseName.replaceAll("(1080p?|720p?|480p?|360p?|240p?|144p?|4k|4K|2160p?)", "");
+
+        for(var name : studioNames.keySet()){
+            fileBaseName = fileBaseName.replaceAll(name, "");
+            for(var alias : studioNames.get(name)){
+                fileBaseName = fileBaseName.replaceAll(alias, "");
+            }
+        }
         return fileBaseName;
     }
 
