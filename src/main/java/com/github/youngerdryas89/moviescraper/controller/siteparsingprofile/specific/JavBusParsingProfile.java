@@ -171,7 +171,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Override
 	public Thumb[] scrapePosters(boolean cropPosters) {
         var images = document.select("a.bigImage").stream()
-                .map(posterElem -> "https://www.javbus.com" + posterElem.attr("href"))
+                .map(posterElem -> posterElem.attr("href"))
                 .map(this::downloadImage)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -245,29 +245,21 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 	@Nonnull
     @Override
 	public ArrayList<Actor> scrapeActors() {
-		ArrayList<Actor> actorList = new ArrayList<>();
-		Elements actorElements = document.select("div.star-box li a img");
-		if (actorElements != null) {
-			for (Element currentActor : actorElements) {
-				Thumb thumbnail = null;
-				String actorName = currentActor.attr("title");
-				//Sometimes for whatever reason the english page still has the name in japanaese, so I will translate it myself
-				// FIXME: Broken
-				/*if (scrapingLanguage == Language.ENGLISH && JapaneseCharacter.containsJapaneseLetter(actorName))
-					actorName = TranslateString.translateJapanesePersonNameToRomaji(actorName);*/
-				String actorImage = currentActor.attr("src");
-				if (actorImage != null && !actorImage.contains("printing.gif") && fileExistsAtURL(actorImage)) {
-
-					try {
-						thumbnail = new Thumb(new URL(actorImage));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-					}
-				}
-				actorList.add(new Actor(actorName, null, thumbnail));
-			}
-		}
-		return actorList;
+		var actresses = document.select("div.star-box li a img").stream()
+                .map(elem -> {
+                    String name = elem.attr("title");
+                    String imageURL = elem.attr("src");
+                    Thumb thumb;
+                    if(!imageURL.contains("printing.gif") && !imageURL.isEmpty()) {
+                        var image = downloadImage(imageURL);
+                        if(image.isPresent()) {
+                            thumb = new Thumb(image.get().url().toString(), image.get().bodyAsBytes(), false);
+                            return new Actor(name, null, thumb);
+                        }
+                    }
+                    return new Actor(name, null, null);
+                }).toList();
+		return new ArrayList<Actor>(actresses);
 	}
 
 	@Nonnull
@@ -363,7 +355,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
                     .header("Sec-Fetch-Dest", "image")
                     .header("Sec-Fetch-Mode", "no-cors")
                     .method(Connection.Method.GET)
-                    .url(url)
+                    .url(url_)
                     .ignoreContentType(true)
                     .followRedirects(true);
             if(document.location().contains(url_.getHost()) ){
@@ -372,8 +364,11 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
                 response = response.header("Sec-Fetch-Site", "cross-site");
             }
             return Optional.of(response.execute());
+        } catch (MalformedURLException e){
+           return downloadImage("https://www.javbus.com" + url);
         } catch (IOException e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
