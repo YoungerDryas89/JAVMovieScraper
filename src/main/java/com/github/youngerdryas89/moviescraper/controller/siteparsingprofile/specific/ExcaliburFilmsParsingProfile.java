@@ -462,7 +462,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 
     void randomWait(){
         try {
-            var waitTime = (long) (Math.random() * (1 - 2)) + 1;
+            var waitTime = (long) (Math.random() * (3 - 7)) + 1;
             TimeUnit.SECONDS.sleep(waitTime);
         }catch (InterruptedException e) {
             Thread.currentThread().interrupt();
