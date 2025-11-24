@@ -100,7 +100,7 @@ public class GuiSettings extends Settings {
 	}
 
 	public Integer getWidth() {
-		return getIntegerValue(Key.width, 1045);
+		return getIntegerValue(Key.width, 1050);
 	}
 
 	public void setWidth(Integer value) {
@@ -116,7 +116,7 @@ public class GuiSettings extends Settings {
 	}
 
 	public Integer getFileListDividerLocation() {
-		return getIntegerValue(Key.fileListDividerLocation, 850);
+		return getIntegerValue(Key.fileListDividerLocation, 300);
 	}
 
 	public void setFileListDividerLocation(Integer value) {
