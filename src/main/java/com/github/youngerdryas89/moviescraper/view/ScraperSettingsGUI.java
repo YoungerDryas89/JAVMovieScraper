@@ -2,9 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package moviescraper.doctord.view;
+package com.github.youngerdryas89.moviescraper.view;
 
-import moviescraper.doctord.view.renderer.ScraperRenderer;
+import com.github.youngerdryas89.moviescraper.view.renderer.ScraperRenderer;
+import java.awt.SystemColor;
+import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
+import javax.swing.UIManager;
 
 /**
  *
@@ -30,26 +33,40 @@ public class ScraperSettingsGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        ScraperListerPanel = new javax.swing.JPanel();
+        ScraperListerScrollPanel = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
+        SettingsPanel = new javax.swing.JPanel();
+        SettingsScrollPanel = new javax.swing.JScrollPane();
+        jSplitPane1 = new javax.swing.JSplitPane(HORIZONTAL_SPLIT, ScraperListerPanel, SettingsPanel);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(900, 450));
+        ScraperListerPanel.setLayout(new javax.swing.BoxLayout(ScraperListerPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        jPanel1.setMaximumSize(getMaximumSize());
-        jPanel1.setPreferredSize(getPreferredSize());
-        jPanel1.setLayout(new java.awt.BorderLayout());
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        ScraperListerScrollPanel.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         jList1.setModel(new ScraperSettingsModel());
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList1.setCellRenderer(new ScraperRenderer());
-        jScrollPane1.setViewportView(jList1);
+        ScraperListerScrollPanel.setViewportView(jList1);
 
-        getContentPane().add(jScrollPane1, java.awt.BorderLayout.WEST);
+        ScraperListerPanel.add(ScraperListerScrollPanel);
+
+        SettingsPanel.setLayout(new java.awt.BorderLayout());
+        SettingsPanel.add(SettingsScrollPanel, java.awt.BorderLayout.CENTER);
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Settings");
+        setBackground(SystemColor.window);
+        setMinimumSize(new java.awt.Dimension(900, 450));
+        getContentPane().setLayout(new java.awt.BorderLayout());
+
+        jSplitPane1.setBackground(SystemColor.window);
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        jSplitPane1.setDividerSize(7);
+        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -62,12 +79,15 @@ public class ScraperSettingsGUI extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//Prevent text area font from looking different than text field font
+            UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -78,8 +98,11 @@ public class ScraperSettingsGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel ScraperListerPanel;
+    private javax.swing.JScrollPane ScraperListerScrollPanel;
+    private javax.swing.JPanel SettingsPanel;
+    private javax.swing.JScrollPane SettingsScrollPanel;
     private javax.swing.JList<String> jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
     // End of variables declaration//GEN-END:variables
 }

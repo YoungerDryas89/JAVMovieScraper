@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package moviescraper.doctord.view.renderer;
+package com.github.youngerdryas89.moviescraper.view.renderer;
 
 import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import moviescraper.doctord.controller.siteparsingprofile.SiteParsingProfileItem;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 
 /**
  *
