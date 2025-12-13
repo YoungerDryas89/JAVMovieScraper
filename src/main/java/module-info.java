@@ -17,7 +17,6 @@ module com.github.youngerdryas89.moviescraper {
     requires org.apache.commons.codec;
     requires xstream;
     requires java.sql;
-    requires org.junit.jupiter.api;
     requires annotations;
     requires org.jetbrains.annotations;
     requires commons.collections;
