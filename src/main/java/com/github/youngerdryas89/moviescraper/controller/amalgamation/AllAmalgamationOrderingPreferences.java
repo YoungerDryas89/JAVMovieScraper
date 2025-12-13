@@ -62,16 +62,6 @@ public class AllAmalgamationOrderingPreferences {
 
 	public void initializeValuesFromPreferenceFile() {
         if (!Files.exists(Path.of(settingsFileName))) {
-            if(Files.exists(Path.of("AmalgamationSettings.xml"))) {
-                AmalgamationOrderingLegacyHandler handler = new AmalgamationOrderingLegacyHandler();
-                var data = handler.loadData();
-                if (data != null) {
-                    allAmalgamationOrderingPreferences = data;
-                    loaded = true;
-                    return;
-                }
-            }
-
             initializeDefaultPreferences(true);
         } else {
             try {
