@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.github.youngerdryas89.moviescraper.view;
+package com.github.youngerdryas89.moviescraper.view.scrapersettings;
 
+import com.github.youngerdryas89.moviescraper.view.scrapersettings.ScraperSettingsModel;
 import com.github.youngerdryas89.moviescraper.view.renderer.ScraperRenderer;
 import java.awt.SystemColor;
 import static javax.swing.JSplitPane.HORIZONTAL_SPLIT;
@@ -13,14 +14,14 @@ import javax.swing.UIManager;
  *
  * @author sai
  */
-public class ScraperSettingsGUI extends javax.swing.JFrame {
+public class ScraperSettingsGUI_ extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ScraperSettingsGUI.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ScraperSettingsGUI_.class.getName());
 
     /**
      * Creates new form ScraperSettingsGUI
      */
-    public ScraperSettingsGUI() {
+    public ScraperSettingsGUI_() {
         initComponents();
     }
 
@@ -58,10 +59,9 @@ public class ScraperSettingsGUI extends javax.swing.JFrame {
         setTitle("Settings");
         setBackground(SystemColor.window);
         setMinimumSize(new java.awt.Dimension(900, 450));
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jSplitPane1.setBackground(SystemColor.window);
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jSplitPane1.setDividerSize(7);
         getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
@@ -94,7 +94,7 @@ public class ScraperSettingsGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new ScraperSettingsGUI().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ScraperSettingsGUI_().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

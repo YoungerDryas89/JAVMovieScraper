@@ -25,6 +25,7 @@ module com.github.youngerdryas89.moviescraper {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
     requires com.fasterxml.jackson.core;
+//    requires com.github.youngerdryas89.moviescraper;
     exports com.github.youngerdryas89.moviescraper;
     exports com.github.youngerdryas89.moviescraper.controller.amalgamation;
     exports com.github.youngerdryas89.moviescraper.controller.siteparsingprofile;
