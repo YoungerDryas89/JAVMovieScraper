@@ -31,11 +31,10 @@ public class ScraperSettingsGUI extends JFrame {
 
     JLabel settingsHeading;
 
-    JLabel scraperEnabledLabel = new JLabel("Enabled");
-    JCheckBox scraperEnabled;
+    JCheckBox scraperEnabled = new JCheckBox("Enabled");
 
-    JCheckBox overrideHostname;
-    JLabel overrideHostnameLabel = new JLabel("Override Hostname");
+    JCheckBox overrideHostname = new JCheckBox("Override Hostname");
+    JTextField overridenHostname = new JTextField("N/A");
 
 
 
@@ -75,6 +74,35 @@ public class ScraperSettingsGUI extends JFrame {
         settingsHeading.setVisible(false);
 
         SettingsPanel.add(settingsHeading, BorderLayout.NORTH);
+
+        JPanel generalSettings = new JPanel();
+        GroupLayout layout = new GroupLayout(generalSettings);
+        layout.setAutoCreateContainerGaps(true);
+        layout.setAutoCreateGaps(true);
+        layout.setHorizontalGroup(
+
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(scraperEnabled)
+                        .addComponent(overrideHostname)
+                        .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.INDENT)
+                                .addComponent(overridenHostname)
+                        )
+        );
+
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                        .addComponent(scraperEnabled)
+                        .addComponent(overrideHostname)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(overridenHostname)
+        );
+        generalSettings.setLayout(layout);
+        generalSettings.setVisible(false);
+
+        scraperEnabled.setEnabled(true);
+        scraperEnabled.setVisible(false);
+        SettingsPanel.add(generalSettings);
         
     }
 
