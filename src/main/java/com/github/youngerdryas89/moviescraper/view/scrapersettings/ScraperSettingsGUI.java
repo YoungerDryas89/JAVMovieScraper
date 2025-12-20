@@ -71,9 +71,11 @@ public class ScraperSettingsGUI extends JFrame {
 //        headingsConstraint.gridy = 0;
 
         settingsHeading = new JLabel("Settings for ", SwingConstants.CENTER);
-        settingsHeading.setVisible(false);
+//        settingsHeading.setVisible(false);
 
         SettingsPanel.add(settingsHeading, BorderLayout.NORTH);
+
+        overridenHostname.setColumns(25);
 
         JPanel generalSettings = new JPanel();
         GroupLayout layout = new GroupLayout(generalSettings);
@@ -81,11 +83,11 @@ public class ScraperSettingsGUI extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setHorizontalGroup(
 
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                         .addComponent(scraperEnabled)
                         .addComponent(overrideHostname)
                         .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.INDENT)
+                                .addPreferredGap(overrideHostname, overridenHostname, LayoutStyle.ComponentPlacement.INDENT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
                                 .addComponent(overridenHostname)
                         )
         );
@@ -98,10 +100,12 @@ public class ScraperSettingsGUI extends JFrame {
                         .addComponent(overridenHostname)
         );
         generalSettings.setLayout(layout);
-        generalSettings.setVisible(false);
+//        generalSettings.setVisible(false);
 
         scraperEnabled.setEnabled(true);
-        scraperEnabled.setVisible(false);
+//        scraperEnabled.setVisible(false);
+//        overrideHostname.setVisible(false);
+//        overridenHostname.setVisible(false);
         SettingsPanel.add(generalSettings);
         
     }
@@ -110,6 +114,9 @@ public class ScraperSettingsGUI extends JFrame {
     void updateSelection(SiteParsingProfileItem selected){
         settingsHeading.setText("Settings for " + selected.getParser().getParserName());
         settingsHeading.setVisible(true);
+        scraperEnabled.setVisible(true);
+        overridenHostname.setVisible(true);
+        overrideHostname.setVisible(true);
     }
 
 
