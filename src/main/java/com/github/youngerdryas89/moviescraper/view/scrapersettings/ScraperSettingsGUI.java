@@ -35,6 +35,8 @@ public class ScraperSettingsGUI extends JFrame {
 
     JCheckBox overrideHostname = new JCheckBox("Override Hostname");
     JTextField overridenHostname = new JTextField("N/A");
+    JLabel overridenHostnameLabel = new JLabel("Overridden Hostname:");
+    JPanel hostTextBoxPanel = new JPanel();
 
 
 
@@ -63,21 +65,22 @@ public class ScraperSettingsGUI extends JFrame {
 
     void setupSettingsPanel() {
 
-//        SettingsPanel.setLayout(new GridBagLayout());
-//
-//        GridBagConstraints headingsConstraint = new GridBagConstraints();
-//        headingsConstraint.fill = GridBagConstraints.HORIZONTAL;
-//        headingsConstraint.gridx = 2;
-//        headingsConstraint.gridy = 0;
-
         settingsHeading = new JLabel("Settings for ", SwingConstants.CENTER);
-//        settingsHeading.setVisible(false);
+        settingsHeading.setVisible(false);
 
         SettingsPanel.add(settingsHeading, BorderLayout.NORTH);
 
         overridenHostname.setColumns(25);
+        overridenHostname.setEnabled(overrideHostname.isSelected());
 
         JPanel generalSettings = new JPanel();
+
+        hostTextBoxPanel.setLayout(new FlowLayout());
+        hostTextBoxPanel.add(Box.createHorizontalStrut(20));
+        hostTextBoxPanel.add(overridenHostnameLabel);
+        hostTextBoxPanel.add(overridenHostname);
+        hostTextBoxPanel.setVisible(false);
+
         GroupLayout layout = new GroupLayout(generalSettings);
         layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
@@ -87,8 +90,8 @@ public class ScraperSettingsGUI extends JFrame {
                         .addComponent(scraperEnabled)
                         .addComponent(overrideHostname)
                         .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(overrideHostname, overridenHostname, LayoutStyle.ComponentPlacement.INDENT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
-                                .addComponent(overridenHostname)
+//                                .addPreferredGap(overrideHostname, hostTextBoxPanel, LayoutStyle.ComponentPlacement.INDENT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
+                                .addComponent(hostTextBoxPanel)
                         )
         );
 
@@ -97,15 +100,13 @@ public class ScraperSettingsGUI extends JFrame {
                         .addComponent(scraperEnabled)
                         .addComponent(overrideHostname)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(overridenHostname)
+                        .addComponent(hostTextBoxPanel)
         );
         generalSettings.setLayout(layout);
-//        generalSettings.setVisible(false);
 
         scraperEnabled.setEnabled(true);
-//        scraperEnabled.setVisible(false);
-//        overrideHostname.setVisible(false);
-//        overridenHostname.setVisible(false);
+        scraperEnabled.setVisible(false);
+        overrideHostname.setVisible(false);
         SettingsPanel.add(generalSettings);
         
     }
@@ -115,8 +116,9 @@ public class ScraperSettingsGUI extends JFrame {
         settingsHeading.setText("Settings for " + selected.getParser().getParserName());
         settingsHeading.setVisible(true);
         scraperEnabled.setVisible(true);
-        overridenHostname.setVisible(true);
+        scraperEnabled.setSelected(!selected.isDisabled());
         overrideHostname.setVisible(true);
+        hostTextBoxPanel.setVisible(true);
     }
 
 
@@ -147,7 +149,7 @@ public class ScraperSettingsGUI extends JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Settings");
         setBackground(SystemColor.window);
-        setMinimumSize(new java.awt.Dimension(900, 450));
+        setMinimumSize(new java.awt.Dimension(700, 350));
 
         jSplitPane1.setBackground(SystemColor.window);
         jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
