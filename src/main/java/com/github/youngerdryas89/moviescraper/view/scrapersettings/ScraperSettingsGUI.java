@@ -38,6 +38,8 @@ public class ScraperSettingsGUI extends JFrame {
     JLabel overridenHostnameLabel = new JLabel("Overridden Hostname:");
     JPanel hostTextBoxPanel = new JPanel();
 
+    JCheckBox excludefromAmalgamation = new JCheckBox("Exclude from amalgamation scraping");
+
 
 
     public static void main(String[] args){
@@ -81,6 +83,9 @@ public class ScraperSettingsGUI extends JFrame {
         hostTextBoxPanel.add(overridenHostname);
         hostTextBoxPanel.setVisible(false);
 
+        excludefromAmalgamation.setSelected(false);
+        excludefromAmalgamation.setVisible(false);
+
         GroupLayout layout = new GroupLayout(generalSettings);
         layout.setAutoCreateContainerGaps(true);
         layout.setAutoCreateGaps(true);
@@ -88,6 +93,7 @@ public class ScraperSettingsGUI extends JFrame {
 
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                         .addComponent(scraperEnabled)
+                        .addComponent(excludefromAmalgamation)
                         .addComponent(overrideHostname)
                         .addGroup(layout.createSequentialGroup()
 //                                .addPreferredGap(overrideHostname, hostTextBoxPanel, LayoutStyle.ComponentPlacement.INDENT, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE)
@@ -98,6 +104,7 @@ public class ScraperSettingsGUI extends JFrame {
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addComponent(scraperEnabled)
+                        .addComponent(excludefromAmalgamation)
                         .addComponent(overrideHostname)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(hostTextBoxPanel)
@@ -117,6 +124,7 @@ public class ScraperSettingsGUI extends JFrame {
         settingsHeading.setVisible(true);
         scraperEnabled.setVisible(true);
         scraperEnabled.setSelected(!selected.isDisabled());
+        excludefromAmalgamation.setVisible(true);
         overrideHostname.setVisible(true);
         hostTextBoxPanel.setVisible(true);
     }
