@@ -5,7 +5,10 @@ import javax.swing.ImageIcon;
 public class DefaultDataItemSource implements DataItemSource {
 
 	public static final DefaultDataItemSource DEFAULT_DATA_ITEM_SOURCE = new DefaultDataItemSource();
+
 	private boolean isDisabled;
+    private boolean excludeFromAmalgamation = false;
+    private String hostname;
 	ImageIcon profileIcon;
 
 	@Override
