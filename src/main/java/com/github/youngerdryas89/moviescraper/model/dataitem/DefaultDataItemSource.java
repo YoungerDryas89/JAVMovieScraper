@@ -44,4 +44,12 @@ public class DefaultDataItemSource implements DataItemSource {
 		return null;
 	}
 
+    public boolean excludedFromAmalgamation(){
+        return excludeFromAmalgamation;
+    }
+
+    public void setExcludeFromAmalgamation(boolean value){
+        excludeFromAmalgamation = value;
+    }
+
 }

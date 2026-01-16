@@ -261,4 +261,14 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
     public List<ScraperGroupName> getScraperGroupNames() {
         return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
+
+    @Override
+    public String hostname() {
+        return hostname;
+    }
+
+    @Override
+    public void setHostname(String hostname) {
+
+    }
 }

@@ -145,6 +145,10 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	 */
 	private boolean discardResults;
 
+    protected boolean excludeFromAmalgamation = false;
+
+    protected String hostname;
+
 	public boolean isExtraFanartScrapingEnabled() {
 		return extraFanartScrapingEnabled;
 	}
@@ -178,6 +182,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		this.firstWordOfFileIsID = scrapingPreferences.getIsFirstWordOfFileID();
 		this.isDisabled = false;
 	}
+
 
 	public Document getDocument() {
 		return document;
@@ -667,4 +672,13 @@ public abstract class SiteParsingProfile implements DataItemSource {
             fileBaseName = file.getName();
         return fileBaseName;
     }
+
+    public boolean excludedFromAmalgamation(){
+        return this.excludeFromAmalgamation;
+    }
+
+    public void setExcludeFromAmalgamation(boolean value){
+        this.excludeFromAmalgamation = value;
+    }
+
 }
