@@ -23,7 +23,8 @@ import static com.github.youngerdryas89.moviescraper.controller.amalgamation.Scr
 
 public class AmalgamationOrderingPreferencesWrapper {
 
-    public Long version = 1L;
+    public Long version = 2L;
+    public Long readVersion;
 
     public Map<SiteParsingProfile.ScraperGroupName, ScraperGroupAmalgamationPreference> allAmalgamationOrderingPreferences;
      public Collection<SiteParsingProfileItem> allScrapers = SpecificProfileFactory.getAll();
@@ -77,7 +78,7 @@ public class AmalgamationOrderingPreferencesWrapper {
         items.overallOrdering.forEach(e -> {
             var entry = overall.addObject();
             entry.put("name", e.getDataItemSourceName());
-            entry.put("enabled", e.isDisabled());
+            entry.put("disabled", e.isDisabled());
         });
 
         getMoviefieldNames().forEach(e -> {
@@ -88,7 +89,7 @@ public class AmalgamationOrderingPreferencesWrapper {
                 fieldItems.forEach(item -> {
                     var entry = field.addObject();
                     entry.put("name", item.getDataItemSourceName());
-                    entry.put("enabled", item.isDisabled());
+                    entry.put("disabled", item.isDisabled());
                 });
             }
         });
@@ -115,6 +116,8 @@ public class AmalgamationOrderingPreferencesWrapper {
 
             if(!root.has("version"))
                 throw new RuntimeException("Configuration missing node: 'version'");
+            else
+                readVersion = root.get("version").asLong();
 
             var preferencesNode = root.get("OrderingPreferences");
 
@@ -137,7 +140,7 @@ public class AmalgamationOrderingPreferencesWrapper {
             throw new RuntimeException("Unknown scraper group name: " + group);
         }
 
-        var overallOrdering = readListOfScrapers(root.get("default"));
+        List<DataItemSource> overallOrdering = readListOfScrapersMain(root.get("default"));
 
         ScraperGroupAmalgamationPreference preference = new ScraperGroupAmalgamationPreference(groupName, overallOrdering);
 
@@ -146,7 +149,7 @@ public class AmalgamationOrderingPreferencesWrapper {
         for(var field : fieldNames){
             try {
                 if (custom.has(field)) {
-                    var elems = readListOfScrapers(custom.get(field));
+                    var elems = readListOfScrapersMain(custom.get(field));
                     if(elems != null)
                         preference.setCustomOrderingForField(field, elems);
                 } else {
@@ -160,8 +163,14 @@ public class AmalgamationOrderingPreferencesWrapper {
         return preference;
     }
 
+    List<DataItemSource> readListOfScrapersMain(JsonNode root) {
+        if(readVersion == 1L)
+            return readListOfScrapersV1(root);
+        return readListOfScrapers(root);
+    }
+
     @Nullable
-    List<DataItemSource> readListOfScrapers(JsonNode root){
+    List<DataItemSource> readListOfScrapersV1(JsonNode root){
        assert root != null;
 
        if(root.size() > 0 && !root.isNull()) {
@@ -194,6 +203,42 @@ public class AmalgamationOrderingPreferencesWrapper {
        }
 
        return null;
+    }
+
+    @Nullable
+    List<DataItemSource> readListOfScrapers(JsonNode root){
+        assert root != null;
+
+        if(root.size() > 0 && !root.isNull()) {
+
+            List<DataItemSource> items = new ArrayList<>();
+
+            root.forEach(node -> {
+
+                var name = node.get("name").asText();
+
+
+                var enabled = node.get("disabled").asBoolean();
+
+                if (!name.equals("Default Data Item Source")) {
+                    var profile = allScrapers.stream().filter(spp -> {
+                        return spp.getParser().getDataItemSourceName().equals(name);
+                    }).findFirst();
+
+                    if (profile.isPresent()) {
+                        var i = profile.get().getParser().createInstanceOfSameType();
+                        i.setDisabled(enabled);
+                        items.add(i);
+                    } else {
+                        System.err.println("WARNING: " + name + " is not recognized as a legitimate scraper. Ignoring!");
+                    }
+                }
+            });
+
+            return items;
+        }
+
+        return null;
     }
 
 }
