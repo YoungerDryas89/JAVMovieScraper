@@ -22,13 +22,4 @@ public interface DataItemSource {
 
 	public ImageIcon getProfileIcon();
 
-    public boolean excludedFromAmalgamation();
-
-    public void setExcludeFromAmalgamation(boolean value);
-
-    public String domainName();
-
-    public void setDomainName(String domain);
-
-
 }

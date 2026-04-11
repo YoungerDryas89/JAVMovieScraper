@@ -9,29 +9,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
 import com.github.youngerdryas89.moviescraper.model.Movie;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MPAARating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MovieDataItem;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Outline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tag;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 
 /**
  * Collection of all the {@link Movie} objects for a given file that have been scraped along with the
@@ -113,7 +93,7 @@ public class MovieScrapeResultGroup {
 			Rating rating = (Rating) getPreferredMovieDataItemAsMovieDataItem(Rating.class);
 			ReleaseDate releaseDate = (ReleaseDate) getPreferredMovieDataItemAsMovieDataItem(ReleaseDate.class);
 			Runtime runtime = (Runtime) getPreferredMovieDataItemAsMovieDataItem(Runtime.class);
-			Set set = (Set) getPreferredMovieDataItemAsMovieDataItem(Set.class);
+			Series series = (Series) getPreferredMovieDataItemAsMovieDataItem(Series.class);
 			SortTitle sortTitle = (SortTitle) getPreferredMovieDataItemAsMovieDataItem(SortTitle.class);
 			Studio studio = (Studio) getPreferredMovieDataItemAsMovieDataItem(Studio.class);
 			Tagline tagline = (Tagline) getPreferredMovieDataItemAsMovieDataItem(Tagline.class);
@@ -123,7 +103,7 @@ public class MovieScrapeResultGroup {
 			Votes votes = (Votes) getPreferredMovieDataItemAsMovieDataItem(Votes.class);
 			Year year = (Year) getPreferredMovieDataItemAsMovieDataItem(Year.class);
 
-			Movie amalgamatedMovie = new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle,
+			Movie amalgamatedMovie = new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, series, sortTitle,
 			        studio, tagline, title, top250, trailer, votes, year);
 			//The all titles at this point is just the file name, which is the same for all so we can just use the first one
 			if (scrapedMovieObjectsForFile != null && scrapedMovieObjectsForFile.size() > 0) {
