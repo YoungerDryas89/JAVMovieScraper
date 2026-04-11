@@ -21,26 +21,7 @@ import org.jsoup.select.Elements;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MPAARating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Outline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 
 import javax.annotation.Nonnull;
 
@@ -101,11 +82,11 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		Element setElement = document.select("span.header:matchesOwn((?i)Series:|シリーズ:|시리즈:|系列:) + a").first();
 		if (setElement != null && !setElement.text().isEmpty())
-			return new Set(setElement.text());
-		return Set.BLANK_SET;
+			return new Series(setElement.text());
+		return Series.BLANK_SERIES;
 	}
 
 	@Nonnull

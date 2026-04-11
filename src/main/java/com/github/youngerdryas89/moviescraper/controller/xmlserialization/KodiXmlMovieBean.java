@@ -192,7 +192,7 @@ public class KodiXmlMovieBean {
 		}
 		Thumb[] emptyExtraFanrt = new Thumb[0];
 		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id), new MPAARating(mpaa), new OriginalTitle(originaltitle), new Outline(outline),
-		        new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Set(set), new SortTitle(sorttitle), new Studio(studio),
+		        new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Series(set), new SortTitle(sorttitle), new Studio(studio),
 		        new Tagline(tagline), new Title(title), new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
 		return movie;
 	}

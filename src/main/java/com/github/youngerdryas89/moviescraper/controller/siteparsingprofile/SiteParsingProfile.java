@@ -157,7 +157,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public abstract @NotNull SortTitle scrapeSortTitle();
 
-	public abstract @NotNull Set scrapeSet();
+	public abstract @NotNull Series scrapeSet();
 
 	public abstract @NotNull Rating scrapeRating();
 

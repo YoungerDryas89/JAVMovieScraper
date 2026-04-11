@@ -50,8 +50,8 @@ public class TenMusumeParsingProfile extends SiteParsingProfileJSON implements S
     }
 
     @Override
-    public @NotNull Set scrapeSet() {
-        return Set.BLANK_SET;
+    public @NotNull Series scrapeSet() {
+        return Series.BLANK_SERIES;
     }
 
     @Override

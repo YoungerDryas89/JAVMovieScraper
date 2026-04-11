@@ -25,7 +25,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
@@ -67,9 +67,9 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		// ActionJav doesn't have any set information
-		return Set.BLANK_SET;
+		return Series.BLANK_SERIES;
 
 	}
 
@@ -264,13 +264,4 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
         return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
-    @Override
-    public String hostname() {
-        return hostname;
-    }
-
-    @Override
-    public void setHostname(String hostname) {
-
-    }
 }

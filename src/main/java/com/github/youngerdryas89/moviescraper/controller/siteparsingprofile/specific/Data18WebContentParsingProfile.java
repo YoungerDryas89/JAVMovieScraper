@@ -17,15 +17,7 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
@@ -93,19 +85,19 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 
 		//relatedMovie is used for split scenes
 		Element relatedMovie = document.select("div.gen:contains(Related Movie and Scenes:) ~ div ~ div p a").first();
 		if (relatedMovie != null && relatedMovie.text().length() > 0) {
-			return new Set(relatedMovie.text());
+			return new Series(relatedMovie.text());
 		}
 		//setElement used below is for web downloads
 		Element setElement = document.select("div.main.gre1 div#centered.main2 div.p8.dloc a[href*=/sites/").last();
 		if (setElement != null)
-			return new Set(setElement.text());
+			return new Series(setElement.text());
 		else
-			return Set.BLANK_SET;
+			return Series.BLANK_SERIES;
 	}
 
 	@Nonnull

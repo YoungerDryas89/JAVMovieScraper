@@ -12,7 +12,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
@@ -105,8 +105,8 @@ public class AvEntertainmentParsingProfileTest {
 
 	@Test
 	public void testSet() {
-		Set set = profile.scrapeSet();
-		assertEquals("Wrong Set", "Pork Teriyaki", set.getSet());
+		Series series = profile.scrapeSet();
+		assertEquals("Wrong Set", "Pork Teriyaki", series.getSet());
 	}
 
 	@Test

@@ -28,7 +28,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
@@ -71,8 +71,8 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
-		return new Set("Kin8tengoku");
+	public Series scrapeSet() {
+		return new Series("Kin8tengoku");
 	}
 
 	@Nonnull

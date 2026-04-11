@@ -17,30 +17,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.TranslateString;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MPAARating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Outline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 
 import javax.annotation.Nonnull;
 
@@ -102,8 +81,8 @@ public class CaribbeancomParsingProfile extends SiteParsingProfile implements Sp
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
-		return Set.BLANK_SET;
+	public Series scrapeSet() {
+		return Series.BLANK_SERIES;
 	}
 
 	@Nonnull

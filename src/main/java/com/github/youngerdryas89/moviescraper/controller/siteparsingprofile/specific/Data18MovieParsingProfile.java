@@ -25,7 +25,6 @@ import org.jsoup.select.Elements;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
@@ -38,7 +37,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
@@ -94,12 +93,12 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		Element setElement = document.select("div div.p8 div p a[href*=/series/]").first();
 		if (setElement != null)
-			return new Set(setElement.text());
+			return new Series(setElement.text());
 		else
-			return Set.BLANK_SET;
+			return Series.BLANK_SERIES;
 	}
 
 	@Nonnull

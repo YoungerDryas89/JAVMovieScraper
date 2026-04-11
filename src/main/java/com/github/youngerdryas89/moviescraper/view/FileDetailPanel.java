@@ -19,17 +19,7 @@ import com.jgoodies.forms.layout.FormSpecs;
 import com.github.youngerdryas89.moviescraper.controller.EditGenresAction;
 import com.github.youngerdryas89.moviescraper.controller.EditTagsAction;
 import com.github.youngerdryas89.moviescraper.model.Movie;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tag;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.view.AbstractFileDetailPanelEditGUI.Operation;
 import com.github.youngerdryas89.moviescraper.view.renderer.ActressListRenderer;
@@ -447,7 +437,7 @@ public class FileDetailPanel extends JPanel {
 				if (currentMovie != null) {
 					String newValue = (String) txtFieldMovieSet.getText();
 					if (newValue != null) {
-						currentMovie.setSet(new Set(newValue));
+						currentMovie.setSet(new Series(newValue));
 					}
 				}
 			}
@@ -462,7 +452,7 @@ public class FileDetailPanel extends JPanel {
 			public void keyReleased(KeyEvent e) {
 				String newValue = (String) txtFieldMovieSet.getText();
 				if (newValue != null) {
-					currentMovie.setSet(new Set(newValue));
+					currentMovie.setSet(new Series(newValue));
 				}
 
 			}

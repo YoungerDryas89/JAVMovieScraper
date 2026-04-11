@@ -2,10 +2,7 @@ package com.github.youngerdryas89.moviescraper.model;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -18,14 +15,11 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
-import com.github.youngerdryas89.moviescraper.controller.Similarity;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.view.FileDetailPanel;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 import org.apache.commons.io.FileUtils;
 
 import com.github.youngerdryas89.moviescraper.controller.FileDownloaderUtilities;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.xmlserialization.KodiXmlMovieBean;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
@@ -54,7 +48,7 @@ public class Movie {
 	private Rating rating;
 	private ReleaseDate releaseDate;
 	private Runtime runtime;
-	private Set set;
+	private Series series;
 	private SortTitle sortTitle;
 	private Studio studio;
 
@@ -76,8 +70,8 @@ public class Movie {
 	private String fileName;
 
 	public Movie(ArrayList<Actor> actors, ArrayList<Director> directors, Thumb[] fanart, Thumb[] extraFanart, ArrayList<Genre> genres, ArrayList<Tag> tags, ID id, MPAARating mpaa,
-	        OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Set set, SortTitle sortTitle, Studio studio,
-	        Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
+				 OriginalTitle originalTitle, Outline outline, Plot plot, Thumb[] posters, Rating rating, ReleaseDate releaseDate, Runtime runtime, Series series, SortTitle sortTitle, Studio studio,
+				 Tagline tagline, Title title, Top250 top250, Trailer trailer, Votes votes, Year year) {
 		super();
 		this.actors = actors;
 		this.directors = directors;
@@ -94,7 +88,7 @@ public class Movie {
 		this.rating = rating;
 		this.releaseDate = releaseDate;
 		this.runtime = runtime;
-		this.set = set;
+		this.series = series;
 		this.sortTitle = sortTitle;
 		this.studio = studio;
 		this.tagline = tagline;
@@ -111,7 +105,7 @@ public class Movie {
 		originalTitle = siteToScrapeFrom.scrapeOriginalTitle();
         id = siteToScrapeFrom.scrapeID();
 		sortTitle = siteToScrapeFrom.scrapeSortTitle();
-		set = siteToScrapeFrom.scrapeSet();
+		series = siteToScrapeFrom.scrapeSet();
 		rating = siteToScrapeFrom.scrapeRating();
 		year = siteToScrapeFrom.scrapeYear();
 		top250 = siteToScrapeFrom.scrapeTop250();
@@ -159,7 +153,7 @@ public class Movie {
 		originalTitle.setDataItemSource(siteToScrapeFrom);
 		title.setDataItemSource(siteToScrapeFrom);
 		sortTitle.setDataItemSource(siteToScrapeFrom);
-		set.setDataItemSource(siteToScrapeFrom);
+		series.setDataItemSource(siteToScrapeFrom);
 		rating.setDataItemSource(siteToScrapeFrom);
 		year.setDataItemSource(siteToScrapeFrom);
 		top250.setDataItemSource(siteToScrapeFrom);
@@ -261,8 +255,8 @@ public class Movie {
 		return runtime;
 	}
 
-	public Set getSet() {
-		return set;
+	public Series getSet() {
+		return series;
 	}
 
 	public SortTitle getSortTitle() {
@@ -345,8 +339,8 @@ public class Movie {
 		this.runtime = runtime;
 	}
 
-	public void setSet(Set set) {
-		this.set = set;
+	public void setSet(Series series) {
+		this.series = series;
 	}
 
 	public void setSortTitle(SortTitle sortTitle) {
@@ -379,7 +373,7 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "Movie [title=" + title + ", originalTitle=" + originalTitle + ", sortTitle=" + sortTitle + ", set=" + set + ", rating=" + rating + ", year=" + year + ", top250=" + top250
+		return "Movie [title=" + title + ", originalTitle=" + originalTitle + ", sortTitle=" + sortTitle + ", set=" + series + ", rating=" + rating + ", year=" + year + ", top250=" + top250
 		        + ", trailer = " + trailer + ", votes=" + votes + ", outline=" + outline + ", plot=" + plot + ", tagline=" + tagline + ", studio=" + studio + "releaseDate=" + releaseDate
 		        + ", runtime=" + runtime + ", posters=" + Arrays.toString(posters) + ", fanart=" + Arrays.toString(fanart) + ", extrafanart = " + Arrays.toString(extraFanart) + ", mpaa=" + mpaa
 		        + ", id=" + id + ", genres=" + genres + ", tags=" + tags + ", actors=" + actors + ", directors=" + directors + "]";

@@ -25,7 +25,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
@@ -97,12 +97,12 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		Element setElement = document.select("th.label:containsOwn(Series) ~ td").first();
 		if (setElement != null)
-			return new Set(setElement.text());
+			return new Series(setElement.text());
 
-		return Set.BLANK_SET;
+		return Series.BLANK_SERIES;
 
 	}
 

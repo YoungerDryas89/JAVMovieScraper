@@ -67,8 +67,8 @@ public class JavBusParsingProfileTest {
 
 	@Test
 	public void testSet() {
-		Set testSet = profile.scrapeSet();
-		assertEquals("Wrong set", "猛烈なKISSと絡み合う肉体", testSet.getSet());
+		Series testSeries = profile.scrapeSet();
+		assertEquals("Wrong set", "猛烈なKISSと絡み合う肉体", testSeries.getSet());
 	}
 
 	@Test

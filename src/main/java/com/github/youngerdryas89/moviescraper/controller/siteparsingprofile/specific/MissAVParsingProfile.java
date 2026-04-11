@@ -6,7 +6,7 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -76,14 +76,14 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
 
     @Nonnull
     @Override
-    public Set scrapeSet() {
+    public Series scrapeSet() {
         if(movie_data.containsKey("Series:")){
             Element series = movie_data.get("Series:");
             if(series != null){
-                return new Set(series.text());
+                return new Series(series.text());
             }
         }
-        return Set.BLANK_SET;
+        return Series.BLANK_SERIES;
     }
 
     @Nonnull

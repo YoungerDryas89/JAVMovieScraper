@@ -15,26 +15,8 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Dete
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileJSON;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MPAARating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Outline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
 import org.apache.commons.codec.net.URLCodec;
@@ -138,15 +120,15 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		// FIXME: Broken
 		Element setElement = document.select("table.mg-b20 tr td a[href*=article=series/id=]").first();
 		if (setElement == null)
-			return Set.BLANK_SET;
+			return Series.BLANK_SERIES;
 		/*else if (doGoogleTranslation) {
 			return new Set(TranslateString.translateStringJapaneseToEnglish(setElement.text()));
 		} */else
-			return new Set(setElement.text());
+			return new Series(setElement.text());
 	}
 
 	@Nonnull

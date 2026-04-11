@@ -6,7 +6,7 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -105,11 +105,11 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
 
     @Nonnull
     @Override
-    public Set scrapeSet() {
+    public Series scrapeSet() {
         if(movie_data.containsKey("Series:")){
-            return new Set(movie_data.get("Series:").text());
+            return new Series(movie_data.get("Series:").text());
         }
-        return Set.BLANK_SET;
+        return Series.BLANK_SERIES;
     }
 
     @Nonnull
@@ -326,6 +326,6 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 }

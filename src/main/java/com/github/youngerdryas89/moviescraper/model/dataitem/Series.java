@@ -1,9 +1,9 @@
 package com.github.youngerdryas89.moviescraper.model.dataitem;
 
-public class Set extends MovieDataItem {
+public class Series extends MovieDataItem {
 
 	private String set;
-	public static final Set BLANK_SET = new Set("");
+	public static final Series BLANK_SERIES = new Series("");
 
 	public String getSet() {
 		return set;
@@ -13,7 +13,7 @@ public class Set extends MovieDataItem {
 		this.set = sanitizeString(set);
 	}
 
-	public Set(String set) {
+	public Series(String set) {
 		setSet(set);
 	}
 
@@ -28,7 +28,7 @@ public class Set extends MovieDataItem {
 		return null;
 	}
 
-	public Set() {
+	public Series() {
 		set = "";
 	}
 

@@ -29,7 +29,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
@@ -103,7 +103,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 
 	@Nonnull
     @Override
-	public Set scrapeSet() {
+	public Series scrapeSet() {
 		JSONObject pageJSON = getMovieJSON();
 		if (pageJSON != null) {
 			try {
@@ -111,13 +111,13 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 				if (collectionJSON != null) {
 					String setName = collectionJSON.getString("name");
 					if (setName != null)
-						return new Set(setName);
+						return new Series(setName);
 				}
 			} catch (JSONException e) {
 				//e.printStackTrace();
 			}
 		}
-		return Set.BLANK_SET;
+		return Series.BLANK_SERIES;
 	}
 
 	@Nonnull
