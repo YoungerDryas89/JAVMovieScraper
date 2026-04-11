@@ -12,6 +12,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.Jsoup;
@@ -373,7 +376,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
 

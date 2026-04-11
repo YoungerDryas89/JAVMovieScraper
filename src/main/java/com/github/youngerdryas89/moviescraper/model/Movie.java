@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -25,21 +23,10 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
 import com.github.youngerdryas89.moviescraper.view.FileDetailPanel;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.Document;
 
 import com.github.youngerdryas89.moviescraper.controller.FileDownloaderUtilities;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.Data18WebContentParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.DmmParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.IAFDParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.xmlserialization.KodiXmlMovieBean;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
@@ -219,37 +206,6 @@ public class Movie {
 	private void setDataItemSourceOnThumbs(Thumb[] thumbs, DataItemSource dataItemSource) {
 		for (Thumb thumb : thumbs) {
 			thumb.setDataItemSource(dataItemSource);
-		}
-	}
-
-	/**
-	 * Create a movie by reading in a values from a nfo file created by previously scraping the movie and then writing the metadata out to the file
-	 * 
-	 * @param nfoFile
-	 * @throws IOException
-	 */
-	public static Movie createMovieFromNfo(File nfoFile) throws IOException {
-		Movie movieFromNfo = null;
-		try (FileInputStream fisTargetFile = new FileInputStream(nfoFile);) {
-
-			String targetFileStr = IOUtils.toString(fisTargetFile, "UTF-8");
-			//Sometimes there's some junk before the prolog tag. Do a workaround to remove that junk.
-			//This really isn't the cleanest way to do this, but it'll work for now
-			//check first to make sure the string even contains <?xml so we don't loop through an invalid file needlessly
-			if (targetFileStr.contains("<?xml")) {
-				while (targetFileStr.length() > 0 && !targetFileStr.startsWith("<?xml")) {
-					if (targetFileStr.length() > 1) {
-						targetFileStr = targetFileStr.substring(1, targetFileStr.length());
-					} else
-						break;
-				}
-			}
-			KodiXmlMovieBean xmlMovieBean = KodiXmlMovieBean.makeFromXML(targetFileStr);
-			if (xmlMovieBean != null) {
-
-				movieFromNfo = xmlMovieBean.toMovie();
-			}
-			return movieFromNfo;
 		}
 	}
 
@@ -641,137 +597,7 @@ public class Movie {
 	}
 
 	public boolean hasPoster() {
-		if (this.posters.length > 0)
-			return true;
-		else
-			return false;
-	}
-
-	private static String replaceLast(String string, String toReplace, String replacement) {
-		int pos = string.lastIndexOf(toReplace);
-		if (pos > -1) {
-			return string.substring(0, pos) + replacement + string.substring(pos + toReplace.length(), string.length());
-		} else {
-			return string;
-		}
-	}
-
-	//returns the movie file path without anything like CD1, Disc A, etc and also gets rid of the file extension
-	//Example: MyMovie ABC-123 CD1.avi returns MyMovie ABC-123
-	//Example2: MyMovie ABC-123.avi returns MyMovie ABC-123
-	public static String getUnstackedMovieName(File file) {
-		String fileName = file.toString();
-		fileName = replaceLast(fileName, file.getName(), SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(file.getName())));
-		return fileName;
-	}
-
-	public static String getFileNameOfNfo(File file, Boolean nfoNamedMovieDotNfo) {
-		if (nfoNamedMovieDotNfo) {
-			return file.getPath() + File.separator + "movie.nfo";
-		} else
-			return getTargetFilePath(file, ".nfo");
-	}
-
-	public static String getFileNameOfPoster(File file, boolean getNoMovieNameInImageFiles) {
-		if (getNoMovieNameInImageFiles) {
-			if (file.isDirectory()) {
-				return file.getPath() + File.separator + "poster.jpg";
-			} else {
-				return file.getParent() + File.separator + "poster.jpg";
-			}
-		} else
-			return getTargetFilePath(file, "-poster.jpg");
-	}
-
-	public static String getFileNameOfFolderJpg(File selectedValue) {
-
-		if (selectedValue.isDirectory()) {
-			return selectedValue.getPath() + File.separator + "folder.jpg";
-		} else
-			return selectedValue.getParent() + File.separator + "folder.jpg";
-	}
-
-	public static String getFileNameOfExtraFanartFolderName(File selectedValue) {
-		if (selectedValue != null && selectedValue.isDirectory()) {
-			return selectedValue.getPath();
-		} else if (selectedValue != null && selectedValue.isFile()) {
-			return selectedValue.getParent();
-		} else
-			return null;
-	}
-
-	public static String getFileNameOfTrailer(File selectedValue) {
-		//sometimes the trailer has a different extension 
-		//than the movie so we will try to brute force a find by trying all movie name extensions
-		for (String extension : MovieFilenameFilter.acceptedMovieExtensions) {
-			String potentialTrailer = tryToFindActualTrailerHelper(selectedValue, "." + extension);
-			if (potentialTrailer != null)
-				return potentialTrailer;
-		}
-		return getTargetFilePath(selectedValue, "-trailer.mp4");
-	}
-
-	/**
-	 * Checks for the given file a trailer file exists for it for the given file name extension
-	 * 
-	 * @param selectedValue - base file name of movie or nfo
-	 * @param extension - the file name extension we are checking
-	 * @return - the path to the file if it found the trailer, otherwise null
-	 */
-	private static String tryToFindActualTrailerHelper(File selectedValue, String extension) {
-		String potentialPath = getTargetFilePath(selectedValue, "-trailer" + extension);
-		File trailerCandidate = new File(potentialPath);
-		if (trailerCandidate.exists())
-			return potentialPath;
-		return null;
-	}
-
-	public static String getFileNameOfFanart(File file, boolean getNoMovieNameInImageFiles) {
-		if (getNoMovieNameInImageFiles) {
-			if (file.isDirectory()) {
-				return file.getPath() + File.separator + "fanart.jpg";
-			} else {
-				return file.getParent() + File.separator + "fanart.jpg";
-			}
-		} else
-			return getTargetFilePath(file, "-fanart.jpg");
-	}
-
-	private static String getTargetFilePath(File file, String extension) {
-		if (!file.isDirectory()) {
-			String nfoName = getUnstackedMovieName(file) + extension;
-			return nfoName;
-		}
-		//look in the directory for an nfo file, otherwise we will make one based on the last word (JAVID of the folder name)
-		else {
-			final String extensionFromParameter = extension;
-			//getting the nfo files in this directory, if any
-			File[] directoryContents = file.listFiles(new FilenameFilter() {
-				@Override
-				public boolean accept(File directory, String fileName) {
-					return fileName.endsWith(extensionFromParameter);
-				}
-			});
-			//if there are 1 or more files, it's not really in spec, so just return the first one
-			if (directoryContents.length > 0) {
-				return directoryContents[0].getPath();
-			} else {
-				//no file found in directory, so we will be setting the target to create one in that directory
-				File[] directoryContentsOfAllFiles = file.listFiles(new MovieFilenameFilter());
-				if (directoryContentsOfAllFiles.length > 0) {
-					//check to see if there's at least one file in the directory that is a movie and go by naming based off the first file found
-					for (File currentFile : directoryContentsOfAllFiles) {
-						if (currentFile.isFile()) {
-							String targetFileName = getUnstackedMovieName(currentFile) + extension;
-							//System.out.println("returning " + targetFileName);
-							return targetFileName;
-						}
-					}
-				}
-				//Use the folder name as the basis for the filename created
-				return new File(file.getAbsolutePath() + File.separator + file.getName() + extension).getPath();
-			}
-		}
+        return this.posters.length > 0;
 	}
 
 	/*
@@ -802,128 +628,6 @@ public class Movie {
 	 * return searchResults;
 	 * }
 	 */
-
-	//Version that allows us to update the GUI while scraping
-	public static Movie scrapeMovie(File movieFile, SiteParsingProfile siteToParseFrom, String urlToScrapeFromDMM, boolean useURLtoScrapeFrom, @NotNull GUIMain parent) throws IOException {
-
-		//If the user manually canceled the results on this scraper in a dialog box, just return a null movie
-		if (siteToParseFrom.getDiscardResults())
-			return null;
-
-		String searchString;
-		FileDetailPanel panel = parent.getFileDetailPanel();
-
-		if(panel.shouldOverrideInferredId() && !panel.inferredId().equals("N/A"))
-			searchString = siteToParseFrom.createSearchStringFromId(panel.inferredId());
-		else
-			searchString = siteToParseFrom.createSearchString(movieFile);
-
-		SearchResult[] searchResults = null;
-		int searchResultNumberToUse = 0;
-
-		//no URL was passed in so we gotta figure it ourselves
-		if (!useURLtoScrapeFrom) {
-			searchResults = siteToParseFrom.getSearchResults(searchString);
-			int levDistanceOfCurrentMatch = 999999; // just some super high number
-			String idFromMovieFile;
-			if(panel.shouldOverrideInferredId() && (!panel.inferredId().isEmpty() || !panel.inferredId().equals("N/A")))
-				idFromMovieFile = panel.inferredId();
-			else
-				idFromMovieFile = SiteParsingProfile.findIDTagFromFile(movieFile, siteToParseFrom.isFirstWordOfFileIsID());
-
-
-			if(!panel.shouldOverrideInferredId())
-				panel.setInferredId(idFromMovieFile);
-
-			if(searchResults.length == 0){
-				// TODO: Need something better and more user friendly than just simply printing this out to the console.
-				System.err.println("No title could be found with the provided Id.");
-			}
-			//loop through search results and see if URL happens to contain ID number in the URL. This will improve accuracy!
-            if(siteToParseFrom.getScraperGroupNames().contains(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)) {
-                for (int i = 0; i < searchResults.length; i++) {
-                    String urltoMatch = searchResults[i].getUrlPath().toLowerCase();
-                    String idFromMovieFileToMatch = idFromMovieFile.toLowerCase().replaceAll("-", "");
-                    //System.out.println("Comparing " + searchResults[i].toLowerCase() + " to " + idFromMovieFile.toLowerCase().replaceAll("-", ""));
-                    if (urltoMatch.contains(idFromMovieFileToMatch) || (searchResults.length < 2)) {
-                        //let's do some fuzzy logic searching to try to get the "best" match in case we got some that are pretty close
-                        //and update the variables accordingly so we know what our best match so far is
-                        int candidateLevDistanceOfCurrentMatch = StringUtils.getLevenshteinDistance(urltoMatch.toLowerCase(), idFromMovieFileToMatch);
-                        if ((candidateLevDistanceOfCurrentMatch < levDistanceOfCurrentMatch)) {
-                            levDistanceOfCurrentMatch = candidateLevDistanceOfCurrentMatch;
-                            searchResultNumberToUse = i;
-                        }
-                    }
-                }
-            }else {
-                String title = siteToParseFrom.cleanseFilename(movieFile).toLowerCase();
-                var rated = Stream.of(searchResults)
-                        .map(result -> {
-                            var levNormalized = Similarity.calculateNormalizedLevenshteinDistance(title, result.getLabel());
-                            var jaccard = Similarity.calculateJaccardIndex(title, result.getLabel());
-                            var swa = (0.5 * jaccard) + ((1 - 0.5) * levNormalized);
-                            return new RatedResult(result, swa);
-                        })
-                        .sorted(Comparator.comparingDouble(RatedResult::probability))
-                        .toList();
-                searchResultNumberToUse = List.of(searchResults).indexOf(rated.getFirst().result());
-            }
-		}
-		//just use the URL to parse from the parameter
-		else {
-			searchResults = new SearchResult[1];
-
-			if (siteToParseFrom instanceof DmmParsingProfile)
-				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
-			else if (siteToParseFrom instanceof Data18MovieParsingProfile || siteToParseFrom instanceof Data18WebContentParsingProfile)
-				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
-			else if (siteToParseFrom instanceof JavLibraryParsingProfile)
-				searchResults[0] = new SearchResult(((JavLibraryParsingProfile) siteToParseFrom).getOverrideURLJavLibrary());
-			else if (siteToParseFrom instanceof IAFDParsingProfile)
-				searchResults[0] = new SearchResult(urlToScrapeFromDMM);
-
-			//override any of the above if we have specifically set an override url
-			if (siteToParseFrom.getOverridenSearchResult() != null) {
-				searchResults[0] = siteToParseFrom.getOverridenSearchResult();
-				searchResultNumberToUse = 0;
-			}
-
-		}
-		if (searchResults.length > 0 && !searchResults[searchResultNumberToUse].getUrlPath().isEmpty()) {
-			System.out.println("Scraping this webpage for movie: " + searchResults[searchResultNumberToUse].getUrlPath());
-			//for now just set the movie to the first thing found unless we found a link which had something close to the ID
-			SearchResult searchResultToUse = searchResults[searchResultNumberToUse];
-			var response = siteToParseFrom.downloadDocument(searchResultToUse);
-			if(response == null || response.statusCode() != 200 || response.statusCode() > 399){
-				if(response != null) {
-					System.err.println("Failed to connect to: " + searchResultToUse.getUrlPath());
-					System.err.println(response.statusCode() + " " + response.statusMessage());
-					throw new RuntimeException("Failed to connect to: " + searchResultToUse.getUrlPath() + "\n" + response.statusCode() + " " + response.statusMessage());
-				} else {
-					System.err.println("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
-					throw new RuntimeException("Unable to connect to: " + searchResultToUse.getUrlPath() + ", perhaps internet access is cut?");
-				}
-			}
-
-			Document searchMatch = response.parse();
-
-			//Handle any captchas etc that prevent us from getting our result
-			if (SecurityPassthrough.class.isAssignableFrom(siteToParseFrom.getClass())) {
-				SecurityPassthrough siteParsingProfileSecurityPassthrough = (SecurityPassthrough) siteToParseFrom;
-				if (siteParsingProfileSecurityPassthrough.requiresSecurityPassthrough(searchMatch)) {
-					searchMatch = siteParsingProfileSecurityPassthrough.runSecurityPassthrough(searchMatch, searchResultToUse);
-				}
-			}
-			siteToParseFrom.setDocument(searchMatch);
-            siteToParseFrom.prepareData();
-			siteToParseFrom.setOverrideURLDMM(urlToScrapeFromDMM);
-
-            return new Movie(siteToParseFrom, parent);
-		} else //no movie match found
-		{
-			return null;
-		}
-	}
 
 	public boolean hasAtLeastOneActorThumbnail() {
 		for (Actor currentActor : actors) {
@@ -963,38 +667,6 @@ public class Movie {
 
 	public void setAllTitles(List<Title> allTitles) {
 		this.allTitles = allTitles;
-	}
-
-	public static Movie getEmptyMovie() {
-		ArrayList<Actor> actors = new ArrayList<>();
-		ArrayList<Director> directors = new ArrayList<>();
-		ArrayList<Genre> genres = new ArrayList<>();
-		ArrayList<Tag> tags = new ArrayList<>();
-
-		Thumb[] fanart = new Thumb[0];
-		Thumb[] extraFanart = new Thumb[0];
-		Thumb[] posters = new Thumb[0];
-
-		ID id = new ID("");
-		MPAARating mpaa = new MPAARating("");
-		OriginalTitle originalTitle = OriginalTitle.BLANK_ORIGINALTITLE;
-		Outline outline = Outline.BLANK_OUTLINE;
-		Plot plot = Plot.BLANK_PLOT;
-		Rating rating = Rating.BLANK_RATING;
-		ReleaseDate releaseDate = ReleaseDate.BLANK_RELEASEDATE;
-		Runtime runtime = Runtime.BLANK_RUNTIME;
-		Set set = Set.BLANK_SET;
-		SortTitle sortTitle = SortTitle.BLANK_SORTTITLE;
-		Studio studio = Studio.BLANK_STUDIO;
-		Tagline tagline = Tagline.BLANK_TAGLINE;
-		Title title = new Title("");
-		Top250 top250 = Top250.BLANK_TOP250;
-		Trailer trailer = new Trailer(null);
-		Votes votes = Votes.BLANK_VOTES;
-		Year year = Year.BLANK_YEAR;
-
-		return new Movie(actors, directors, fanart, extraFanart, genres, tags, id, mpaa, originalTitle, outline, plot, posters, rating, releaseDate, runtime, set, sortTitle, studio, tagline, title,
-		        top250, trailer, votes, year);
 	}
 
 	public String getFileName() {

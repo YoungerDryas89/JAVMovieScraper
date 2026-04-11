@@ -9,9 +9,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.TranslateString;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileJSON;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
@@ -58,7 +58,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -680,7 +680,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+		return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
 
 	@Override

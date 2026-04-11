@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 
@@ -50,9 +50,9 @@ public class AllAmalgamationOrderingPreferences {
 
 	//TODO: Good candidate to do this in a more object oriented way
 	private void initializeDefaultPreference(ScraperGroupName scraperGroupName) {
-		if (scraperGroupName == ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)
+		if (scraperGroupName == com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)
 			initializeAmericanAdultDVDScraperGroupDefaultPreferences();
-		if (scraperGroupName == ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)
+		if (scraperGroupName == com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)
 			initializeJAVCensoredGroupDefaultPreferences();
 	}
 
@@ -96,10 +96,10 @@ public class AllAmalgamationOrderingPreferences {
 	}
 
 	public void initializeDefaultPreferences(boolean saveToDisk) {
-		if (!allAmalgamationOrderingPreferences.containsKey(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)) {
+		if (!allAmalgamationOrderingPreferences.containsKey(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP)) {
 			initializeJAVCensoredGroupDefaultPreferences();
 		}
-		if (!allAmalgamationOrderingPreferences.containsKey(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)) {
+		if (!allAmalgamationOrderingPreferences.containsKey(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)) {
 			initializeAmericanAdultDVDScraperGroupDefaultPreferences();
 		}
 		//TODO: define a default ordering for all other scraper types
@@ -115,9 +115,9 @@ public class AllAmalgamationOrderingPreferences {
 		System.out.println("Initializing default american adult dvd preferences");
 		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile(),
 		        new ExcaliburFilmsParsingProfile(), new IAFDParsingProfile());
-		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, overallOrdering);
+		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, overallOrdering);
 
-		allAmalgamationOrderingPreferences.put(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, preferences);
+		allAmalgamationOrderingPreferences.put(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, preferences);
 	}
 
 	private void setCustomOrderingForField(ScraperGroupAmalgamationPreference preferences, String fieldName, DataItemSource... sources) throws NoSuchFieldException {
@@ -133,7 +133,7 @@ public class AllAmalgamationOrderingPreferences {
 		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new AV123ParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(),
 		        new SquarePlusParsingProfile(), new JavBusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile());
 
-		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
+		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
 
 		//Specific preferences for each field of JAV
 		try {
@@ -165,7 +165,7 @@ public class AllAmalgamationOrderingPreferences {
 			preferences.setCustomOrderingForField("releaseDate", bestContentForDateAndTime);
 			preferences.setCustomOrderingForField("runtime", bestContentForDateAndTime);
 
-			allAmalgamationOrderingPreferences.put(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, preferences);
+			allAmalgamationOrderingPreferences.put(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, preferences);
 		} catch (NoSuchFieldException e) {
 			// This should not happen if field names are correct.
 			throw new RuntimeException("Error initializing default JAV preferences", e);

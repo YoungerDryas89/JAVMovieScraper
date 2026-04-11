@@ -8,7 +8,6 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.MovieFactory;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
@@ -95,7 +94,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 						destDir = new File(destinationDirectoryPrefix);
 					} else {
 						destDir = new File(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile().getCanonicalPath() + pathSeperator
-						        + SiteParsingProfile.stripDiscNumber(FilenameUtils.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName())));
+						        + FileUtilities.stripDiscNumber(FilenameUtils.getBaseName(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName())));
 					}
 					this.guiMain.clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
@@ -111,12 +110,12 @@ public class MoveToNewFolderAction extends AbstractAction {
 						//In case of stacked movie files (Movies which are split into multiple files such AS CD1, CD2, etc) get the list of all files
 						//which are part of this movie's stack
 						File currentDirectory = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
-						String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile
+						String currentlySelectedMovieFileWihoutStackSuffix = FileUtilities
 						        .stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
 						if (currentDirectory != null) {
 
 							for (File currentFile : currentDirectory.listFiles()) {
-								String currentFileNameWithoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
+								String currentFileNameWithoutStackSuffix = FileUtilities.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
 								if (currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix)) {
 									//this should also get the nfo file as a nice side effect
 									FileUtils.moveFileToDirectory(currentFile, destDir, true);
@@ -130,7 +129,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 					if (this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList).exists()) {
 						//if we're going to create folder.jpg file, just grab the poster file we already have and make a copy of it in the new folder
 						if (this.guiMain.getPreferences().getCreateFolderJpgEnabledPreference()) {
-							File currentlySelectedFolderJpg = new File(Movie.getFileNameOfFolderJpg(destDir));
+							File currentlySelectedFolderJpg = new File(FileExtensionsKt.getFileNameOfFolderJpg(destDir));
 							FileUtils.copyFile(this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), currentlySelectedFolderJpg);
 						}
 						FileUtils.moveFileToDirectory(this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), destDir, true);

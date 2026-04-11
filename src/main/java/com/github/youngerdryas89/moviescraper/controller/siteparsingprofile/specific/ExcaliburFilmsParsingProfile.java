@@ -8,6 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import com.github.youngerdryas89.moviescraper.controller.FileExtensionsKt;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -88,7 +92,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -565,7 +569,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
     public String cleanseFilename(File file){
         String fileBaseName;
         if (file.isFile())
-            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+            fileBaseName = FilenameUtils.getBaseName(FileExtensionsKt.getUnstackedMovieName(file));
         else
             fileBaseName = file.getName();
         fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");

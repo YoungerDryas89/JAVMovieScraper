@@ -97,17 +97,17 @@ public class WriteFileDataAction implements ActionListener {
 									System.out.println("A file or directory already exists at " + newMovieFile + " - skipping overwrite or creation of new folder.");
 								}
 
-								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
-								        new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-								        new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())), new File(Movie.getFileNameOfFolderJpg(newMovieFile)),
-								        new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
+								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(FileExtensionsKt.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
+								        new File(FileExtensionsKt.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
+								        new File(FileExtensionsKt.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())), new File(FileExtensionsKt.getFileNameOfFolderJpg(newMovieFile)),
+								        new File(FileExtensionsKt.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(FileExtensionsKt.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							} else {
 								//save without renaming movie
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
-								        new File(Movie.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
-								        new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
+								        new File(FileExtensionsKt.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
+								        new File(FileExtensionsKt.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							}
 
 							//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.controller.FileExtensionsKt;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -63,7 +65,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -452,7 +454,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		scrapedMovieFile = file;
 		String fileBaseName;
 		if (file.isFile())
-			fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+			fileBaseName = FilenameUtils.getBaseName(FileExtensionsKt.getUnstackedMovieName(file));
 		else
 			fileBaseName = file.getName();
 		fileName = fileBaseName;

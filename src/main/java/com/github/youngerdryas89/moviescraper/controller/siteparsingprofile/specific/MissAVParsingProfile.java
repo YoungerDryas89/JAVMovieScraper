@@ -1,5 +1,7 @@
 package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
@@ -279,7 +281,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
     @Override
     public String createSearchString(File file) {
         scrapedMovieFile = file;
-        return createSearchStringFromId(findIDTagFromFile(file, false));
+        return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, false));
     }
 
     @Override
@@ -306,7 +308,7 @@ public class MissAVParsingProfile extends SiteParsingProfile implements Specific
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
 }

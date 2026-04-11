@@ -9,6 +9,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowser;
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
 import org.apache.commons.codec.DecoderException;
@@ -66,7 +70,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -380,7 +384,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-                return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+                return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
         
         @Override

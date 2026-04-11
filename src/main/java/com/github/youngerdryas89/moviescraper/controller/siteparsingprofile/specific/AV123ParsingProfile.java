@@ -1,5 +1,7 @@
 package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
@@ -285,7 +287,7 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     @Override
     public String createSearchString(File file) {
         scrapedMovieFile = file;
-        return createSearchStringFromId(findIDTagFromFile(file, false));
+        return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, false));
     }
 
     @Override

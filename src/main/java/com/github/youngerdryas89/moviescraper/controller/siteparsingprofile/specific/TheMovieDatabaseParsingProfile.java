@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.json.JSONArray;
@@ -58,7 +59,7 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
 		return groupNames;
 	}
 

@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 import com.github.youngerdryas89.moviescraper.view.ScrapeAmalgamatedProgressDialog;
 

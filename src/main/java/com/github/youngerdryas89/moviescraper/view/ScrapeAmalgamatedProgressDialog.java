@@ -40,7 +40,7 @@ import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmal
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmalgamatedMovieWorker.ScrapeAmalgamatedMovieWorkerProperty;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScraperGroupAmalgamationPreference;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.Movie;
@@ -80,7 +80,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 
 	public static void main(String[] args) {
 		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new TheMovieDatabaseParsingProfile(), new Data18MovieParsingProfile());
-		ScraperGroupAmalgamationPreference amalgamationPreferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, overallOrdering);
+		ScraperGroupAmalgamationPreference amalgamationPreferences = new ScraperGroupAmalgamationPreference(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, overallOrdering);
 		GUIMain guiMain = new GUIMain();
 		ScrapeAmalgamatedProgressDialog action = new ScrapeAmalgamatedProgressDialog(guiMain, guiMain.getAllAmalgamationOrderingPreferences(), amalgamationPreferences);
 		// schedule this for the event dispatch thread (edt)
@@ -200,10 +200,10 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 
 	private boolean shouldScrapeThread(DataItemSource parsingProfile) {
 		//Default group used for single scraper operations
-		if (scraperGroupAmalgamationPreference.getScraperGroupName().equals(ScraperGroupName.DEFAULT_SCRAPER_GROUP)) {
+		if (scraperGroupAmalgamationPreference.getScraperGroupName().equals(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.DEFAULT_SCRAPER_GROUP)) {
 			return true;
 		}
-		for (ScraperGroupName currentName : ScraperGroupName.values()) {
+		for (ScraperGroupName currentName : com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.values()) {
 			ScraperGroupAmalgamationPreference currentPref = allAmalgamationOrderingPreferences.getScraperGroupAmalgamationPreference(currentName);
 
 			var overallPrefs = currentPref.getOverallAmalgamationPreference();

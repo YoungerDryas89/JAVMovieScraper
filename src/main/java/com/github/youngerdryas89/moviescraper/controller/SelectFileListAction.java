@@ -60,11 +60,11 @@ public class SelectFileListAction implements ListSelectionListener {
 		this.guiMain.removeOldSelectedFileReferences();
 
 		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
-			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
-			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(Movie.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
-			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(Movie.getFileNameOfFolderJpg(currentSelectedFile)));
-			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(Movie.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
-			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(Movie.getFileNameOfTrailer(currentSelectedFile)));
+			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(FileExtensionsKt.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
+			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(FileExtensionsKt.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(FileExtensionsKt.getFileNameOfFolderJpg(currentSelectedFile)));
+			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(FileExtensionsKt.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(FileExtensionsKt.getFileNameOfTrailer(currentSelectedFile)));
 		}
 
 		this.guiMain.debugWriter("nfos after selection: " + this.guiMain.getCurrentlySelectedNfoFileList());
@@ -84,7 +84,7 @@ public class SelectFileListAction implements ListSelectionListener {
 		//instead of just reading ones it doesn't already have!
 		boolean readInAnInfo = false;
 		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
-			File potentialNfoFile = new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo()));
+			File potentialNfoFile = new File(FileExtensionsKt.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo()));
 			List<File> nfoList = guiMain.getCurrentlySelectedNfoFileList();
 			int potentialIndex = nfoList.indexOf(potentialNfoFile);
 			if (potentialIndex != -1) {

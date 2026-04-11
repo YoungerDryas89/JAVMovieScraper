@@ -9,13 +9,11 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.model.MovieFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.youngerdryas89.moviescraper.controller.amalgamation.DataItemSourceAmalgamationPreference;
-import com.github.youngerdryas89.moviescraper.controller.amalgamation.MovieScrapeResultGroup;
-import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScraperGroupAmalgamationPreference;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.DmmParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.JavLibraryParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.Movie;
@@ -51,14 +49,14 @@ public class TestAmalgamation {
 			//3rd, except actors and posters will be first
 
 			System.out.println(movieOneURI);
-			dmmSourcedMovie = Movie.createMovieFromNfo(new File(movieOneURI));
+			dmmSourcedMovie = MovieFactory.createMovieFromNfo(new File(movieOneURI));
 			dmmSourcedMovie.getTitle().setDataItemSource(new DmmParsingProfile());
 			dmmSourcedMovie.getActors().get(0).setDataItemSource(new DmmParsingProfile());
 			dmmSourcedMovie.getPosters()[0].setDataItemSource(new DmmParsingProfile());
 
 
 			//2nd, except Title which should be first
-			javLibrarySourcedMovie = Movie.createMovieFromNfo(new File(movieThreeURI));
+			javLibrarySourcedMovie = MovieFactory.createMovieFromNfo(new File(movieThreeURI));
 			javLibrarySourcedMovie.getTitle().setDataItemSource(new JavLibraryParsingProfile());
 			javLibrarySourcedMovie.getActors().get(0).setDataItemSource(new JavLibraryParsingProfile());
 			javLibrarySourcedMovie.getPosters()[0].setDataItemSource(new JavLibraryParsingProfile());

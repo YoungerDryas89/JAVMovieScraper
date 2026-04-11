@@ -19,7 +19,6 @@ import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmal
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileFactory;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 
 import org.imgscalr.Scalr;
 import org.imgscalr.Scalr.Method;
@@ -290,7 +289,7 @@ public class GUIMainButtonPanel extends JPanel {
 		};
 
 		Action scrapeAdultDVDAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain,
-		        guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
+		        guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP));
 		Action scrapeJAVAmalgamatedAction = new ScrapeAmalgamatedAction(guiMain,
 		        guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP));
 

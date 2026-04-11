@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.swing.*;
 
+import com.github.youngerdryas89.moviescraper.model.MovieFactory;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.github.youngerdryas89.moviescraper.controller.EditGenresAction;
 import com.github.youngerdryas89.moviescraper.controller.EditTagsAction;
@@ -706,11 +708,11 @@ public class FileDetailPanel extends JPanel {
 		//do i need this?
 		//currentListIndexOfDisplayedMovie = Math.max(findPositionOfCurrentlySelectedMovie(),0);
 
-		if (newMovieWasSet && movieToWriteToDiskList.size() == 0) {
+		if (newMovieWasSet && movieToWriteToDiskList.isEmpty()) {
 			movieToWriteToDiskList.add(currentMovie);
 		}
 		//begin
-		if ((movieToWriteToDiskList == null || movieToWriteToDiskList.size() == 0) && !newMovieWasSet) {
+		if ((movieToWriteToDiskList == null || movieToWriteToDiskList.isEmpty()) && !newMovieWasSet) {
 			clearView();
 		} else if (movieToWriteToDiskList != null && movieToWriteToDiskList.get(currentListIndexOfDisplayedMovie) != null) {
 			if (!newMovieWasSet)
@@ -721,10 +723,10 @@ public class FileDetailPanel extends JPanel {
 			//All the titles from the various versions scraped of this movie from the different sites
 			this.getCurrentMovie().getAllTitles().add(getCurrentMovie().getTitle());
 			String fileName = this.getCurrentMovie().getFileName();
-			if (fileName != null && fileName.trim().length() > 0)
+			if (fileName != null && !fileName.trim().isEmpty())
 				this.getCurrentMovie().getAllTitles().add(new Title(fileName));
 
-			if (this.getCurrentMovie().getAllTitles().size() > 0)
+			if (!this.getCurrentMovie().getAllTitles().isEmpty())
 				this.setTitleEditable(true);
 			//end
 		}
@@ -750,7 +752,7 @@ public class FileDetailPanel extends JPanel {
 		actorList.updateUI();
 		artWorkPanel.updateView(forcePosterUpdate, guiMain);
 
-		if (txtFieldMovieTitleText.getText().length() > 0) {
+		if (!txtFieldMovieTitleText.getText().isEmpty()) {
 			guiMain.enableFileWrite();
 		} else {
 			guiMain.disableFileWrite();
@@ -765,7 +767,7 @@ public class FileDetailPanel extends JPanel {
 
 		System.out.println("Movie Size: " + movieList.size());
 		//no movies to scroll through
-		if (movieList.size() == 0) {
+		if (movieList.isEmpty()) {
 			nextMovieButton.setEnabled(false);
 			previousMovieButton.setEnabled(false);
 			return;
@@ -794,7 +796,7 @@ public class FileDetailPanel extends JPanel {
 	}
 
 	public Movie getEmptyMovie() {
-		return Movie.getEmptyMovie();
+		return MovieFactory.createEmptyMovie();
 
 	}
 

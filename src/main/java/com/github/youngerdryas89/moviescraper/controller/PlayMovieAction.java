@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.MovieFilenameFilter;
 import com.github.youngerdryas89.moviescraper.model.preferences.GuiSettings;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
@@ -53,12 +52,12 @@ public class PlayMovieAction implements ActionListener {
 						List<File> stackedMovieFiles = new LinkedList<>();
 
 						File currentDirectory = this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getParentFile();
-						String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile
+						String currentlySelectedMovieFileWihoutStackSuffix = FileUtilities
 						        .stripDiscNumber(FilenameUtils.removeExtension(this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).getName()));
 						if (currentDirectory != null) {
 
 							for (File currentFile : currentDirectory.listFiles(new MovieFilenameFilter())) {
-								String currentFileNameWithoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
+								String currentFileNameWithoutStackSuffix = FileUtilities.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
 								if (currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix)) {
 									stackedMovieFiles.add(currentFile);
 								}

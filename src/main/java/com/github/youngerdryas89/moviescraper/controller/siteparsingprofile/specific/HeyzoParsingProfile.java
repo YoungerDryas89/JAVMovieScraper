@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import org.apache.commons.io.FilenameUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -379,7 +380,7 @@ public class HeyzoParsingProfile extends SiteParsingProfile implements SpecificP
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
 

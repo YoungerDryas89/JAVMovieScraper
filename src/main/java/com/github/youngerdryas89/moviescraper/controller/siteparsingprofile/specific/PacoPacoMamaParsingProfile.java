@@ -1,11 +1,8 @@
 package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific;
 
-import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileJSON;
-import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -35,7 +32,7 @@ public class PacoPacoMamaParsingProfile extends TenMusumeParsingProfile {
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
 }

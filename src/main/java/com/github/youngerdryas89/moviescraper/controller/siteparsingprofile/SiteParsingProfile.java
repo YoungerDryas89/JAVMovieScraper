@@ -20,7 +20,9 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.youngerdryas89.moviescraper.controller.FileExtensionsKt;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
@@ -35,69 +37,16 @@ import org.jsoup.select.Elements;
 import com.github.youngerdryas89.moviescraper.controller.AbstractMovieScraper;
 import com.github.youngerdryas89.moviescraper.controller.GenericMovieScraper;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.MPAARating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Outline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Rating;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.SortTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tag;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Tagline;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 
 public abstract class SiteParsingProfile implements DataItemSource {
 
-	/*
-	 * Any group of SiteParsingProfiles which return the same type of information for a given file and which
-	 * will be compatible for amalgamation should return the same ScraperGroupName by implementing getScraperGroupName()
-	 */
-	public enum ScraperGroupName {
-
-        @JsonProperty("Japanese")
-		JAV_CENSORED_SCRAPER_GROUP {
-			@Override
-			public String toString() {
-				return "JAV Censored Group";
-			}
-		},
-
-        @JsonProperty("American")
-		AMERICAN_ADULT_DVD_SCRAPER_GROUP {
-			@Override
-			public String toString() {
-				return "American Adult DVD";
-			}
-		},
-
-        @JsonProperty("Default")
-		DEFAULT_SCRAPER_GROUP {
-			@Override
-			public String toString() {
-				return "Default Group";
-			}
-		}
-	}
-
-	public List<ScraperGroupName> getScraperGroupNames() {
+    public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.DEFAULT_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.DEFAULT_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -123,24 +72,14 @@ public abstract class SiteParsingProfile implements DataItemSource {
 	protected File scrapedMovieFile;
 
 	private ImageIcon profileIcon;
-	protected static DetermineMovie dproperties = new DetermineMovie();
 
-	/**
+    /**
 	 * If this has a value when scraping, will use overridenSearchResult
 	 * from a user provided URL without looking at file name
 	 */
 	private SearchResult overridenSearchResult;
 
-	final static Pattern FC2Pattern = Pattern.compile("(?i)(:?FC2-PPV)[-_\\s](?<id>(\\d{7}))");
-	final static Pattern OnePondoPattern = Pattern.compile("(?i)(:?1Pondo[-_\\s]?)?(?<id>\\d{6}[_-]\\d{1,3}?(:?-1PON)?)");
-	final static Pattern TokyoHotPattern = Pattern.compile("(?i)(:?Tokyo-?Hot)?[-_\\s\\S]?(?<productId>[nk]\\d{4})");
-	final static Pattern CaribbeancomPattern = Pattern.compile("(?i)(?<id>(?<series>carib|caribbeancom(pr)?|caribbeancom premium)\\s?[-_\\s]\\s?(?<number>\\d{6}[_-]\\d{3}))");
-	final static Pattern CaribbeancomPatternReverse = Pattern.compile("(?i)(?<id>(?<number>\\d{6}[_-]\\d{3})\\s?[-_\\s]\\s?(?<series>carib(pr)?|caribbeancom(pr)?|caribbeancom premium))");
-	final static Pattern TenMusumePattern = Pattern.compile("(?i)(?<id>\\d{6}_\\d{2,3})(\\-|_)?10MU");
-
-	final static Pattern avGeneralIdextract = Pattern.compile("(?i)(?<tag>(?:\\d{3,4})?[a-z]+|[a-z]{1,2}\\d+)[^a-z0-9_](?<num>\\d+)");
-	final static Pattern kinten8gokuPattern = Pattern.compile("(?i)(?:Kin8tengoku|KIN8)[-_\\s](?<num>\\d+)");
-	/**
+    /**
 	 * do we want to ignore scraping from this scraper. typically done when the user has hit cancel from a dialog box because none of the seen results were valid
 	 */
 	private boolean discardResults;
@@ -212,119 +151,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return overridenSearchResult;
 	}
 
-	/**
-	 * Gets the ID number from the file and considers stripped out multipart file identifiers like CD1, CD2, etc
-	 * The ID number needs to be the last word in the filename or the next to the last word in the file name if the file name
-	 * ends with something like CD1 or Disc 1
-	 * So this filename "My Movie ABC-123 CD1" would return the id as ABC-123
-	 * This filename "My Movie ABC-123" would return the id as ABC-123
-	 * 
-	 * @param file - file to find the ID tag from
-	 * @param firstWordOfFileIsID - if true, just uses the first word in the file (seperated by space) as the ID number
-	 * otherwise use the method described above
-	 * @return
-	 */
-	public static String findIDTagFromFile(File file, boolean firstWordOfFileIsID) {
-		// TODO: Need something better and more specific than this function
-		String fileNameNoExtension;
-		if (file.isDirectory()) {
-			fileNameNoExtension = file.getName();
-		} else
-			fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
-		if (file.getPath().endsWith(".nfo")) {
-			try {
-				Movie movie = Movie.createMovieFromNfo(file);
-				return movie.getId().getId();
-			} catch (IOException ex) {
-				System.out.println("Cannot load this file as nfo. Try from filename");
-			}
-
-		}
-
-		String id = null;
-		Matcher match = CaribbeancomPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			assert (match.group("series") != null);
-			assert (match.group("number") != null);
-			if(match.group("series").contains("pr")){
-				return "caribbeancompr-" + match.group("number");
-			} else {
-				return "caribbeancom-" + match.group("number");
-			}
-		}
-
-		match = CaribbeancomPatternReverse.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			assert (match.group("series") != null);
-			assert (match.group("number") != null);
-			if(match.group("series").contains("pr")){
-				return "caribbeancompr" + match.group("number");
-			} else {
-				return "caribbeancom-" + match.group("number");
-			}
-		}
-
-
-		match = FC2Pattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			id = match.group("id");
-			return "FC2-PPV-" + id;
-		}
-
-		match = kinten8gokuPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			id = "KIN8-" + match.group("num");
-			return id;
-		}
-
-		match = OnePondoPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			id = match.group("id");
-			return id;
-		}
-
-		match = TenMusumePattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert (match.group("id") != null);
-			id = match.group("id");
-			return id;
-		}
-
-		match = TokyoHotPattern.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert(match.group("productId") != null);
-			id = match.group("productId");
-			return id;
-		}
-
-        var result = dproperties.determineIdFromTitle(fileNameNoExtension);
-        if(result != null){
-            return result.getKey() + "-" + result.getValue();
-        }
-
-		match = avGeneralIdextract.matcher(fileNameNoExtension);
-		if(match.find()){
-			assert(match.group("tag") != null);
-			assert(match.group("num") != null);
-
-			id = match.group("tag") + "-" + match.group("num");
-		}
-		return id;
-	}
-
-	public static String stripDiscNumber(String fileNameNoExtension) {
-		//replace <cd/dvd/part/pt/disk/disc/d> <0-N>  (case insensitive) with empty
-		String discNumberStripped = fileNameNoExtension.replaceAll("(?i)[ _.]+(?:cd|dvd|p(?:ar)?t|dis[ck]|d)[ _.]*[0-9]+$", "");
-		//replace <cd/dvd/part/pt/disk/disc/d> <a-d> (case insensitive) with empty
-		discNumberStripped = discNumberStripped.replaceAll("(?i)[ _.]+(?:cd|dvd|p(?:ar)?t|dis[ck]|d)[ _.]*[a-d]$", "");
-		return discNumberStripped.trim();
-	}
-
-	public abstract @NotNull Title scrapeTitle();
+    public abstract @NotNull Title scrapeTitle();
 
 	public abstract @NotNull  OriginalTitle scrapeOriginalTitle();
 
@@ -667,18 +494,10 @@ public abstract class SiteParsingProfile implements DataItemSource {
     public String cleanseFilename(File file){
         String fileBaseName;
         if (file.isFile())
-            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+            fileBaseName = FilenameUtils.getBaseName(FileExtensionsKt.getUnstackedMovieName(file));
         else
             fileBaseName = file.getName();
         return fileBaseName;
-    }
-
-    public boolean excludedFromAmalgamation(){
-        return this.excludeFromAmalgamation;
-    }
-
-    public void setExcludeFromAmalgamation(boolean value){
-        this.excludeFromAmalgamation = value;
     }
 
 }

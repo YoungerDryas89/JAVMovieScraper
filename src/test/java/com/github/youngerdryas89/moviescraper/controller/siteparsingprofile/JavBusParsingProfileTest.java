@@ -9,19 +9,8 @@ import java.util.ArrayList;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.JavBusParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.SearchResult;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
-import com.github.youngerdryas89.moviescraper.model.dataitem.OriginalTitle;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Plot;
-import com.github.youngerdryas89.moviescraper.model.dataitem.ReleaseDate;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Set;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Studio;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
-import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Series;
 
 import org.jsoup.nodes.Document;
 import org.junit.BeforeClass;
@@ -59,7 +48,7 @@ public class JavBusParsingProfileTest {
 	@SuppressWarnings("static-access")
 	@Test
 	public void testFindID() {
-		String findIDTagFromFile = parser.findIDTagFromFile(file, false);
+		String findIDTagFromFile = DetermineMovie.findIDTagFromFile(file, false);
 		System.out.println(findIDTagFromFile);
 		assertEquals(findIDTagFromFile, "MIDE-058");
 	}

@@ -8,8 +8,9 @@ import java.util.Map;
 
 import javax.swing.SwingWorker;
 
+import com.github.youngerdryas89.moviescraper.controller.MovieScraper;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import com.github.youngerdryas89.moviescraper.view.ScrapeAmalgamatedProgressDialog;
@@ -88,9 +89,9 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 	 */
 	private boolean shouldScrapeThread(DataItemSource parsingProfile) {
 		//Default group used for site specific scraping - always want to return true since there's just one thread to scrape
-		if (scraperGroupAmalgamationPreference.getScraperGroupName().equals(ScraperGroupName.DEFAULT_SCRAPER_GROUP))
+		if (scraperGroupAmalgamationPreference.getScraperGroupName().equals(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.DEFAULT_SCRAPER_GROUP))
 			return true;
-		for (ScraperGroupName currentName : ScraperGroupName.values()) {
+		for (ScraperGroupName currentName : com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.values()) {
 			ScraperGroupAmalgamationPreference currentPref = allAmalgamationOrderingPreferences.getScraperGroupAmalgamationPreference(currentName);
 
 			var overallPrefs = currentPref.getOverallAmalgamationPreference();
@@ -176,7 +177,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 							customURLSet = parent.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
 						}
 
-						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet, parent.parent());
+						returnMovie = MovieScraper.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet, parent.parent());
 
 						return null;
 					} catch (IOException e) {

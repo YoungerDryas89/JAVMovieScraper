@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.LinkedList;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
@@ -48,7 +50,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	@Override
 	public List<ScraperGroupName> getScraperGroupNames() {
 		if (groupNames == null)
-			groupNames = Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+			groupNames = Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
 		return groupNames;
 	}
 
@@ -272,7 +274,7 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+		return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
         
         @Override

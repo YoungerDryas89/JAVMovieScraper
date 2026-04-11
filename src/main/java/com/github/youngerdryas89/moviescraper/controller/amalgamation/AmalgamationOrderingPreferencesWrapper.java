@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileFactory;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +25,7 @@ public class AmalgamationOrderingPreferencesWrapper {
     public Long version = 2L;
     public Long readVersion;
 
-    public Map<SiteParsingProfile.ScraperGroupName, ScraperGroupAmalgamationPreference> allAmalgamationOrderingPreferences;
+    public Map<ScraperGroupName, ScraperGroupAmalgamationPreference> allAmalgamationOrderingPreferences;
      public Collection<SiteParsingProfileItem> allScrapers = SpecificProfileFactory.getAll();
 
     public AmalgamationOrderingPreferencesWrapper(AllAmalgamationOrderingPreferences other) {
@@ -65,10 +64,10 @@ public class AmalgamationOrderingPreferencesWrapper {
         ObjectNode groupNode;
         if (groupName.equals("American")) {
             groupNode = root.putObject(groupName);
-            items = allAmalgamationOrderingPreferences.get(SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
+            items = allAmalgamationOrderingPreferences.get(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP);
         } else {
             groupNode = root.putObject("Japanese");
-            items = allAmalgamationOrderingPreferences.get(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+            items = allAmalgamationOrderingPreferences.get(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
         }
 
         var overall = groupNode.putArray("default");
@@ -107,8 +106,8 @@ public class AmalgamationOrderingPreferencesWrapper {
         return mapper;
     }
 
-    public Map<SiteParsingProfile.ScraperGroupName, ScraperGroupAmalgamationPreference> loadData(String settingsFilename) throws IOException {
-        var returnMap = new HashMap<SiteParsingProfile.ScraperGroupName, ScraperGroupAmalgamationPreference>();
+    public Map<ScraperGroupName, ScraperGroupAmalgamationPreference> loadData(String settingsFilename) throws IOException {
+        var returnMap = new HashMap<ScraperGroupName, ScraperGroupAmalgamationPreference>();
 
         try (FileInputStream fis = new FileInputStream(settingsFilename)){
             ObjectMapper mapper = new ObjectMapper();
@@ -124,18 +123,18 @@ public class AmalgamationOrderingPreferencesWrapper {
             var american = readOrdering(preferencesNode.get("American"), "American");
             var japanese = readOrdering(preferencesNode.get("Japanese"), "Japanese");
 
-            returnMap.put(SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, american);
-            returnMap.put(SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, japanese);
+            returnMap.put(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP, american);
+            returnMap.put(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, japanese);
         }
         return returnMap;
     }
 
     ScraperGroupAmalgamationPreference readOrdering(JsonNode root, String group){
-        SiteParsingProfile.ScraperGroupName groupName;
+        ScraperGroupName groupName;
         if(group.equals("American")){
-            groupName = SiteParsingProfile.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP;
+            groupName = ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP;
         } else if (group.equals("Japanese")){
-            groupName = SiteParsingProfile.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP;
+            groupName = ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP;
         } else {
             throw new RuntimeException("Unknown scraper group name: " + group);
         }

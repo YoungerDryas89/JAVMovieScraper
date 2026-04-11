@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -210,7 +212,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		return createSearchStringFromId(findIDTagFromFile(file, isFirstWordOfFileIsID()));
+		return createSearchStringFromId(DetermineMovie.findIDTagFromFile(file, isFirstWordOfFileIsID()));
 	}
 
 	@Override
@@ -259,7 +261,7 @@ public class ActionJavParsingProfile extends SiteParsingProfile implements Speci
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
     @Override

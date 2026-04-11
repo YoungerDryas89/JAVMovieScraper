@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.model.MovieFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
@@ -183,12 +183,12 @@ public class Renamer {
 	}
 
 	public static void rename(File fileToRename, MoviescraperPreferences preferences) throws IOException {
-		File nfoFile = new File(Movie.getFileNameOfNfo(fileToRename, preferences.getNfoNamedMovieDotNfo()));
-		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
-		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
-		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
+		File nfoFile = new File(FileExtensionsKt.getFileNameOfNfo(fileToRename, preferences.getNfoNamedMovieDotNfo()));
+		File posterFile = new File(FileExtensionsKt.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
+		File fanartFile = new File(FileExtensionsKt.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
+		File trailerFile = new File(FileExtensionsKt.getFileNameOfTrailer(fileToRename));
 		if (nfoFile.exists() && fileToRename.exists()) {
-			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
+			Movie movieReadFromNfo = MovieFactory.createMovieFromNfo(nfoFile);
 			if (movieReadFromNfo != null && movieReadFromNfo.getTitle() != null) {
 				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
 				        movieReadFromNfo, fileToRename);
@@ -237,11 +237,11 @@ public class Renamer {
 				//In case of stacked movie files (Movies which are split into multiple files such AS CD1, CD2, etc) get the list of all files
 				//which are part of this movie's stack
 				File currentDirectory = fileToRename.getParentFile();
-				String currentlySelectedMovieFileWihoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(fileToRename.getName()));
+				String currentlySelectedMovieFileWihoutStackSuffix = FileUtilities.stripDiscNumber(FilenameUtils.removeExtension(fileToRename.getName()));
 				if (currentDirectory != null) {
 
 					for (File currentFile : currentDirectory.listFiles()) {
-						String currentFileNameWithoutStackSuffix = SiteParsingProfile.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
+						String currentFileNameWithoutStackSuffix = FileUtilities.stripDiscNumber(FilenameUtils.removeExtension(currentFile.getName()));
 						if (currentFile.isFile() && currentFileNameWithoutStackSuffix.equals(currentlySelectedMovieFileWihoutStackSuffix)) {
 							renamer.setOldFilename(currentFile);
 							File newStackedFilename = new File(renamer.getNewFileName(false));

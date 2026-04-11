@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.github.youngerdryas89.moviescraper.controller.FileExtensionsKt;
+import com.github.youngerdryas89.moviescraper.controller.MovieScraper;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -210,7 +212,7 @@ public class Main {
 
 						}
 
-						Movie scrapedMovie = Movie.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet, null);
+						Movie scrapedMovie = MovieScraper.scrapeMovie(scrapeTargetToUse, parsingProfile, "", wasCustomURLSet, null);
 						//write out the metadata to disk if we got a hit
 						if (scrapedMovie != null) {
 							System.out.println("Movie scraped as" + scrapedMovie);
@@ -240,13 +242,13 @@ public class Main {
 	private static void writeMovieToFile(Movie scrapedMovie, File scrapeTarget) {
 		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
 
-		File nfoFile = new File(Movie.getFileNameOfNfo(scrapeTarget, preferences.getNfoNamedMovieDotNfo()));
-		File posterFile = new File(Movie.getFileNameOfPoster(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
-		File fanartFile = new File(Movie.getFileNameOfFanart(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
-		File currentlySelectedFolderJpgFile = new File(Movie.getFileNameOfFolderJpg(scrapeTarget));
-		File extraFanartFolder = new File(Movie.getFileNameOfExtraFanartFolderName(scrapeTarget));
+		File nfoFile = new File(FileExtensionsKt.getFileNameOfNfo(scrapeTarget, preferences.getNfoNamedMovieDotNfo()));
+		File posterFile = new File(FileExtensionsKt.getFileNameOfPoster(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
+		File fanartFile = new File(FileExtensionsKt.getFileNameOfFanart(scrapeTarget, preferences.getNoMovieNameInImageFiles()));
+		File currentlySelectedFolderJpgFile = new File(FileExtensionsKt.getFileNameOfFolderJpg(scrapeTarget));
+		File extraFanartFolder = new File(FileExtensionsKt.getFileNameOfExtraFanartFolderName(scrapeTarget));
 
-		File trailerFile = new File(Movie.getFileNameOfTrailer(scrapeTarget));
+		File trailerFile = new File(FileExtensionsKt.getFileNameOfTrailer(scrapeTarget));
 
 		try {
 			scrapedMovie.writeToFile(nfoFile, posterFile, fanartFile, currentlySelectedFolderJpgFile, extraFanartFolder, trailerFile, preferences, true);

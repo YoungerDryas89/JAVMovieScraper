@@ -17,22 +17,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import com.github.youngerdryas89.moviescraper.controller.BrowseDirectoryAction;
-import com.github.youngerdryas89.moviescraper.controller.BrowseUriAction;
-import com.github.youngerdryas89.moviescraper.controller.ChooseExternalMediaPlayerAction;
-import com.github.youngerdryas89.moviescraper.controller.ChooseFavoriteGenresAction;
-import com.github.youngerdryas89.moviescraper.controller.ChooseFavoriteTagsAction;
-import com.github.youngerdryas89.moviescraper.controller.FileNameCleanupAction;
-import com.github.youngerdryas89.moviescraper.controller.MoveToNewFolderAction;
-import com.github.youngerdryas89.moviescraper.controller.OpenFileAction;
-import com.github.youngerdryas89.moviescraper.controller.PlayMovieAction;
-import com.github.youngerdryas89.moviescraper.controller.RefreshDirectoryAction;
-import com.github.youngerdryas89.moviescraper.controller.SelectAmalgamationSettingsAction;
-import com.github.youngerdryas89.moviescraper.controller.WriteFileDataAction;
+import com.github.youngerdryas89.moviescraper.controller.*;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmalgamatedAction;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileFactory;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
@@ -405,7 +393,7 @@ public class GUIMainMenuBar extends JMenuBar {
 		scrapeMenu.setMnemonic(KeyEvent.VK_S);
 
 		JMenuItem scrapeAdultDVDAmalgamated = new JMenuItem(
-		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
+		        new ScrapeAmalgamatedAction(guiMain, guiMain.getAllAmalgamationOrderingPreferences().getScraperGroupAmalgamationPreference(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.AMERICAN_ADULT_DVD_SCRAPER_GROUP)));
 		scrapeAdultDVDAmalgamated.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK | Event.SHIFT_MASK));
 		scrapeAdultDVDAmalgamated.setIcon(GUIMainButtonPanel.initializeImageIcon("App"));
 

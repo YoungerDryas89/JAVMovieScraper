@@ -8,6 +8,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie;
+import com.github.youngerdryas89.moviescraper.model.dataitem.*;
+import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -346,7 +350,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
     @Override
 	public String createSearchString(File file) {
 		scrapedMovieFile = file;
-		String fileNameNoExtension = findIDTagFromFile(file, isFirstWordOfFileIsID());
+		String fileNameNoExtension = DetermineMovie.findIDTagFromFile(file, isFirstWordOfFileIsID());
 		return fileNameNoExtension.split("-")[1];
 	}
 
@@ -392,7 +396,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 
     @Override
     public List<ScraperGroupName> getScraperGroupNames() {
-        return Arrays.asList(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
+        return Arrays.asList(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP);
     }
 
 

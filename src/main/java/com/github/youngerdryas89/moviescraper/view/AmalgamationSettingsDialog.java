@@ -25,11 +25,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.github.youngerdryas89.moviescraper.controller.UtilityFunctions;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.AllAmalgamationOrderingPreferences;
-import com.github.youngerdryas89.moviescraper.controller.amalgamation.DataItemSourceAmalgamationPreference;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScraperGroupAmalgamationPreference;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
+import com.github.youngerdryas89.moviescraper.controller.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import com.github.youngerdryas89.moviescraper.view.renderer.DataItemSourceRenderer;
 import com.github.youngerdryas89.moviescraper.view.renderer.MovieFieldCellRenderer;
@@ -295,7 +293,7 @@ public class AmalgamationSettingsDialog {
 
 	private JComboBox<ScraperGroupName> createScraperGroupDropDown() {
 		//Get any scraper groups defined except for items belonging to the default set
-		EnumSet<ScraperGroupName> everythingButDefaultGroup = EnumSet.complementOf(EnumSet.of(ScraperGroupName.DEFAULT_SCRAPER_GROUP));
+		EnumSet<ScraperGroupName> everythingButDefaultGroup = EnumSet.complementOf(EnumSet.of(com.github.youngerdryas89.moviescraper.controller.ScraperGroupName.DEFAULT_SCRAPER_GROUP));
 
 		JComboBox<ScraperGroupName> comboBox = new JComboBox<>(everythingButDefaultGroup.toArray(new ScraperGroupName[everythingButDefaultGroup.size()]));
 		comboBox.addActionListener(new ActionListener() {
