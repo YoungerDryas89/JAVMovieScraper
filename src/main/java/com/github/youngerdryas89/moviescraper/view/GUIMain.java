@@ -16,6 +16,7 @@ import javax.swing.JList;
 import com.github.youngerdryas89.moviescraper.controller.DirectorySort;
 import com.github.youngerdryas89.moviescraper.controller.SelectFileListAction;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.AllAmalgamationOrderingPreferences;
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileSettings;
 import com.github.youngerdryas89.moviescraper.model.IconCache;
 import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
@@ -96,6 +97,8 @@ public class GUIMain {
 
 	private final static boolean debugMessages = false;
 	private GUIMainButtonPanel buttonPanel;
+
+	SpecificProfileSettings scraperSettings;
 
 	//JavaFX stuff
 	//Ignore warnings about this not being used. It is used for the file browser. 
