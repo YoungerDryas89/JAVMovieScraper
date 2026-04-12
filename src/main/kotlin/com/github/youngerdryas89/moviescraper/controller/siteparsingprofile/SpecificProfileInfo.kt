@@ -2,6 +2,7 @@ package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile
 
 import arrow.core.NonEmptyList
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.scrapers.ScraperProfile
 import com.github.youngerdryas89.moviescraper.model.SearchResult
 import org.jsoup.Connection
 import org.jsoup.nodes.Document
@@ -34,5 +35,6 @@ data class SpecificProfileInfo(
     val tryInferIdentity: ((String) -> SearchStringInput),
     val fetchSearchResults: ((String) -> List<SearchResult>),
     val fetchDirectPage: ((String) -> Connection.Response)?,
-    val createURLFromInput: ((SearchStringInput, Language) -> DerivedURL)?
+    val createURLFromInput: ((SearchStringInput, Language) -> DerivedURL)?,
+    val scraperProfile: ScraperProfile
 )
