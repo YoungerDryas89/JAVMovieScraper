@@ -1,5 +1,7 @@
 package com.github.youngerdryas89.moviescraper.model.dataitem
 
+import arrow.core.NonEmptyList
+
 
 @JvmInline value class Name(val name: String)
 
@@ -19,5 +21,5 @@ sealed class Staff {
     ) : Staff()
 }
 
-typealias Actresses = List<Staff.Actor>
-typealias Directors = List<Staff.Director>
+typealias Actresses = NonEmptyList<Staff.Actor>
+typealias Directors = NonEmptyList<Staff.Director>
