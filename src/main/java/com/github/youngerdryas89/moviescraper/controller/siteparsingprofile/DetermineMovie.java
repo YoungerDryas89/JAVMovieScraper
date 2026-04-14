@@ -4,6 +4,7 @@ import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.MovieFactory;
 import javafx.util.Pair;
 import org.apache.commons.io.FilenameUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.util.*;
@@ -187,4 +188,10 @@ return result.getKey() + "-" + result.getValue();
         properties.Studio = getStudioById(properties.tag());
         return properties;
     }
+
+    public static SearchStringInput tryInferId(@NotNull String id){
+        var newId = findIDTagFromFile(new File(id), false);
+        return new SearchStringInput.Id(newId);
+    }
+
 }

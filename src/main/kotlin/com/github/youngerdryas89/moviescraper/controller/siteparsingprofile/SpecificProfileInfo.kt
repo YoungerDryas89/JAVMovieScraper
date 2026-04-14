@@ -2,6 +2,7 @@ package com.github.youngerdryas89.moviescraper.controller.siteparsingprofile
 
 import arrow.core.NonEmptyList
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language
+import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.DetermineMovie.tryInferId
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.scrapers.ScraperProfile
 import com.github.youngerdryas89.moviescraper.model.SearchResult
 import org.jsoup.Connection
@@ -32,7 +33,7 @@ data class SpecificProfileInfo(
     val languages : NonEmptyList<Language>,
     val domainNames: Map<Language, String>,
     val cleanseFilename: ((File) -> String)?,
-    val tryInferIdentity: ((String) -> SearchStringInput),
+    val tryInferIdentity: ((String) -> SearchStringInput) = ::tryInferId,
     val fetchSearchResults: ((String) -> List<SearchResult>),
     val fetchDirectPage: ((String) -> Connection.Response)?,
     val createURLFromInput: ((SearchStringInput, Language) -> DerivedURL)?,
