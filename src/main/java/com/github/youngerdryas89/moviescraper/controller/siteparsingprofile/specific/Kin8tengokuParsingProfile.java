@@ -43,6 +43,10 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 
 	private String id;
 
+    public Kin8tengokuParsingProfile(){
+        setDisabled(true);
+    }
+
 	@Nonnull
     @Override
 	public Title scrapeTitle() {

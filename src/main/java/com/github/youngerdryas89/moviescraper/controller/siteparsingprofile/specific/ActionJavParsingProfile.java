@@ -34,11 +34,15 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 
 public class ActionJavParsingProfile extends SiteParsingProfile implements SpecificProfile {
 
 	private static final SimpleDateFormat actionJavReleaseDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
 
+    public ActionJavParsingProfile() {
+        setDisabled(true);
+    }
 	@Nonnull
     @Override
 	public Title scrapeTitle() {
