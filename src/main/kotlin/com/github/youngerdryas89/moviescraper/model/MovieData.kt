@@ -27,8 +27,8 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Votes
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year
 
 data class MovieData(
-    val actors : Actresses = emptyList(),
-    val directors : Directors = emptyList(),
+    val actors : Actresses?,
+    val directors : Directors?,
     val fanart : List<Thumb> = emptyList(),
     val extrafanart : List<Thumb>,
     val genres : List<Genre>,
@@ -86,8 +86,6 @@ fun setAllDataItemSources(movieData: MovieData) : MovieData {
 
 fun createEmptyMovie() : MovieData {
     return MovieData(
-        actors = emptyList(),
-        directors = emptyList(),
         fanart = emptyList(),
         extrafanart = emptyList(),
         genres = emptyList(),
@@ -110,7 +108,9 @@ fun createEmptyMovie() : MovieData {
         votes = Votes.BLANK_VOTES,
         year = Year.BLANK_YEAR,
         fileName = "",
-        scraperSource = null
+        actors = TODO(),
+        directors = TODO(),
+        scraperSource = TODO(),
     )
 }
 

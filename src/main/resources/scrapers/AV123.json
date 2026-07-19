@@ -1,0 +1,56 @@
+{
+  "profileName": "123AV",
+  "yield-table": true,
+  "tableAnchorSelector": ".content .detail-item",
+  "fields": {
+    "title": {
+      "type": "Text",
+      "selector": "html body div#app div#body div#page-video.container div.row div.col div.d-flex.justify-content-between.align-items-start div.mr-3 h1"
+    },
+    "posterUrl": {
+      "type": "Attribute",
+      "selector": "html body div#app div#body div#page-video.container div.row div.col div#player",
+      "attribute": "data-poster"
+    },
+    "plot": {
+      "type": "Text",
+      "selector": "html body div#app div#body div#page-video.container div.row div.col div#details div.content div.description p"
+    },
+    "id": {
+      "type": "TableValue",
+      "key": "Code:"
+    },
+    "studio": {
+      "type": "TableValue",
+      "key": "Maker:"
+    },
+    "labelFallback": {
+      "type": "TableValue",
+      "key": "Label:"
+    },
+    "releaseDate": {
+      "type": "TableValue",
+      "key": "Release date:"
+    },
+    "runtime": {
+      "type": "TableValue",
+      "key": "Runtime:"
+    },
+    "series": {
+      "type": "TableValue",
+      "key": "Series:"
+    },
+    "genres": {
+      "type": "TableValue",
+      "key": "Genres:"
+    },
+    "actors": {
+      "type": "TableValue",
+      "key": "Actresses:"
+    },
+    "tags": {
+      "type": "TableValue",
+      "key": "Tags:"
+    }
+  }
+}

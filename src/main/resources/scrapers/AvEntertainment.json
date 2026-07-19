@@ -1,0 +1,61 @@
+{
+  "profileName": "AV Entertainment",
+  "yieldTable": true,
+  "tableAnchorSelector": "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-details-area ')]/div/div[2]/div[1]/div[3]",
+  "useXpath": true,
+  "fields": {
+    "title": {
+      "type": "Text",
+      "xpath": "//div[contains(concat(' ', normalize-space(@class), ' '), ' col-sm-12 ')]/div[@class='section-title']/h3"
+    },
+    "series": {
+      "type": "TableValue",
+      "keys": [
+        "Series",
+        "シリーズ"
+      ]
+    },
+    "release_date": {
+      "type": "Text",
+      "xpath": "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-info-block-rev ')]/div/span[text()='Date']/following-sibling::span"
+    },
+    "runtime": {
+      "type": "Text",
+      "xpath": "//div[contains(concat(' ', normalize-space(@class), ' '), ' product-info-block-rev ')]/div/span[text()='Play Time']/following-sibling::span"
+    },
+    "posterUrl": {
+      "type": "Attribute",
+      "attribute": "href",
+      "css": "span.grid-gallery > a:nth-child(1)"
+    },
+    "fanart": {
+      "type": "Attribute",
+      "attribute": "href",
+      "css": ".gallery-block > div:nth-child(1) > div:nth-child(2) > * > a",
+      "multiple": true
+    },
+    "id": {
+      "type": "Text",
+      "css": "div[class=top-title]"
+    },
+    "genres": {
+      "type": "TableValue",
+      "keys": [
+        "Category"
+      ],
+      "multiple": true
+    },
+    "actors": {
+      "type": "Text",
+      "xpath": ".//h4[text()=\"Starring\"]//following-sibling::span/*",
+      "multiple": true
+    },
+    "studio": {
+      "type": "TableValue",
+      "keys": [
+        "Studio",
+        "スタジオ"
+      ]
+    }
+  }
+}
