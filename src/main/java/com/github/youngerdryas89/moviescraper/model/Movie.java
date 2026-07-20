@@ -161,7 +161,10 @@ public class Movie {
 			title.setDataItemSource(new DefaultDataItemSource());
 		}
 
-		appendIDToStartOfTitle();
+		if(id != null && id.getId() != null && !id.getId().trim().isEmpty()) {
+			appendIDToStartOfTitle();
+			removeIdFromOriginalTitle();
+		}
 
 	}
 
@@ -208,12 +211,22 @@ public class Movie {
 	 * If the appropriate preference is set, add the ID number to the end of the title field
 	 */
 	private void appendIDToStartOfTitle() {
-		if(id != null && id.getId() != null && id.getId().trim().length() > 0 && hasValidTitle()) {
+		if(hasValidTitle()) {
 			if (MoviescraperPreferences.getInstance().getAppendIDToStartOfTitle())
 				title.setTitle(id.getId() + " - " + title.getTitle());
-			else
-				title.setTitle(title.getTitle().replace(id.getId(), ""));
+			else {
+				var regexString = "$ID(-Uncensored-(Leaked|Leak))? [—,\\-,_]";
+				title.setTitle(title.getTitle().replaceFirst(regexString.replace("$ID", id.getId()), "").trim());
+			}
 		}
+	}
+
+	private void removeIdFromOriginalTitle(){
+		if(originalTitle != null && !originalTitle.getOriginalTitle().isEmpty()) {
+			var regexString = "$ID(-Uncensored-(Leaked|Leak))? [—,\\-,_]".replace("$ID", id.getId());
+			this.originalTitle.setOriginalTitle(this.originalTitle.getOriginalTitle().replaceFirst(regexString,""));
+		}
+
 	}
 
 	private void setDataItemSourceOnThumbs(Thumb[] thumbs, DataItemSource dataItemSource) {
