@@ -131,27 +131,27 @@ public class AllAmalgamationOrderingPreferences {
 		//JAV Preferences
 
 		var overallOrdering = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new AV123ParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(),
-		        new SquarePlusParsingProfile(), new JavBusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile());
+		        new SquarePlusParsingProfile(), new JavBusParsingProfile(), new DmmParsingProfile());
 
 		ScraperGroupAmalgamationPreference preferences = new ScraperGroupAmalgamationPreference(ScraperGroupName.JAV_CENSORED_SCRAPER_GROUP, overallOrdering);
 
 		//Specific preferences for each field of JAV
 		try {
 			setCustomOrderingForField(preferences, "originalTitle", new DmmParsingProfile(), new JavLibraryParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
-			setCustomOrderingForField(preferences, "id", new AV123ParsingProfile(), new JavLibraryParsingProfile(), new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
-			setCustomOrderingForField(preferences, "title", new JavLibraryParsingProfile(), new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new DmmParsingProfile());
-			setCustomOrderingForField(preferences, "plot", new ActionJavParsingProfile(), new DmmParsingProfile());
+			setCustomOrderingForField(preferences, "id", new AV123ParsingProfile(), new JavLibraryParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
+			setCustomOrderingForField(preferences, "title", new JavLibraryParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new DmmParsingProfile());
+			setCustomOrderingForField(preferences, "plot", new DmmParsingProfile());
 			setCustomOrderingForField(preferences, "set", new AvMooParsingProfile(), new JavBusParsingProfile(), new DmmParsingProfile());
-			setCustomOrderingForField(preferences, "studio", new JavLibraryParsingProfile(), new ActionJavParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new SquarePlusParsingProfile(), new DmmParsingProfile());
-			setCustomOrderingForField(preferences, "genres", new JavLibraryParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new SquarePlusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile());
+			setCustomOrderingForField(preferences, "studio", new JavLibraryParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new SquarePlusParsingProfile(), new DmmParsingProfile());
+			setCustomOrderingForField(preferences, "genres", new JavLibraryParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile(), new SquarePlusParsingProfile(), new DmmParsingProfile());
 
 			var bestContentForActorsAndDirectors = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new JavLibraryParsingProfile(),
-			        new AvMooParsingProfile(), new JavBusParsingProfile(), new ActionJavParsingProfile(), new DmmParsingProfile(), new SquarePlusParsingProfile());
+			        new AvMooParsingProfile(), new JavBusParsingProfile(), new DmmParsingProfile(), new SquarePlusParsingProfile());
 			preferences.setCustomOrderingForField("actors", bestContentForActorsAndDirectors);
 			preferences.setCustomOrderingForField("directors", bestContentForActorsAndDirectors);
 
 			var bestContentForPosterAndFanart = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new DmmParsingProfile(),
-			        new JavLibraryParsingProfile(), new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
+			        new JavLibraryParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
 			preferences.setCustomOrderingForField("posters", bestContentForPosterAndFanart);
 			preferences.setCustomOrderingForField("fanart", bestContentForPosterAndFanart);
 			preferences.setCustomOrderingForField("extraFanart", bestContentForPosterAndFanart);
@@ -160,7 +160,7 @@ public class AllAmalgamationOrderingPreferences {
 			setCustomOrderingForField(preferences, "rating", new JavLibraryParsingProfile(), new DmmParsingProfile());
 
 			var bestContentForDateAndTime = DataItemSourceAmalgamationPreference.createPreferenceOrdering(new DmmParsingProfile(), new JavLibraryParsingProfile(),
-			        new ActionJavParsingProfile(), new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
+                    new SquarePlusParsingProfile(), new AvMooParsingProfile(), new JavBusParsingProfile());
 			preferences.setCustomOrderingForField("year", bestContentForDateAndTime);
 			preferences.setCustomOrderingForField("releaseDate", bestContentForDateAndTime);
 			preferences.setCustomOrderingForField("runtime", bestContentForDateAndTime);

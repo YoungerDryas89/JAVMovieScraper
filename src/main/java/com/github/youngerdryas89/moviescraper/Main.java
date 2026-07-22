@@ -17,7 +17,6 @@ import org.apache.commons.cli.ParseException;
 import com.github.youngerdryas89.moviescraper.controller.Renamer;
 import com.github.youngerdryas89.moviescraper.controller.releaserenamer.WebReleaseRenamer;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.ActionJavParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.AvEntertainmentParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.CaribbeancomParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.CaribbeancomPremiumParsingProfile;
@@ -305,9 +304,6 @@ public class Main {
 				break;
 			case "javlibrary":
 				parsingProfile = new JavLibraryParsingProfile();
-				break;
-			case "actionjav":
-				parsingProfile = new ActionJavParsingProfile();
 				break;
 			default:
 				break;
