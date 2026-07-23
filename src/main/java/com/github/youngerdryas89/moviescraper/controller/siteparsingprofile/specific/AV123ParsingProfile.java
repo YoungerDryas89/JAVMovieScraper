@@ -32,9 +32,13 @@ public class AV123ParsingProfile extends SiteParsingProfile implements SpecificP
     @Override
     public void prepareData(){
         Element err = document.select("div.errpage__code").first();
-        if(err != null && err.text().equals("404")){
-            System.err.println("Error: 404, No movie found!");
-
+        if(err != null) {
+            var err_msg = document.select("errpage__msg").first();
+            if (err.text().equals("404")) {
+                System.err.println("Error: 404, No movie found!");
+            } else if (!err.text().equals("404") && err_msg != null) {
+                System.err.println(err_msg.text());
+            }
         } else {
             Elements tableElems = document.select(movieDetailsPath);
             for (Element data : tableElems) {
