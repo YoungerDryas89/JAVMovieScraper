@@ -247,7 +247,7 @@ public class MoviescraperPreferences {
 	}
 
 	public void setSelectSearchResultManuallyWhenScraping(Boolean preferenceValue) {
-        selectArtManuallyWhenScraping = preferenceValue;
+        selectSearchResultManuallyWhenScraping = preferenceValue;
         savePreferences();
 	}
 
