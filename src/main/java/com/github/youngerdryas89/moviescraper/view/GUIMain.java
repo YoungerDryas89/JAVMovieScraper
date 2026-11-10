@@ -22,6 +22,7 @@ import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.preferences.GuiSettings;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
+import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 import com.github.youngerdryas89.moviescraper.view.renderer.FileRenderer;
 
 import java.awt.event.*;
@@ -57,7 +58,7 @@ public class GUIMain {
 	private List<File> currentlySelectedActorsFolderList;
 	private File currentlySelectedDirectoryList;
 	private File defaultHomeDirectory;
-	private MoviescraperPreferences preferences;
+	private ScrapeSession session;
 	private GuiSettings guiSettings;
 	private AllAmalgamationOrderingPreferences allAmalgamationOrderingPreferences;
 
@@ -106,31 +107,15 @@ public class GUIMain {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					//Prevent text area font from looking different than text field font
-					UIManager.getDefaults().put("TextArea.font", UIManager.getFont("TextField.font"));
-					GUIMain window = new GUIMain();
-					System.out.println("Gui Initialized");
-					window.frmMoviescraper.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, ExceptionUtils.getStackTrace(e), "Unhandled Exception", JOptionPane.ERROR_MESSAGE);
-
-				}
-			}
-		});
+	public void run() {
+		frmMoviescraper.setVisible(true);
 	}
 
 	/**
 	 * Create the application.
 	 */
-	public GUIMain() {
-		initialize();
+	public GUIMain(ScrapeSession session) {
+		initialize(session);
 	}
 
 	public void debugWriter(String message) {
@@ -149,10 +134,10 @@ public class GUIMain {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(ScrapeSession session) {
 
 
-		preferences = MoviescraperPreferences.loadPreferencesOrInitialize();
+		this.session = session;
 		guiSettings = GuiSettings.getInstance();
 
 		allAmalgamationOrderingPreferences = new AllAmalgamationOrderingPreferences();
@@ -640,8 +625,12 @@ public class GUIMain {
 		this.chooser = chooser;
 	}
 
-	public MoviescraperPreferences getPreferences() {
-		return preferences;
+	public ScrapeSession getSession() {
+		return session;
+	}
+
+	public MoviescraperPreferences getPreferences(){
+		return session.getPreferences();
 	}
 
 	public GuiSettings getGuiSettings() {
