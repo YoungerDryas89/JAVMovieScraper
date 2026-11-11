@@ -10,10 +10,11 @@ import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
+import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import org.apache.commons.io.IOUtils;
 import com.github.youngerdryas89.moviescraper.controller.xmlserialization.KodiXmlMovieBean;
-import com.github.youngerdryas89.moviescraper.model.Movie;
-import com.github.youngerdryas89.moviescraper.model.MovieFactory;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 
 public class SelectFileListAction implements ListSelectionListener {
@@ -21,12 +22,14 @@ public class SelectFileListAction implements ListSelectionListener {
 	 *
 	 */
 	private final GUIMain guiMain;
+	private final MoviescraperPreferences prefs;
 
 	/**
 	 * @param guiMain
 	 */
 	public SelectFileListAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
+		this.prefs = guiMain.getPreferences();
 	}
 
 	@Override
@@ -60,11 +63,11 @@ public class SelectFileListAction implements ListSelectionListener {
 		this.guiMain.removeOldSelectedFileReferences();
 
 		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
-			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo())));
-			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(Movie.getFileNameOfPoster(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
-			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(Movie.getFileNameOfFolderJpg(currentSelectedFile)));
-			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(Movie.getFileNameOfFanart(currentSelectedFile, this.guiMain.getPreferences().getNoMovieNameInImageFiles())));
-			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(Movie.getFileNameOfTrailer(currentSelectedFile)));
+			this.guiMain.getCurrentlySelectedNfoFileList().add(new File(MovieUtils.getFileNameOfNfo(currentSelectedFile, prefs.nfoNamedMovieDotNfo())));
+			this.guiMain.getCurrentlySelectedPosterFileList().add(new File(MovieUtils.getFileNameOfPoster(currentSelectedFile, prefs.noMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedFolderJpgFileList().add(new File(MovieUtils.getFileNameOfFolderJpg(currentSelectedFile)));
+			this.guiMain.getCurrentlySelectedFanartFileList().add(new File(MovieUtils.getFileNameOfFanart(currentSelectedFile, prefs.noMovieNameInImageFiles())));
+			this.guiMain.getCurrentlySelectedTrailerFileList().add(new File(MovieUtils.getFileNameOfTrailer(currentSelectedFile)));
 		}
 
 		this.guiMain.debugWriter("nfos after selection: " + this.guiMain.getCurrentlySelectedNfoFileList());
@@ -84,7 +87,7 @@ public class SelectFileListAction implements ListSelectionListener {
 		//instead of just reading ones it doesn't already have!
 		boolean readInAnInfo = false;
 		for (File currentSelectedFile : this.guiMain.getFileList().getSelectedValuesList()) {
-			File potentialNfoFile = new File(Movie.getFileNameOfNfo(currentSelectedFile, this.guiMain.getPreferences().getNfoNamedMovieDotNfo()));
+			File potentialNfoFile = new File(MovieUtils.getFileNameOfNfo(currentSelectedFile, prefs.nfoNamedMovieDotNfo()));
 			List<File> nfoList = guiMain.getCurrentlySelectedNfoFileList();
 			int potentialIndex = nfoList.indexOf(potentialNfoFile);
 			if (potentialIndex != -1) {
@@ -96,7 +99,7 @@ public class SelectFileListAction implements ListSelectionListener {
 
 		}
 		if (!readInAnInfo) {
-			guiMain.movieToWriteToDiskList.add(MovieFactory.createEmptyMovie());
+			guiMain.movieToWriteToDiskList.add(new Movie());
 		}
 
 		guiMain.updateAllFieldsOfFileDetailPanel(false, false);

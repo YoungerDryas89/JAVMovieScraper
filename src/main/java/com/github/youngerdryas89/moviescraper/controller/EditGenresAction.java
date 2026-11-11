@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.view.FileDetailPanel;
 import com.github.youngerdryas89.moviescraper.view.GenreEditorPanel;
 
@@ -11,10 +12,11 @@ public class EditGenresAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1L;
 	FileDetailPanel fileDetailPanel;
+	MoviescraperPreferences preferences;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		GenreEditorPanel genreEditorPanel = new GenreEditorPanel(fileDetailPanel.getCurrentMovie().getGenres());
+		GenreEditorPanel genreEditorPanel = new GenreEditorPanel(preferences, fileDetailPanel.getCurrentMovie().getGenres());
 		int result = JOptionPane.showOptionDialog(fileDetailPanel.guiMain.getFrmMoviescraper(), genreEditorPanel, "Edit Genres...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null,
 		        null);
 		if (result == JOptionPane.OK_OPTION) {
@@ -33,9 +35,10 @@ public class EditGenresAction extends AbstractAction {
 		}
 	}
 
-	public EditGenresAction(FileDetailPanel fileDetailPanel) {
+	public EditGenresAction(FileDetailPanel fileDetailPanel, MoviescraperPreferences preferences) {
 		super();
 		this.fileDetailPanel = fileDetailPanel;
+		this.preferences = preferences;
 	}
 
 }

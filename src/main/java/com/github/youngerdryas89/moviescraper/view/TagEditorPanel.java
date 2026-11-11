@@ -22,6 +22,7 @@ import javax.swing.border.Border;
 
 import com.github.youngerdryas89.moviescraper.controller.UtilityFunctions;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tag;
+import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
 public class TagEditorPanel extends JPanel implements ItemListener {
 
@@ -34,7 +35,7 @@ public class TagEditorPanel extends JPanel implements ItemListener {
 	private static final int DEFAULT_GENRE_LENGTH = 15;
 
 	@SuppressWarnings("unchecked")
-	public TagEditorPanel(final List<Tag> tagList) {
+	public TagEditorPanel(MoviescraperPreferences preferences, final List<Tag> tagList) {
 		super(new BorderLayout());
 		this.originalTagList = tagList;
 		editedTagList = (List<Tag>) UtilityFunctions.cloneObject(originalTagList);
@@ -89,7 +90,7 @@ public class TagEditorPanel extends JPanel implements ItemListener {
 
 		//favorite tags panel
 		JLabel favoriteLabel = new JLabel("Favorites");
-		ArrayList<Tag> existingFavoriteTagsArray = FavoriteTagPickerPanel.getFavoriteTagsFromPreferences();
+		ArrayList<Tag> existingFavoriteTagsArray = FavoriteTagPickerPanel.getFavoriteTagsFromPreferences(preferences);
 		final JPanel quickTagsCheckboxPanel = new JPanel();
 		quickTagsCheckboxPanel.setLayout(new BoxLayout(quickTagsCheckboxPanel, BoxLayout.Y_AXIS));
 		for (Tag existingFavoriteTags : existingFavoriteTagsArray) {

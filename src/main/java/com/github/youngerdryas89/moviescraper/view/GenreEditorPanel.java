@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
+import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
 public class GenreEditorPanel extends JPanel implements ItemListener {
 
@@ -31,9 +32,11 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 	private List<Genre> editedGenreList; //edited values which become active when we hit ok
 
 	private static final int DEFAULT_GENRE_LENGTH = 15;
+	MoviescraperPreferences preferences;
 
-	public GenreEditorPanel(final List<Genre> genreList) {
+	public GenreEditorPanel(MoviescraperPreferences preferences, final List<Genre> genreList) {
 		super(new BorderLayout());
+		this.preferences = preferences;
 		this.originalGenreList = genreList;
 		editedGenreList = cloneOriginalGenreListDeepCopy();
 
@@ -87,7 +90,7 @@ public class GenreEditorPanel extends JPanel implements ItemListener {
 
 		//favorite genres panel
 		JLabel favoriteLabel = new JLabel("Favorites");
-		ArrayList<Genre> existingFavoriteGenresArray = FavoriteGenrePickerPanel.getFavoriteGenresFromPreferences();
+		List<Genre> existingFavoriteGenresArray = FavoriteGenrePickerPanel.getFavoriteGenresFromPreferences(preferences);
 		final JPanel quickGenresCheckboxPanel = new JPanel();
 		quickGenresCheckboxPanel.setLayout(new BoxLayout(quickGenresCheckboxPanel, BoxLayout.Y_AXIS));
 		for (Genre existingFavoriteGenres : existingFavoriteGenresArray) {

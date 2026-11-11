@@ -15,9 +15,11 @@ import com.github.youngerdryas89.moviescraper.view.GUIMain;
 public class FileNameCleanupAction implements ActionListener {
 
 	GUIMain guiMain;
+	MoviescraperPreferences preferences;
 
 	public FileNameCleanupAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
+		this.preferences = guiMain.getPreferences();
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class FileNameCleanupAction implements ActionListener {
 				File newFileName = webReleaseRenamer.newFileName(currentFile);
 				if (currentFile.getName().equals(newFileName.getName())) {
 					System.out.println("New file and old file are the same. No rename necessary.");
-				} else if (guiMain != null && MoviescraperPreferences.getInstance().getConfirmCleanUpFileNameNameBeforeRenaming()) {
+				} else if (guiMain != null && preferences.confirmCleanUpFileNameNameBeforeRenaming()) {
 					int optionPicked = JOptionPane.showConfirmDialog(guiMain.getFrmMoviescraper(), "<html>Rename <b>" + currentFile + "</b><br> to <b>" + newFileName + "</b> ?</html>",
 					        "Confirm Rename", JOptionPane.YES_NO_OPTION);
 

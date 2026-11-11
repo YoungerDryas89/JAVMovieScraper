@@ -75,7 +75,7 @@ public class JavBusParsingProfile extends SiteParsingProfile implements Specific
 			String titleText = titleElement.text();
 
 			//Remove the ID from the front of the title
-			if (!prefs.appendIDToStartOfTitle && titleText.contains(" "))
+			if (!prefs.getAppendIDToStartOfTitle() && titleText.contains(" "))
 				titleText = titleText.substring(titleText.indexOf(" ")).trim();
 
 			return new Title(titleText);

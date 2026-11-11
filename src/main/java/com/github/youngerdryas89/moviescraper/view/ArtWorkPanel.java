@@ -185,11 +185,11 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		if (!forceUpdatePoster && gui.getCurrentlySelectedMovieFileList().size() > 0) {
 			// try to get the poster from a local file, if it exists
 			//Maybe there is a file in the directory just called folder.jpg
-			File potentialOtherPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
-			File potentialOtherFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
+			File potentialOtherPosterJpg = new File(MovieUtils.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
+			File potentialOtherFanartJpg = new File(MovieUtils.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), true));
 			//the poster would be called moviename-poster.jpg
-			File standardPosterJpg = new File(Movie.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
-			File standardFanartJpg = new File(Movie.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
+			File standardPosterJpg = new File(MovieUtils.getFileNameOfPoster(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
+			File standardFanartJpg = new File(MovieUtils.getFileNameOfFanart(gui.getCurrentlySelectedMovieFileList().get(indexOfShownMovie), false));
 			if (gui.getCurrentlySelectedPosterFileList().get(indexOfShownMovie).exists()) {
 				try {
 					lblPosterIcon.setIcon(new Thumb(gui.getCurrentlySelectedPosterFileList().get(indexOfShownMovie)), new Dimension(maximumPosterSizeX, maximumPosterSizeY));

@@ -24,6 +24,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 	 * 
 	 */
 	private final GUIMain guiMain;
+	private final MoviescraperPreferences prefs;
 	/**
 	 * 
 	 */
@@ -31,6 +32,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 
 	public MoveToNewFolderAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
+		this.prefs = guiMain.getPreferences();
 		putValue(NAME, "Move File to New Folder");
 		putValue(SHORT_DESCRIPTION, "Move File to New Folder");
 	}
@@ -81,7 +83,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 						 * }
 						 */
 
-						Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getFolderRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
+						Renamer renamer = new Renamer(prefs.renamerString(), prefs.folderRenamerString(), prefs.sanitizerForFilename(),
 						        currentMovie, fileToRename);
 
 						//Figure out all the new names
@@ -100,7 +102,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 					this.guiMain.clearAllFieldsOfFileDetailPanel();
 					//copy over the .actor folder items to the destination folder, but only if the preference is set and the usual sanity checking is done
 					if (this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile() && this.guiMain.getCurrentlySelectedActorsFolderList() != null
-					        && this.guiMain.getCurrentlySelectedActorsFolderList().size() > movieNumberInList && this.guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference()) {
+					        && this.guiMain.getCurrentlySelectedActorsFolderList().size() > movieNumberInList && prefs.downloadActorImagesToActorFolder()) {
 						File[] actorFilesToCopy = this.guiMain.actorFolderFiles(movieNumberInList);
 						File actorsFolderDestDir = new File(destDir.getPath() + File.separator + ".actors");
 						for (File currentFile : actorFilesToCopy) {
@@ -129,8 +131,8 @@ public class MoveToNewFolderAction extends AbstractAction {
 						FileUtils.moveFileToDirectory(this.guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList), destDir, true);
 					if (this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList).exists()) {
 						//if we're going to create folder.jpg file, just grab the poster file we already have and make a copy of it in the new folder
-						if (this.guiMain.getPreferences().getCreateFolderJpgEnabledPreference()) {
-							File currentlySelectedFolderJpg = new File(Movie.getFileNameOfFolderJpg(destDir));
+						if (prefs.createFolderJpg()) {
+							File currentlySelectedFolderJpg = new File(MovieUtils.getFileNameOfFolderJpg(destDir));
 							FileUtils.copyFile(this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), currentlySelectedFolderJpg);
 						}
 						FileUtils.moveFileToDirectory(this.guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), destDir, true);
@@ -145,7 +147,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 
 					//if we are supposed to write the extrafanart, make sure to write that too
 
-					if (this.guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && guiMain.movieToWriteToDiskList.size() > movieNumberInList) {
+					if (prefs.extraFanartScrapingEnabled() && guiMain.movieToWriteToDiskList.size() > movieNumberInList) {
 						this.guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(destDir);
 					}
 

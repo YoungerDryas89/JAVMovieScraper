@@ -3,14 +3,19 @@ package com.github.youngerdryas89.moviescraper.view;
 import java.util.ArrayList;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Tag;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
+import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 
 public class FavoriteTagPickerPanel extends FavoriteItemPickerPanel {
 
 	private static final long serialVersionUID = 1L;
 	public final static String listSeperator = ",,";
+	MoviescraperPreferences preferences;
+	ScrapeSession session;
 
-	public FavoriteTagPickerPanel() {
+	public FavoriteTagPickerPanel(ScrapeSession session) {
 		super();
+		this.session = session;
+		this.preferences = session.getPreferences();
 	}
 
 	@Override
@@ -23,8 +28,8 @@ public class FavoriteTagPickerPanel extends FavoriteItemPickerPanel {
 		return tagArray;
 	}
 
-	public static ArrayList<Tag> getFavoriteTagsFromPreferences() {
-		String[] existingFavoriteTagsArray = MoviescraperPreferences.getInstance().getfrequentlyUsedTags().split(listSeperator);
+	public static ArrayList<Tag> getFavoriteTagsFromPreferences(MoviescraperPreferences preferences) {
+		String[] existingFavoriteTagsArray = preferences.frequentlyUsedTags().split(listSeperator);
 		ArrayList<Tag> favoriteTagsToReturn = new ArrayList<>(existingFavoriteTagsArray.length);
 		for (String existingFavoriteTag : existingFavoriteTagsArray) {
 			favoriteTagsToReturn.add(new Tag(existingFavoriteTag));
@@ -42,7 +47,7 @@ public class FavoriteTagPickerPanel extends FavoriteItemPickerPanel {
 			if (i != favoritesListModel.size() - 1)
 				preferenceValue += listSeperator;
 		}
-		MoviescraperPreferences.getInstance().setFrequentlyUsedTags(preferenceValue);
+		session.setPreferences(preferences.toBuilder().frequentlyUsedTags(preferenceValue).build());
 
 	}
 

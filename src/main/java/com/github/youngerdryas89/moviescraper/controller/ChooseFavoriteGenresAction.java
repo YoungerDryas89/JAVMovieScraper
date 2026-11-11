@@ -19,7 +19,7 @@ public class ChooseFavoriteGenresAction implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		FavoriteGenrePickerPanel genrePickerPanel = new FavoriteGenrePickerPanel();
+		FavoriteGenrePickerPanel genrePickerPanel = new FavoriteGenrePickerPanel(guiMain.getSession());
 		int result = JOptionPane.showOptionDialog(guiMain.getFrmMoviescraper(), genrePickerPanel, "Favorite Genres...", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (result == JOptionPane.OK_OPTION) {
 			genrePickerPanel.storeSettingValues();

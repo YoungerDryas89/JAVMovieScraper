@@ -28,7 +28,6 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import com.github.youngerdryas89.moviescraper.controller.Renamer;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
@@ -134,7 +133,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblRenamestring.gridy = fileRenameY;
 		contentPane.add(lblRenamestring, gbc_lblRenamestring);
 
-		textFieldRenameString = new JTextField(MoviescraperPreferences.getRenamerString());
+		textFieldRenameString = new JTextField(preferences.getRenamerString());
 		GridBagConstraints gbc_textFieldRenameString = new GridBagConstraints();
 		gbc_textFieldRenameString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldRenameString.fill = GridBagConstraints.HORIZONTAL;
@@ -159,7 +158,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblFolderRenamestring.gridy = folderRenameY;
 		contentPane.add(lblFolderRenamestring, gbc_lblFolderRenamestring);
 
-		textFieldFolderRenameString = new JTextField(MoviescraperPreferences.getFolderRenamerString());
+		textFieldFolderRenameString = new JTextField(preferences.getFolderRenamerString());
 		GridBagConstraints gbc_textFieldFolderRenameString = new GridBagConstraints();
 		gbc_textFieldFolderRenameString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldFolderRenameString.fill = GridBagConstraints.HORIZONTAL;
@@ -223,7 +222,7 @@ public class RenamerGUI extends JFrame {
 		gbc_lblSanitizerString.gridy = sanitizerY;
 		contentPane.add(lblSanitizerString, gbc_lblSanitizerString);
 
-		textFieldSanitizerString = new JTextField(MoviescraperPreferences.getSanitizerForFilename());
+		textFieldSanitizerString = new JTextField(preferences.getSanitizerForFilename());
 		GridBagConstraints gbc_textFieldSanitizerString = new GridBagConstraints();
 		gbc_textFieldSanitizerString.insets = new Insets(0, 0, 5, 0);
 		gbc_textFieldSanitizerString.fill = GridBagConstraints.HORIZONTAL;

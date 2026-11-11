@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
+import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowser;
 import com.github.youngerdryas89.moviescraper.scraper.DitzyHeadlessBrowserSingle;
 
@@ -92,7 +93,7 @@ public class SettingsDialogJAVLibrary extends javax.swing.JDialog {
 			preferences.setUserAgent(userAgentInput.getText());
 			preferences.setCookieJar(cookieJarInput.getText());
 			browser.configure();
-			MoviescraperPreferences.savePreferences();
+			ScrapeSession.savePreferences();
 			this.setVisible(false);
 		} catch (IOException ex) {
 			preferences.setUserAgent(savedUserAgent);

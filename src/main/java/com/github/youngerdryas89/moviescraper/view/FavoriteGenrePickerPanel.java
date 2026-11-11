@@ -1,21 +1,28 @@
 package com.github.youngerdryas89.moviescraper.view;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
+import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 
 public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 
 	private static final long serialVersionUID = 1L;
 	public final static String listSeperator = ",,";
+	ScrapeSession session;
+	MoviescraperPreferences preferences;
 
-	public FavoriteGenrePickerPanel() {
+	public FavoriteGenrePickerPanel(ScrapeSession session) {
 		super();
+		this.session = session;
+		this.preferences = session.getPreferences();
 	}
 
 	@Override
 	public String[] getSettingValues() {
-		ArrayList<Genre> favoriteGenreArrayList = getFavoriteGenresFromPreferences();
+		List<Genre> favoriteGenreArrayList = getFavoriteGenresFromPreferences(preferences);
 		String[] genreArray = new String[favoriteGenreArrayList.size()];
 		for (int i = 0; i < favoriteGenreArrayList.size(); i++) {
 			genreArray[i] = favoriteGenreArrayList.get(i).getGenre();
@@ -23,9 +30,9 @@ public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 		return genreArray;
 	}
 
-	public static ArrayList<Genre> getFavoriteGenresFromPreferences() {
-		String[] existingFavoriteGenresArray = MoviescraperPreferences.getInstance().getfrequentlyUsedGenres().split(listSeperator);
-		ArrayList<Genre> favoriteGenresToReturn = new ArrayList<>(existingFavoriteGenresArray.length);
+	public static List<Genre> getFavoriteGenresFromPreferences(MoviescraperPreferences prefs) {
+		String[] existingFavoriteGenresArray = prefs.frequentlyUsedGenres().split(listSeperator);
+		List<Genre> favoriteGenresToReturn = new ArrayList<>(existingFavoriteGenresArray.length);
 		for (String existingFavoriteGenre : existingFavoriteGenresArray) {
 			favoriteGenresToReturn.add(new Genre(existingFavoriteGenre));
 		}
@@ -42,8 +49,7 @@ public class FavoriteGenrePickerPanel extends FavoriteItemPickerPanel {
 			if (i != favoritesListModel.size() - 1)
 				preferenceValue += listSeperator;
 		}
-		MoviescraperPreferences.getInstance().setFrequentlyUsedGenres(preferenceValue);
-
+		session.setPreferences(preferences.toBuilder().frequentlyUsedGenres(preferenceValue).build());
 	}
 
 }

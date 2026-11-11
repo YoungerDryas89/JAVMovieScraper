@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
+
+import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -17,23 +19,27 @@ public class DitzyHeadlessBrowser {
 	private DitzyCookies cookies;
 	private final int timeout;
 	private static final Logger LOGGER = Logger.getLogger(DitzyHeadlessBrowser.class.getName());
+	ScrapeSession session;
+	MoviescraperPreferences preferences;
 
-	public DitzyHeadlessBrowser(String userAgent, int timeout) {
+	public DitzyHeadlessBrowser(ScrapeSession session, String userAgent, int timeout) {
+		this.session = session;
 		this.userAgent = userAgent;
 		this.timeout = timeout;
 		this.cookies = new DitzyCookies();
+		this.preferences = session.getPreferences();
 		LOGGER.log(Level.INFO, "Build browser with U: {0}", this.userAgent);
 	}
 
-	public DitzyHeadlessBrowser() {
-		this(UserAgent.getRandomUserAgent(), 10000);
+	public DitzyHeadlessBrowser(ScrapeSession session) {
+		this(session,UserAgent.getRandomUserAgent(), 10000);
+		preferences = session.getPreferences();
 	}
 
 	public void configure() throws IOException {
-		MoviescraperPreferences preferences = MoviescraperPreferences.getInstance();
-		setUserAgent(preferences.getUserAgent());
-		if (preferences.getCookieJar() != null) {
-			Cookies().LoadCookieJar(new File(preferences.getCookieJar()));
+		setUserAgent(preferences.userAgent());
+		if (preferences.cookieJar() != null) {
+			Cookies().LoadCookieJar(new File(preferences.cookieJar()));
 		}
 	}
 

@@ -185,15 +185,14 @@ public class Renamer {
 	}
 
 	public static void rename(File fileToRename, MoviescraperPreferences preferences) throws IOException {
-		File nfoFile = new File(Movie.getFileNameOfNfo(fileToRename, preferences.getNfoNamedMovieDotNfo()));
-		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
-		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
-		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
+		File nfoFile = new File(MovieUtils.getFileNameOfNfo(fileToRename, preferences.nfoNamedMovieDotNfo()));
+		File posterFile = new File(MovieUtils.getFileNameOfPoster(fileToRename, preferences.noMovieNameInImageFiles()));
+		File fanartFile = new File(MovieUtils.getFileNameOfFanart(fileToRename, preferences.noMovieNameInImageFiles()));
 		File trailerFile = new File(MovieUtils.getFileNameOfTrailer(fileToRename));
 		if (nfoFile.exists() && fileToRename.exists()) {
 			Movie movieReadFromNfo = MovieFactory.createMovieFromNfo(nfoFile);
 			if (movieReadFromNfo != null && movieReadFromNfo.getTitle() != null) {
-				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
+				Renamer renamer = new Renamer(preferences.renamerString(), preferences.renamerString(), preferences.sanitizerForFilename(),
 				        movieReadFromNfo, fileToRename);
 
 				//Figure out all the new names

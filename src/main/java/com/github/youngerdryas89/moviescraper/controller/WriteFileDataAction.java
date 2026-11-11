@@ -8,10 +8,11 @@ import java.io.IOException;
 
 import javax.swing.SwingWorker;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.FileUtils;
 
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 
@@ -21,6 +22,7 @@ public class WriteFileDataAction implements ActionListener {
 	 * 
 	 */
 	private final GUIMain guiMain;
+	private final MoviescraperPreferences prefs;
 	SwingWorker<Void, String> worker;
 
 	/**
@@ -28,6 +30,7 @@ public class WriteFileDataAction implements ActionListener {
 	 */
 	public WriteFileDataAction(GUIMain guiMain) {
 		this.guiMain = guiMain;
+		this.prefs = guiMain.getPreferences();
 	}
 
 	@Override
@@ -53,14 +56,11 @@ public class WriteFileDataAction implements ActionListener {
 						}
 						System.out.println("Writing this movie to file: " + guiMain.movieToWriteToDiskList.get(movieNumberInList).getTitle());
 						if (guiMain.movieToWriteToDiskList != null) {
-							if (guiMain.getPreferences().getRenameMovieFile()) {
+							if (prefs.renameMovieFile()) {
 								File oldMovieFile = guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList);
 								Movie movie = guiMain.movieToWriteToDiskList.get(movieNumberInList);
 
-								String sanitizerString = MoviescraperPreferences.getSanitizerForFilename();
-								String fileRenameString = MoviescraperPreferences.getRenamerString();
-								String folderRenameString = MoviescraperPreferences.getFolderRenamerString();
-								Renamer renamer = new Renamer(fileRenameString, folderRenameString, sanitizerString, movie, oldMovieFile);
+								Renamer renamer = new Renamer(prefs.renamerString(), prefs.folderRenamerString(), prefs.sanitizerForFilename(), movie, oldMovieFile);
 								String newMovieFilename = renamer.getNewFileName(oldMovieFile.isDirectory());
 								System.out.println("New Filename : " + newMovieFilename);
 								File newMovieFile = new File(newMovieFilename);
@@ -97,26 +97,26 @@ public class WriteFileDataAction implements ActionListener {
 									System.out.println("A file or directory already exists at " + newMovieFile + " - skipping overwrite or creation of new folder.");
 								}
 
-								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(Movie.getFileNameOfNfo(newMovieFile, guiMain.getPreferences().getNfoNamedMovieDotNfo())),
-								        new File(Movie.getFileNameOfPoster(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())),
-								        new File(Movie.getFileNameOfFanart(newMovieFile, guiMain.getPreferences().getNoMovieNameInImageFiles())), new File(Movie.getFileNameOfFolderJpg(newMovieFile)),
-								        new File(Movie.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(Movie.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
+								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(new File(MovieUtils.getFileNameOfNfo(newMovieFile, prefs.nfoNamedMovieDotNfo())),
+								        new File(MovieUtils.getFileNameOfPoster(newMovieFile, prefs.noMovieNameInImageFiles())),
+								        new File(MovieUtils.getFileNameOfFanart(newMovieFile, prefs.noMovieNameInImageFiles())), new File(MovieUtils.getFileNameOfFolderJpg(newMovieFile)),
+								        new File(MovieUtils.getFileNameOfExtraFanartFolderName(newMovieFile)), new File(MovieUtils.getFileNameOfTrailer(newMovieFile)), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							} else {
 								//save without renaming movie
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeToFile(guiMain.getCurrentlySelectedNfoFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedPosterFileList().get(movieNumberInList), guiMain.getCurrentlySelectedFanartFileList().get(movieNumberInList),
 								        guiMain.getCurrentlySelectedFolderJpgFileList().get(movieNumberInList),
-								        new File(Movie.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
-								        new File(Movie.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
+								        new File(MovieUtils.getFileNameOfExtraFanartFolderName(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))),
+								        new File(MovieUtils.getFileNameOfTrailer(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList))), guiMain.getPreferences(), guiMain.getFileDetailPanel().getArtWorkPanel().isUncropEnabled());
 							}
 
 							//we can only output extra fanart if we're scraping a folder, because otherwise the extra fanart will get mixed in with other files
-							if (guiMain.getPreferences().getExtraFanartScrapingEnabledPreference() && guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory()) {
+							if (prefs.extraFanartScrapingEnabled() && guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isDirectory()) {
 								guiMain.movieToWriteToDiskList.get(movieNumberInList).writeExtraFanart(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 							}
 						}
 						//now write out the actor images if the user preference is set
-						if (guiMain.getPreferences().getDownloadActorImagesToActorFolderPreference() && guiMain.getCurrentlySelectedMovieFileList() != null
+						if (prefs.downloadActorImagesToActorFolder() && guiMain.getCurrentlySelectedMovieFileList() != null
 						        && guiMain.getCurrentlySelectedDirectoryList() != null) {
 							guiMain.movieToWriteToDiskList.get(movieNumberInList).writeActorImagesToFolder(guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList));
 						}

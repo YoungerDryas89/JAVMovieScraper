@@ -549,7 +549,7 @@ public class FileDetailPanel extends JPanel {
 		genreList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
-				EditGenresAction editGenresAction = new EditGenresAction(FileDetailPanel.this);
+				EditGenresAction editGenresAction = new EditGenresAction(FileDetailPanel.this, preferences);
 				editGenresAction.actionPerformed(null);
 			}
 		});
@@ -564,7 +564,7 @@ public class FileDetailPanel extends JPanel {
 		tagList.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent evt) {
-				EditTagsAction editTagsAction = new EditTagsAction(FileDetailPanel.this);
+				EditTagsAction editTagsAction = new EditTagsAction(preferences, FileDetailPanel.this);
 				editTagsAction.actionPerformed(null);
 			}
 		});
@@ -906,7 +906,7 @@ public class FileDetailPanel extends JPanel {
 
 	}
 
-	public static String toGenreListFormat(ArrayList<Genre> genres) {
+	public static String toGenreListFormat(List<Genre> genres) {
 		String genreText = "";
 		for (Genre currentGenre : genres) {
 			genreText += currentGenre.getGenre();
@@ -918,7 +918,7 @@ public class FileDetailPanel extends JPanel {
 		return genreText;
 	}
 
-	public static String toTagListFormat(ArrayList<Tag> tags) {
+	public static String toTagListFormat(List<Tag> tags) {
 		String tagText = "";
 		for (Tag currentTag : tags) {
 			tagText += currentTag.getTag();
