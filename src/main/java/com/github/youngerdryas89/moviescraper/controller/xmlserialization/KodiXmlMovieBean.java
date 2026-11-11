@@ -7,7 +7,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.net.MalformedURLException;
 
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Runtime;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;

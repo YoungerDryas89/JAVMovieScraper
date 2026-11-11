@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
@@ -101,9 +101,9 @@ public class MovieScrapeResultGroup {
 			ArrayList<Genre> genres = (ArrayList<Genre>) getPreferredMovieDataItemAsArrayList(Genre.class);
 			ArrayList<Tag> tags = (ArrayList<Tag>) getPreferredMovieDataItemAsArrayList(Tag.class);
 
-			Thumb[] fanart = getPreferredArrayMovieDataItem("fanart");
-			Thumb[] extraFanart = getPreferredArrayMovieDataItem("extraFanart");
-			Thumb[] posters = getPreferredArrayMovieDataItem("posters");
+			var fanart = getPreferredArrayMovieDataItem("fanart");
+			var extraFanart = getPreferredArrayMovieDataItem("extraFanart");
+			var posters = getPreferredArrayMovieDataItem("posters");
 
 			ID id = (ID) getPreferredMovieDataItemAsMovieDataItem(ID.class);
 			MPAARating mpaa = (MPAARating) getPreferredMovieDataItemAsMovieDataItem(MPAARating.class);
@@ -162,7 +162,7 @@ public class MovieScrapeResultGroup {
 	 * @param movieToGetExtraInfoFrom - other movie to try to get the missing actor images from
 	 * @return
 	 */
-	private ArrayList<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom) {
+	private List<Actor> amalgamateActor(Movie sourceMovie, Movie movieToGetExtraInfoFrom) {
 		ArrayList<Actor> amalgamatedActorList = new ArrayList<>();
 		boolean changeMade = false;
 		if (sourceMovie.getActors() != null && movieToGetExtraInfoFrom.getActors() != null) {
@@ -281,8 +281,8 @@ public class MovieScrapeResultGroup {
 	}
 
 	//used for thumb arrays and such
-	private Thumb[] getPreferredArrayMovieDataItem(String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		ArrayList<Thumb[]> preferredValueOrder = new ArrayList<>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().size());
+	private List<Thumb> getPreferredArrayMovieDataItem(String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		List<List<Thumb>> preferredValueOrder = new ArrayList<>(amalgamationPreferenceOrderForEntireMovieGroup.getOverallAmalgamationPreference().size());
 		for (int i = 0; i < amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(null).size(); i++) {
 			preferredValueOrder.add(null);
 		}
@@ -295,21 +295,21 @@ public class MovieScrapeResultGroup {
 				var amalgamationPrefToUse = amalgamationPreferenceOrderForEntireMovieGroup.getAmalgamationPreference(fieldByName);
 				for (int i = 0; i < amalgamationPrefToUse.size(); i++) {
 					if (value.length > 0 && value[0].getDataItemSource().toString().equals(amalgamationPrefToUse.get(i).toString())) {
-						preferredValueOrder.set(i, value);
+						preferredValueOrder.set(i, Arrays.asList(value));
 					}
 				}
 			}
 		}
 		for (int j = 0; j < preferredValueOrder.size(); j++) {
 			if (preferredValueOrder.get(j) != null) {
-				Thumb[] returnValue = preferredValueOrder.get(j);
-				System.out.println("Amalgamated " + fieldName + " is " + Arrays.toString(returnValue));
+				var returnValue = preferredValueOrder.get(j);
+				System.out.println("Amalgamated " + fieldName + " is " + returnValue.toString());
 				return returnValue;
 			}
 		}
 		//nothing found otherwise
-		Thumb[] emptyThumb = new Thumb[0];
-		System.out.println("Amalgamated " + fieldName + " is " + Arrays.toString(emptyThumb));
+		List<Thumb> emptyThumb = new ArrayList<>(0);
+		System.out.println("Amalgamated " + fieldName + " is " + emptyThumb.toString());
 		return emptyThumb;
 	}
 

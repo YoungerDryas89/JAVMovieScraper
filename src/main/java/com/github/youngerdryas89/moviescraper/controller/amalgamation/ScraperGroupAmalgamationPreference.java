@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 
 /**
@@ -119,7 +119,7 @@ public class ScraperGroupAmalgamationPreference {
 
 	public static List<Field> getMoviefieldNames() {
 		LinkedList<Field> fieldNames = new LinkedList<>();
-		Movie currentMovie = Movie.getEmptyMovie();
+		Movie currentMovie = new Movie();
 		String[] disallowedFieldNames = { "readTimeout", "connectionTimeout", "preferredFanartToWriteToDisk", "allTitles", "fileName", "$assertionsDisabled" };
 		ArrayList<String> disallowedFieldNamesArrayList = new ArrayList<>(Arrays.asList(disallowedFieldNames));
 		for (Field field : currentMovie.getClass().getDeclaredFields()) {

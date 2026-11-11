@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.io.FilenameUtils;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.MovieFilenameFilter;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieFilenameFilter;
 import com.github.youngerdryas89.moviescraper.model.preferences.GuiSettings;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 

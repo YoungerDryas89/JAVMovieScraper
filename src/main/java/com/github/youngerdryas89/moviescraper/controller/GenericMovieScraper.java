@@ -1,7 +1,7 @@
 package com.github.youngerdryas89.moviescraper.controller;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 
 public class GenericMovieScraper extends AbstractMovieScraper {
 
@@ -14,7 +14,7 @@ public class GenericMovieScraper extends AbstractMovieScraper {
 	@Override
 	public Movie createMovie() {
 		// Null isn't it here, but this class is never used anyway and will probably get removed
-		return new Movie(profile, null);
+		return new Movie();
 	}
 
 }

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileFactory;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import org.jetbrains.annotations.Nullable;
 

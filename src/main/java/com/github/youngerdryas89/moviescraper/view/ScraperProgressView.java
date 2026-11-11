@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmalgamatedMovieWorker.ScrapeAmalgamatedMovieWorkerProperty;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 
 /**

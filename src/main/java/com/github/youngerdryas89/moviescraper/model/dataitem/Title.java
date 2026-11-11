@@ -32,4 +32,11 @@ public class Title extends MovieDataItem {
 		title = "";
 	}
 
+	/**
+	 * @return true if the movie has a non-null, non-zero length title, false otherwise
+	 */
+	public boolean hasValidTitle() {
+		return (title != null && !title.isEmpty());
+	}
+
 }

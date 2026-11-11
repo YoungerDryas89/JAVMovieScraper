@@ -312,22 +312,19 @@ public class SquarePlusParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		Elements extraFanartElements = document.select("div.more-views ul li a");
-		if (extraFanartElements != null) {
-			ArrayList<Thumb> extrafanartThumbList = new ArrayList<>(extraFanartElements.size());
-			for (Element extraFanartElement : extraFanartElements) {
-				Thumb thumbToAdd;
-				try {
-					thumbToAdd = new Thumb(extraFanartElement.attr("href"));
-					extrafanartThumbList.add(thumbToAdd);
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
-			}
-			return extrafanartThumbList.toArray(new Thumb[extrafanartThumbList.size()]);
-		}
-		return new Thumb[0];
+		List<Thumb> extrafanartThumbList = new ArrayList<>();
+        for (Element extraFanartElement : extraFanartElements) {
+            Thumb thumbToAdd;
+            try {
+                thumbToAdd = new Thumb(extraFanartElement.attr("href"));
+                extrafanartThumbList.add(thumbToAdd);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+        return extrafanartThumbList;
 	}
 
 	@Override

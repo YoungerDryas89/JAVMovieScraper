@@ -9,10 +9,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Comparator;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
 
@@ -184,7 +185,7 @@ public abstract class GenericParsingProfileTest {
 		try {
 			movieOneURI = new Object().getClass().getResource("/testdata/" + fileName).toURI();
 			System.out.println("movieOneUri = " + movieOneURI);
-			scrapedMovieFromFile = Movie.createMovieFromNfo(new File(movieOneURI));
+			scrapedMovieFromFile = MovieFactory.createMovieFromNfo(new File(movieOneURI));
 		} catch (URISyntaxException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -43,7 +43,7 @@ import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.Site
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.Data18MovieParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.specific.TheMovieDatabaseParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
@@ -333,7 +333,7 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	 * Displays a dialog where the user can pick the poster to use. Only shows when there is more than one poster.
 	 */
 	private void promptUserToPickPoster() {
-		if (showPosterPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getPosters() != null && currentAmalgamatedMovie.getPosters().length > 1) {
+		if (showPosterPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getPosters() != null && currentAmalgamatedMovie.getPosters().size() > 1) {
 			Thumb posterFromUserSelection = showArtPicker(this, currentAmalgamatedMovie.getPosters(), "Pick Poster", true);
 			currentAmalgamatedMovie.moveExistingPosterToFront(posterFromUserSelection);
 		}
@@ -343,22 +343,22 @@ public class ScrapeAmalgamatedProgressDialog extends JDialog implements Runnable
 	 * Displays a dialog where the user can pick the fanart to use. Only shows when there is more than one fanart.
 	 */
 	private void promptUserToPickFanart() {
-		if (showFanartPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getFanart() != null && currentAmalgamatedMovie.getFanart().length > 1) {
+		if (showFanartPicker && currentAmalgamatedMovie != null && currentAmalgamatedMovie.getFanart() != null && currentAmalgamatedMovie.getFanart().size() > 1) {
 			Thumb fanartFromUserSelection = showArtPicker(this, currentAmalgamatedMovie.getFanart(), "Pick Fanart", false);
 			currentAmalgamatedMovie.moveExistingFanartToFront(fanartFromUserSelection);
 		}
 	}
 
-	public static Thumb showArtPicker(Component parent, Thumb[] thumbArray, String windowTitle, boolean isForPoster) {
-		if (thumbArray.length > 0) {
+	public static Thumb showArtPicker(Component parent, List<Thumb> thumbArray, String windowTitle, boolean isForPoster) {
+		if (!thumbArray.isEmpty()) {
 			JPanel panel = new JPanel();
 			panel.setLayout(new BorderLayout());
 			JPanel thumbPane = new JPanel(new ModifiedFlowLayout());
-			AsyncImageComponent[] thumbPanels = new AsyncImageComponent[thumbArray.length];
+			AsyncImageComponent[] thumbPanels = new AsyncImageComponent[thumbArray.size()];
 			boolean doAutoSelect = true;
-			for (int i = 0; i < thumbArray.length; i++) {
+			for (int i = 0; i < thumbArray.size(); i++) {
 
-				thumbPanels[i] = new AsyncImageComponent(thumbArray[i], false, thumbPanels, doAutoSelect, isForPoster, true);
+				thumbPanels[i] = new AsyncImageComponent(thumbArray.get(i), false, thumbPanels, doAutoSelect, isForPoster, true);
 				thumbPane.add(thumbPanels[i]);
 			}
 			JScrollPane thumbScroller = new JScrollPane(thumbPane);

@@ -21,6 +21,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieFactory;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.io.FilenameUtils;
 import org.imgscalr.Scalr;
@@ -35,7 +37,7 @@ import org.jsoup.select.Elements;
 import com.github.youngerdryas89.moviescraper.controller.AbstractMovieScraper;
 import com.github.youngerdryas89.moviescraper.controller.GenericMovieScraper;
 import com.github.youngerdryas89.moviescraper.controller.languagetranslation.Language;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
@@ -228,7 +230,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 			fileNameNoExtension = FilenameUtils.removeExtension(file.getName());
 		if (file.getPath().endsWith(".nfo")) {
 			try {
-				Movie movie = Movie.createMovieFromNfo(file);
+				Movie movie = MovieFactory.createMovieFromNfo(file);
 				return movie.getId().getId();
 			} catch (IOException ex) {
 				System.out.println("Cannot load this file as nfo. Try from filename");
@@ -345,21 +347,21 @@ public abstract class SiteParsingProfile implements DataItemSource {
 
 	public abstract @NotNull com.github.youngerdryas89.moviescraper.model.dataitem.Runtime scrapeRuntime();
 
-	public abstract @NotNull Thumb[] scrapePosters(boolean cropPosters);
+	public abstract @NotNull List<Thumb> scrapePosters(boolean cropPosters);
 
-	public abstract @NotNull Thumb[] scrapeFanart();
+	public abstract @NotNull List<Thumb> scrapeFanart();
 
-	public abstract @NotNull Thumb[] scrapeExtraFanart();
+	public abstract @NotNull List<Thumb> scrapeExtraFanart();
 
 	public abstract @NotNull MPAARating scrapeMPAA();
 
 	public abstract @NotNull ID scrapeID();
 
-	public abstract @NotNull ArrayList<Genre> scrapeGenres();
+	public abstract @NotNull List<Genre> scrapeGenres();
 
-	public abstract @NotNull ArrayList<Actor> scrapeActors();
+	public abstract @NotNull List<Actor> scrapeActors();
 
-	public abstract @NotNull ArrayList<Director> scrapeDirectors();
+	public abstract @NotNull List<Director> scrapeDirectors();
 
 	public abstract @NotNull Studio scrapeStudio();
 
@@ -371,7 +373,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
 		return Trailer.BLANK_TRAILER;
 	}
 
-	public @NotNull ArrayList<Tag> scrapeTags() {
+	public @NotNull List<Tag> scrapeTags() {
 		return Tag.BLANK_TAGS;
 	}
 
@@ -662,7 +664,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
     public String cleanseFilename(File file){
         String fileBaseName;
         if (file.isFile())
-            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+            fileBaseName = FilenameUtils.getBaseName(MovieUtils.getUnstackedMovieName(file));
         else
             fileBaseName = file.getName();
         return fileBaseName;

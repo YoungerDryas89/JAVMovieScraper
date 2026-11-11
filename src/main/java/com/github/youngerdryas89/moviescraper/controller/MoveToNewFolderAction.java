@@ -9,8 +9,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
-import com.github.youngerdryas89.moviescraper.model.MovieFactory;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 import com.github.youngerdryas89.moviescraper.view.GUIMain;
 
@@ -46,7 +46,7 @@ public class MoveToNewFolderAction extends AbstractAction {
 				this.guiMain.getFrmMoviescraper().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				boolean usedReanmerModule = false;
 				boolean isFileDirectory = false;
-				Movie currentMovie = MovieFactory.createEmptyMovie();
+				Movie currentMovie = new Movie();
 				if (this.guiMain.getCurrentlySelectedMovieFileList() != null && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).exists()
 				        && this.guiMain.getCurrentlySelectedMovieFileList().get(movieNumberInList).isFile()) {
 					// we can append the movie title to resulting folder name if

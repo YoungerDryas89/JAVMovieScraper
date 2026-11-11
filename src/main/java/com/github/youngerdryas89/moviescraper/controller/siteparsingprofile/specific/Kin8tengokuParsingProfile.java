@@ -151,35 +151,34 @@ public class Kin8tengokuParsingProfile extends SiteParsingProfile implements Spe
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
+		List<Thumb> thumbs = new ArrayList<>();
 		try {
 			String Id = findID(scrapedMovieFile.getName());
-			Thumb[] thumbs = new Thumb[1];
-			thumbs[0] = new Thumb(getThumbURL(Id, 1), cropPosters);
+			thumbs.add(new Thumb(getThumbURL(Id, 1), cropPosters));
 			return thumbs;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new Thumb[0];
+		return thumbs;
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		String thumbURL = getThumbURL(id, 1);
+		List<Thumb> thumbs = new ArrayList<>();
 		try {
 			Thumb thumb = new Thumb(thumbURL);
-			Thumb[] thumbs = { thumb };
-			return thumbs;
+			thumbs.add(thumb);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return thumbs;
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
-		ArrayList<Thumb> extraFanart = new ArrayList<>();
-		return extraFanart.toArray(new Thumb[extraFanart.size()]);
+	public List<Thumb> scrapeExtraFanart() {
+        return new ArrayList<>();
 	}
 
 	@Nonnull

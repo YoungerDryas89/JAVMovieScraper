@@ -288,7 +288,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		//don't crop the cover for videoc elements as it is a website release and does not have dvd art
 		if (document.baseUri().contains("/digital/videoc"))
 			return scrapePostersAndFanart(false, false);
@@ -306,7 +306,7 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	 * @return Thumb[] containing all the scraped poster and extraart (if doCrop
 	 * is true) or the cover and back in extraart (if doCrop is false)
 	 */
-	private Thumb[] scrapePostersAndFanart(boolean doCrop, boolean scrapingExtraFanart) {
+	private List<Thumb> scrapePostersAndFanart(boolean doCrop, boolean scrapingExtraFanart) {
 
 		// the movie poster, on this site it usually has both front and back
 		// cover joined in one image
@@ -354,11 +354,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 				}
 			}
 		}
-		return posters.toArray(new Thumb[0]);
+		return posters;
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		return scrapePostersAndFanart(false, false);
 	}
 
@@ -784,11 +784,11 @@ public class DmmParsingProfile extends SiteParsingProfile implements SpecificPro
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		if (super.isExtraFanartScrapingEnabled())
 			return scrapePostersAndFanart(false, true);
 		else
-			return new Thumb[0];
+			return new ArrayList<>();
 	}
 
 	@Override

@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieFactory;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Title;
@@ -187,8 +189,9 @@ public class Renamer {
 		File posterFile = new File(Movie.getFileNameOfPoster(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File fanartFile = new File(Movie.getFileNameOfFanart(fileToRename, preferences.getNoMovieNameInImageFiles()));
 		File trailerFile = new File(Movie.getFileNameOfTrailer(fileToRename));
+		File trailerFile = new File(MovieUtils.getFileNameOfTrailer(fileToRename));
 		if (nfoFile.exists() && fileToRename.exists()) {
-			Movie movieReadFromNfo = Movie.createMovieFromNfo(nfoFile);
+			Movie movieReadFromNfo = MovieFactory.createMovieFromNfo(nfoFile);
 			if (movieReadFromNfo != null && movieReadFromNfo.getTitle() != null) {
 				Renamer renamer = new Renamer(MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getRenamerString(), MoviescraperPreferences.getSanitizerForFilename(),
 				        movieReadFromNfo, fileToRename);

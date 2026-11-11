@@ -16,7 +16,7 @@ import javax.swing.*;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.github.youngerdryas89.moviescraper.controller.EditGenresAction;
 import com.github.youngerdryas89.moviescraper.controller.EditTagsAction;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;
 import com.github.youngerdryas89.moviescraper.model.dataitem.ID;
@@ -794,7 +794,7 @@ public class FileDetailPanel extends JPanel {
 	}
 
 	public Movie getEmptyMovie() {
-		return Movie.getEmptyMovie();
+		return new Movie();
 
 	}
 

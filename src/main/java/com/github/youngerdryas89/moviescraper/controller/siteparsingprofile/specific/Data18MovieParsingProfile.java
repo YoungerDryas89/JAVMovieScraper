@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.commons.io.FilenameUtils;
@@ -23,7 +24,6 @@ import org.jsoup.select.Elements;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SecurityPassthrough;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
@@ -452,7 +452,7 @@ public class Data18MovieParsingProfile extends SiteParsingProfile implements Spe
 		scrapedMovieFile = file;
 		String fileBaseName;
 		if (file.isFile())
-			fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+			fileBaseName = FilenameUtils.getBaseName(MovieUtils.getUnstackedMovieName(file));
 		else
 			fileBaseName = file.getName();
 		fileName = fileBaseName;

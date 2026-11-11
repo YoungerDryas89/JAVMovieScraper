@@ -5,11 +5,13 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.*;
 
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Thumb;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import com.github.youngerdryas89.moviescraper.view.customcomponents.AsyncImageComponent;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -249,9 +251,9 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasPoster()
 		        && !posterFileUpdateOccured) {
 			try {
-				if (gui.getFileDetailPanel().currentMovie.getPosters().length > 0) {
-					lblPosterIcon.setIcon(gui.getFileDetailPanel().currentMovie.getPosters()[0], new Dimension(maximumPosterSizeX, maximumPosterSizeY));
-                    updateCropButton(gui.getFileDetailPanel().currentMovie.getPosters()[0].isModified());
+				if (!gui.getFileDetailPanel().currentMovie.getPosters().isEmpty()) {
+					lblPosterIcon.setIcon(gui.getFileDetailPanel().currentMovie.getPosters().getFirst(), new Dimension(maximumPosterSizeX, maximumPosterSizeY));
+                    updateCropButton(gui.getFileDetailPanel().currentMovie.getPosters().getFirst().isModified());
 					posterFileUpdateOccured = true;
 				}
 			} catch (Exception e) {
@@ -263,8 +265,8 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 		//try to read the fanart from the url since we couldn't find any local file
 		if (gui.movieToWriteToDiskList.size() > 0 && gui.movieToWriteToDiskList.get(indexOfShownMovie) != null && gui.movieToWriteToDiskList.get(indexOfShownMovie).hasFanart()
 		        && !fanartFileUpdateOccured) {
-			if (gui.getFileDetailPanel().currentMovie.getFanart().length > 0) {
-				lblFanartIcon.setIcon(gui.getFileDetailPanel().currentMovie.getFanart()[0], new Dimension(maximumFanartSizeX, maximumFanartSizeY));
+			if (!gui.getFileDetailPanel().currentMovie.getFanart().isEmpty()) {
+				lblFanartIcon.setIcon(gui.getFileDetailPanel().currentMovie.getFanart().getFirst(), new Dimension(maximumFanartSizeX, maximumFanartSizeY));
 				fanartFileUpdateOccured = true;
 
 			}
@@ -324,7 +326,7 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 				return posterPickerDialogName;
 		}
 
-		private Thumb[] getCorrectArtArray(Movie movie) {
+		private List<Thumb> getCorrectArtArray(Movie movie) {
 			if (forFanartInsteadOfPosters)
 				return movie.getFanart();
 			else
@@ -337,9 +339,9 @@ public class ArtWorkPanel extends JPanel implements ComponentListener {
 			if (event.getClickCount() == 2) {
 				Movie currentMovie = guiMain.getFileDetailPanel().getCurrentMovie();
 				if (currentMovie != null) {
-					Thumb[] artToPick = getCorrectArtArray(currentMovie);
+					List<Thumb> artToPick = getCorrectArtArray(currentMovie);
 
-					if (artToPick != null && currentMovie.getPosters().length > 1) {
+					if (artToPick != null && currentMovie.getPosters().size() > 1) {
 						Thumb artFromUserSelection = ScrapeAmalgamatedProgressDialog.showArtPicker(event.getComponent(), artToPick, getDialogName(), !forFanartInsteadOfPosters);
 						if (forFanartInsteadOfPosters)
 							currentMovie.moveExistingFanartToFront(artFromUserSelection);

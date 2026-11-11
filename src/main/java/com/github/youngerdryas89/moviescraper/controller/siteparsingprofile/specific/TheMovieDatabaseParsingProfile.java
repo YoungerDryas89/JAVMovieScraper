@@ -233,46 +233,45 @@ public class TheMovieDatabaseParsingProfile extends SiteParsingProfileJSON imple
 		return Runtime.BLANK_RUNTIME;
 	}
 
-	private Thumb[] scrapePostersAndFanart(String arrayName, String previewPrefix) {
+	private List<Thumb> scrapePostersAndFanart(String arrayName, String previewPrefix) {
 		JSONObject pageJSON = getMovieJSON();
+		List<Thumb> thumbArray = new ArrayList<>();
 		if (pageJSON != null) {
 			try {
 				JSONObject imageJSON = pageJSON.getJSONObject("images");
 				JSONArray posterArrays = imageJSON.getJSONArray(arrayName);
 				if (posterArrays != null) {
-					Thumb[] thumbArray = new Thumb[posterArrays.length()];
 					for (int i = 0; i < posterArrays.length(); i++) {
 						JSONObject posterOrBackdropObject = posterArrays.getJSONObject(i);
 						if (posterOrBackdropObject != null) {
 							String filePath = posterOrBackdropObject.getString("file_path");
 							Thumb thumbToAdd = new Thumb(movieImagePathPrefix + filePath);
 							thumbToAdd.setPreviewURL(new URL(previewPrefix + filePath));
-							thumbArray[i] = thumbToAdd;
+							thumbArray.set(i, thumbToAdd);
 						}
 					}
-					return thumbArray;
 				}
 			} catch (JSONException | MalformedURLException e) {
 				e.printStackTrace();
 			}
 		}
-		return new Thumb[0];
+		return thumbArray;
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		// TODO: crop posters whenever I can get this scraper running
 		return scrapePostersAndFanart("posters", movieImagePosterThumbnailPathPrefix);
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		return scrapePostersAndFanart("backdrops", movieImageFanartThumbnailPathPrefix);
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
-		return new Thumb[0];
+	public List<Thumb> scrapeExtraFanart() {
+		return new ArrayList<>();
 	}
 
 	@Nonnull

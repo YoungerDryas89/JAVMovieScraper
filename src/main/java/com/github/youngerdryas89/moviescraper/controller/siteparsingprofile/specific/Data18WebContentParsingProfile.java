@@ -8,6 +8,7 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -223,7 +224,7 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		//If scene is from a page that has video stills, grab the posters from the trailer link
 		ArrayList<Thumb> posters = new ArrayList<>();
 		ArrayList<Thumb> trailerImages = new ArrayList<>();
@@ -342,12 +343,10 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 			}
 		}
 
-		scrapedPosters = posters.toArray(new Thumb[posters.size()]);
-		if (scrapedPosters != null && scrapedPosters.length > 0)
-			return scrapedPosters;
+		if (!posters.isEmpty())
+			return posters;
 		else {
-			scrapedPosters = trailerImages.toArray(new Thumb[trailerImages.size()]);
-			return scrapedPosters;
+			return trailerImages;
 		}
 	}
 
@@ -369,19 +368,13 @@ public class Data18WebContentParsingProfile extends SiteParsingProfile implement
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
-		if (scrapedPosters != null)
-			return scrapedPosters;
-		else
-			return scrapePosters(false);
+	public List<Thumb> scrapeFanart() {
+		return scrapePosters(false);
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
-		if (scrapedPosters != null)
-			return scrapedPosters;
-		else
-			return scrapePosters(false);
+	public List<Thumb> scrapeExtraFanart() {
+		return scrapePosters(false);
 	}
 
 	@Nonnull

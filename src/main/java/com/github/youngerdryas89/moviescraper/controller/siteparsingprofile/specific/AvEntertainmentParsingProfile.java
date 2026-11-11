@@ -151,7 +151,7 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		//List<Thumb> thumbs = new ArrayList<>();
 		//Thumb[] fanart = scrapeFanart();
 		// TODO: Fix AvEntertainment's scrapePosters()
@@ -175,11 +175,11 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 		} catch (IOException e){
 			System.err.println(e.getMessage());
 		}
-		return returnList.toArray(new Thumb[returnList.size()]);
+		return returnList;
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		List<Thumb> thumbs = new ArrayList<>();
 		Elements elements = document.select(getFanArtTable).first().children();
 		for(var image_element : elements){
@@ -191,11 +191,11 @@ public class AvEntertainmentParsingProfile extends SiteParsingProfile implements
 			}
 		}
 
-		return thumbs.toArray(new Thumb[thumbs.size()]);
+		return thumbs;
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		return new Thumb[0];
 	}
 

@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 
 import com.github.youngerdryas89.moviescraper.controller.Renamer;
 import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Genre;

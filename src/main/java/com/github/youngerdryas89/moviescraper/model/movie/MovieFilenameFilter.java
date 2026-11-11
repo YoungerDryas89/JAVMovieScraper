@@ -1,4 +1,4 @@
-package com.github.youngerdryas89.moviescraper.model;
+package com.github.youngerdryas89.moviescraper.model.movie;
 
 import java.io.File;
 import java.io.FilenameFilter;

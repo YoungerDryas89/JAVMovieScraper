@@ -10,7 +10,8 @@ import javax.swing.SwingWorker;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.MovieFactory;
 import com.github.youngerdryas89.moviescraper.model.dataitem.DataItemSource;
 import com.github.youngerdryas89.moviescraper.view.ScrapeAmalgamatedProgressDialog;
 
@@ -176,7 +177,7 @@ public class ScrapeAmalgamatedMovieWorker extends SwingWorker<Void, Map<SitePars
 							customURLSet = parent.showPromptForUserProvidedURL(siteScraper, fileToScrapeFinal);
 						}
 
-						returnMovie = Movie.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet, parent.parent());
+						returnMovie = MovieFactory.scrapeMovie(fileToScrapeFinal, siteScraper, "", customURLSet, parent.parent());
 
 						return null;
 					} catch (IOException e) {

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import com.github.youngerdryas89.moviescraper.model.movie.MovieUtils;
 import com.github.youngerdryas89.moviescraper.scraper.UserAgent;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.net.URLCodec;
@@ -22,7 +23,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile;
-import com.github.youngerdryas89.moviescraper.model.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Director;
@@ -203,9 +203,9 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
+		List<Thumb> posters = new ArrayList<>();
         try {
-            List<Thumb> posters = new ArrayList<>();
             if(fileExistsAtURL(getPosterPathFromIDString(movieId))) {
                 var thumb = new Thumb(getPosterPathFromIDString(movieId));
                 posters.add(thumb);
@@ -214,19 +214,19 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
                     posters.add(back);
                 }
 
-                return posters.toArray(new Thumb[posters.size()]);
+                return posters;
             } else {
 
                 var imageUrl = document.select("center > img").first();
                 var thumb = new Thumb(imageUrl.attr("src"), false);
                 posters.add(thumb);
 
-                return posters.toArray(new Thumb[posters.size()]);
+                return posters;
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return new Thumb[0];
+        return posters;
 	}
 
     private String getPosterPathFromIDString(String movieID) {
@@ -251,26 +251,26 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		//No Fanart on this site
-		return new Thumb[0];
+		return new ArrayList<>();
 	}
 
 	/**
 	 * We return the back cover as the extrafanart for Excalibur Films
 	 */
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		String movieID = scrapeID().getId();
 		String thumbPath = "http://images.excaliburfilms.com/DVD/reviews/imagesBB020609/largemoviepic/dvd_" + movieID + "-b.jpg";
+		List<Thumb> thumbs = new ArrayList<>();
 		try {
 			Thumb posterThumb = new Thumb(thumbPath);
-			Thumb[] thumbsToReturn = { posterThumb };
-			return thumbsToReturn;
+			thumbs.add(posterThumb);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			return new Thumb[0];
 		}
+		return thumbs;
 	}
 
 	@Nonnull
@@ -565,7 +565,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
     public String cleanseFilename(File file){
         String fileBaseName;
         if (file.isFile())
-            fileBaseName = FilenameUtils.getBaseName(Movie.getUnstackedMovieName(file));
+            fileBaseName = FilenameUtils.getBaseName(MovieUtils.getUnstackedMovieName(file));
         else
             fileBaseName = file.getName();
         fileBaseName = fileBaseName.replaceAll("(19\\d\\d|20\\d\\d)", "");

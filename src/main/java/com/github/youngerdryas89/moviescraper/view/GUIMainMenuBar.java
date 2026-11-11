@@ -33,7 +33,7 @@ import com.github.youngerdryas89.moviescraper.controller.amalgamation.ScrapeAmal
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfileItem;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SpecificProfileFactory;
 import com.github.youngerdryas89.moviescraper.controller.siteparsingprofile.SiteParsingProfile.ScraperGroupName;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.preferences.MoviescraperPreferences;
 
 public class GUIMainMenuBar extends JMenuBar {

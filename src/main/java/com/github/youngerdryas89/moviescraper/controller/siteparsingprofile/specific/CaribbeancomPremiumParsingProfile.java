@@ -221,7 +221,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		String id = getIdFromUrl();
 		List<Thumb> posters = new LinkedList<>();
 		String[] posterUrls = {
@@ -239,16 +239,16 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
 		} catch (IOException ex) {
 			Logger.getLogger(CaribbeancomPremiumParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return posters.toArray(new Thumb[posters.size()]);
+		return posters;
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		return scrapePosters(false);
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
         List<Thumb> extrafanart = new ArrayList<>();
         try {
 			Element gallery_elements = document.select(".is-gallery").first();
@@ -264,7 +264,7 @@ public class CaribbeancomPremiumParsingProfile extends SiteParsingProfile implem
         }catch (MalformedURLException|NullPointerException e){
             System.err.println(e.getMessage());
         }
-		return extrafanart.toArray(new Thumb[0]);
+		return extrafanart;
 	}
 
 	@Nonnull

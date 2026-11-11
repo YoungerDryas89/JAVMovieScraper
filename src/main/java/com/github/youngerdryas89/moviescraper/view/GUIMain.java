@@ -13,11 +13,10 @@ import javax.swing.SwingUtilities;
 
 import javax.swing.JList;
 
-import com.github.youngerdryas89.moviescraper.controller.DirectorySort;
 import com.github.youngerdryas89.moviescraper.controller.SelectFileListAction;
 import com.github.youngerdryas89.moviescraper.controller.amalgamation.AllAmalgamationOrderingPreferences;
 import com.github.youngerdryas89.moviescraper.model.IconCache;
-import com.github.youngerdryas89.moviescraper.model.Movie;
+import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.SearchResult;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Actor;
 import com.github.youngerdryas89.moviescraper.model.preferences.GuiSettings;
@@ -26,8 +25,6 @@ import com.github.youngerdryas89.moviescraper.model.preferences.ScrapeSession;
 import com.github.youngerdryas89.moviescraper.view.renderer.FileRenderer;
 
 import java.awt.event.*;
-
-import javax.swing.UIManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +36,6 @@ import java.beans.PropertyChangeEvent;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.stage.DirectoryChooser;
