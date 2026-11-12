@@ -168,4 +168,74 @@ public class KodiXmlMovieBean {
 		return xstream;
 	}
 
+	/**
+	 * Helper class for serializing a fanart object to and from XML
+	 */
+	class KodiXmlFanartBean {
+		private List<String> thumb = new ArrayList<>();
+
+		public KodiXmlFanartBean(List<Thumb> thumb) {
+			this.thumb = thumb.stream().map(Thumb::getThumbURL).map(URL::toString).toList();
+		}
+
+		public List<String> getThumb() {
+			return thumb;
+		}
+
+		public void setThumb(List<String> thumb) {
+			this.thumb = thumb;
+		}
+	}
+
+	/**
+	 * Helper class for serializing a actor object to and from XML
+	 */
+	class KodiXmlActorBean {
+
+		public String name;
+		public String role;
+		public String thumb;
+
+		public KodiXmlActorBean(String name, String role, String thumb) {
+			super();
+			this.name = name;
+			this.role = role;
+			this.thumb = thumb;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getRole() {
+			return role;
+		}
+
+		public void setRole(String role) {
+			this.role = role;
+		}
+
+		public String getThumb() {
+			return thumb;
+		}
+
+		public void setThumb(String thumb) {
+			this.thumb = thumb;
+		}
+
+		public Actor toActor() throws IOException {
+			Thumb tryToMakeAThumb;
+			try {
+				tryToMakeAThumb = new Thumb(thumb);
+			} catch (MalformedURLException e) {
+				tryToMakeAThumb = null;
+			}
+			return new Actor(name, role, tryToMakeAThumb);
+		}
+
+	}
 }
