@@ -1,11 +1,13 @@
 package com.github.youngerdryas89.moviescraper.controller.xmlserialization;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import com.github.youngerdryas89.moviescraper.model.movie.Movie;
 import com.github.youngerdryas89.moviescraper.model.dataitem.*;
@@ -32,15 +34,15 @@ public class KodiXmlMovieBean {
 	private String runtime;
 	private String releasedate;
 	private String studio;
-	private String[] thumb;
+	private List<String> thumb = new ArrayList<>();
 	private KodiXmlFanartBean fanart;
 	private String mpaa;
 	private String id;
-	private String[] genre;
-	private String[] tag;
+	private List<String> genre = new ArrayList<>();
+	private List<String> tag = new ArrayList<>();
 	// private String[] credits; add in later
-	private ArrayList<KodiXmlActorBean> actor;
-	private String[] director;
+	private List<KodiXmlActorBean> actor;
+	private List<String> director;
 
 	public static KodiXmlMovieBean makeFromXML(String xml) {
 		XStream xstream = KodiXmlMovieBean.getXMLSerializer();
@@ -62,7 +64,7 @@ public class KodiXmlMovieBean {
 	 * 
 	 * @param movie - Movie to create the KodiXmlMovieBean from
 	 */
-	public KodiXmlMovieBean(Movie movie) {
+	public KodiXmlMovieBean(MoviescraperPreferences preferences, Movie movie) {
 		title = movie.getTitle().getTitle();
 		originaltitle = movie.getOriginalTitle().getOriginalTitle();
 		sorttitle = movie.getSortTitle().getSortTitle();
@@ -81,44 +83,25 @@ public class KodiXmlMovieBean {
 
 		// thumb - aka Posters
 		// Preference value allows the user to not write out poster values to the file
-		if (MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
-			thumb = new String[movie.getPosters().length];
-			for (int i = 0; i < movie.getPosters().length; i++) {
-				if (movie.getPosters()[i].getThumbURL() != null) {
-					thumb[i] = movie.getPosters()[i].getThumbURL().toString();
-				} else {
-					thumb[i] = "";
-				}
-			}
-		} else {
-			thumb = new String[0];
-		}
+		if (preferences.writeThumbTagsForPosterAndFanartToNfo())
+			thumb = movie.getPosters().stream().map(Thumb::getThumbURL).map(URL::toString).toList();
 
 		//fanart
 		// Preference value allows the user to not write out fanart values to the file
-		if (MoviescraperPreferences.getInstance().getWriteThumbTagsForPosterAndFanartToNfo()) {
+		if (preferences.writeThumbTagsForPosterAndFanartToNfo()) {
 			fanart = new KodiXmlFanartBean(movie.getFanart());
-		} else {
-			fanart = new KodiXmlFanartBean(new Thumb[0]);
 		}
 
 		mpaa = movie.getMpaa().getMPAARating();
 		id = movie.getId().getId();
 		// genre
-		genre = new String[movie.getGenres().size()];
-		for (int i = 0; i < genre.length; i++) {
-			genre[i] = movie.getGenres().get(i).getGenre();
-		}
+		genre = movie.getGenres().stream().map(Genre::getGenre).toList();
+
 		// tag
-		tag = new String[movie.getTags().size()];
-		for (int i = 0; i < tag.length; i++) {
-			tag[i] = movie.getTags().get(i).getTag();
-		}
+		tag = movie.getTags().stream().map(Tag::getTag).toList();
+
 		// director
-		director = new String[movie.getDirectors().size()];
-		for (int i = 0; i < director.length; i++) {
-			director[i] = movie.getDirectors().get(i).getName();
-		}
+		director = movie.getDirectors().stream().map(Person::getName).toList();
 
 		// actor
 		actor = new ArrayList<>(movie.getActors().size());
@@ -140,61 +123,24 @@ public class KodiXmlMovieBean {
 				actors.add(currentActor.toActor());
 			}
 		}
+		try {
 
-		Thumb[] posterThumbs;
-		if (thumb != null) {
-			posterThumbs = new Thumb[thumb.length];
-			for (int i = 0; i < posterThumbs.length; i++) {
-				try {
-					posterThumbs[i] = new Thumb(thumb[i]);
-				} catch (MalformedURLException e) {
-					System.out.println("Ignoring Thumb url: " + thumb[i]);
-				}
-			}
-		} else {
-			posterThumbs = new Thumb[0];
-		}
+			List<Thumb> posterThumbs = thumb.stream().map(Thumb::new).toList();
+			List<Thumb> fanartThumbs = fanart.getThumb().stream().map(Thumb::new).toList();
+			List<Genre> genres = genre.stream().map(Genre::new).toList();
+			List<Tag> tags = tag.stream().map(Tag::new).toList();
+			List<Director> directors = director.stream().map(Director::new).toList();
 
-		Thumb[] fanartThumbs;
-		if (fanart != null && fanart.getThumb() != null) {
-			fanartThumbs = new Thumb[fanart.getThumb().length];
-			for (int i = 0; i < fanartThumbs.length; i++) {
-				try {
-					fanartThumbs[i] = new Thumb(fanart.getThumb()[i]);
-				} catch (MalformedURLException e) {
-					System.out.println("Ignoring Fanart url: " + fanart.getThumb()[i]);
-				}
-			}
-		} else {
-			fanartThumbs = new Thumb[0];
-		}
 
-		ArrayList<Genre> genres = new ArrayList<>();
-		if (genre != null) {
-			for (int i = 0; i < genre.length; i++) {
-				genres.add(new Genre(genre[i]));
-			}
+			List<Thumb> emptyExtraFanrt = new ArrayList<>();
+			Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id), new MPAARating(mpaa), new OriginalTitle(originaltitle), new Outline(outline),
+					new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Set(set), new SortTitle(sorttitle), new Studio(studio),
+					new Tagline(tagline), new Title(title), new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
+			return movie;
+		}catch (MalformedURLException e){
+			// TODO: Need come back to this. It can't be the case that a URL could potentially be malformed past its creation.
+			throw e;
 		}
-
-		ArrayList<Tag> tags = new ArrayList<>();
-		if (tag != null) {
-			for (int i = 0; i < tag.length; i++) {
-				tags.add(new Tag(tag[i]));
-			}
-		}
-
-		ArrayList<Director> directors = new ArrayList<>();
-		if (director != null) {
-			directors = new ArrayList<>(director.length);
-			for (int i = 0; i < director.length; i++) {
-				directors.add(new Director(director[i], null));
-			}
-		}
-		Thumb[] emptyExtraFanrt = new Thumb[0];
-		Movie movie = new Movie(actors, directors, fanartThumbs, emptyExtraFanrt, genres, tags, new ID(id), new MPAARating(mpaa), new OriginalTitle(originaltitle), new Outline(outline),
-		        new Plot(plot), posterThumbs, new Rating(10, rating), new ReleaseDate(releasedate), new Runtime(runtime), new Set(set), new SortTitle(sorttitle), new Studio(studio),
-		        new Tagline(tagline), new Title(title), new Top250(top250), new Trailer(trailer), new Votes(votes), new Year(year));
-		return movie;
 	}
 
 	public String toXML() {

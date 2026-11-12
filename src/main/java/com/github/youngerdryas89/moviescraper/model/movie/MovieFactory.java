@@ -218,7 +218,7 @@ public class MovieFactory {
 		// Output the movie to XML using XStream and a proxy class to
 		// translate things to a format that Kodi expects
 
-		String xml = new KodiXmlMovieBean(movie).toXML();
+		String xml = new KodiXmlMovieBean(preferences, movie).toXML();
 		// add the xml header since xstream doesn't do this
 		xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>" + "\n" + xml;
 		//System.out.println("Xml I am writing to file: \n" + xml);
