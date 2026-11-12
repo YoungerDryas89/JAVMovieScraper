@@ -125,7 +125,7 @@ public class MovieFactory {
                     }
                 }
             }else {
-                String title = siteToParseFrom.cleanseFilename(movieFile).toLowerCase();
+                String title = siteToParseFrom.cleanseFilenameForBaseName(movieFile).toLowerCase();
                 var rated = Stream.of(searchResults)
                         .map(result -> {
                             var levNormalized = Similarity.calculateNormalizedLevenshteinDistance(title, result.getLabel());

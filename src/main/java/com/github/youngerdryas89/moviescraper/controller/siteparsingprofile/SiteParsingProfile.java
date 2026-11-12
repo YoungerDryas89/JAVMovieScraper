@@ -661,7 +661,7 @@ public abstract class SiteParsingProfile implements DataItemSource {
     public void prepareData(){
     }
 
-    public String cleanseFilename(File file){
+    public String cleanseFilenameForBaseName(File file){
         String fileBaseName;
         if (file.isFile())
             fileBaseName = FilenameUtils.getBaseName(MovieUtils.getUnstackedMovieName(file));
