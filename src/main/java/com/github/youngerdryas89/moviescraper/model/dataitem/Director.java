@@ -6,6 +6,10 @@ public class Director extends Person {
 		super(name, thumb);
 	}
 
+	public Director(String name){
+		super(name, null);
+	}
+
 	@Override
 	public String toXML() {
 		// TODO Auto-generated method stub
