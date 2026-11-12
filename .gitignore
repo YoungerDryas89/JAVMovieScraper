@@ -6,3 +6,7 @@ settings.xml
 JAVMovieScraper.iml
 /.*-gradle/
 gradle.properties
+*.class
+/target
+dependency-reduced-pom.xml
+AmalgamationSettings.json
