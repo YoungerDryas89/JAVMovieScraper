@@ -37,6 +37,7 @@ import com.github.youngerdryas89.moviescraper.model.dataitem.Top250;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Trailer;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Votes;
 import com.github.youngerdryas89.moviescraper.model.dataitem.Year;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -171,7 +172,7 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public @NotNull List<Thumb> scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> thumbList = new ArrayList<>();
 		JSONObject pageJSON = getMovieJSON();
 		try {
@@ -179,7 +180,6 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 			var jacketURL = "https://www.1pondo.tv/dyn/dla/images/movies/" + pageJSON.getString("MovieID") + "/jacket/jacket.jpg";
 			if (fileExistsAtURL(jacketURL, false)) {
 				thumbList.add(new Thumb(jacketURL, cropPosters));
-				return thumbList.toArray(new Thumb[thumbList.size()]);
 			} else {
 				String[] thumbnailJsonNodes = {
 						"ThumbUltra",
@@ -200,19 +200,16 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 						thumbList.add(new Thumb(url));
 					}
 				}
-
-				return thumbList.toArray(new Thumb[thumbList.size()]);
-
 			}
 		} catch (IOException ex) {
 			Logger.getLogger(OnePondoParsingProfile.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		return new Thumb[0];
+		return thumbList;
 
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		try {
 			ArrayList<Thumb> thumbList = new ArrayList<>();
 			String bannerURL = "http://www.1pondo.tv/assets/sample/" + scrapeID().getId() + "/str.jpg";
@@ -254,17 +251,17 @@ public class OnePondoParsingProfile extends SiteParsingProfileJSON implements Sp
 				thumbList.add(new Thumb(backgroundURLTwo));
 			if (SiteParsingProfile.fileExistsAtURL(popupFourURL, false))
 				thumbList.add(new Thumb(popupFourURL));
-			return thumbList.toArray(new Thumb[thumbList.size()]);
+			return thumbList;
 
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new Thumb[0];
+		return new ArrayList<>();
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		return scrapeFanart();
 	}
 

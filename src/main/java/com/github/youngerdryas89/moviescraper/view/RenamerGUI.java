@@ -22,6 +22,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -315,7 +316,7 @@ public class RenamerGUI extends JFrame {
 
 	private Movie getFakeMovie() {
 
-		if (sampleMovie != null && sampleMovie.hasValidTitle())
+		if (sampleMovie != null && sampleMovie.getTitle().hasValidTitle())
 			return sampleMovie;
 
 		Actor actorA = new Actor("Actor A", null, null);
@@ -327,8 +328,8 @@ public class RenamerGUI extends JFrame {
 		ArrayList<Director> directors = new ArrayList<>();
 		Collections.addAll(directors, directorA);
 
-		Thumb[] fanart = new Thumb[0];
-		Thumb[] extraFanart = new Thumb[0];
+		List<Thumb> fanart = new ArrayList<>();
+		List<Thumb> extraFanart = new ArrayList<>();
 
 		Genre genreA = new Genre("GenreA");
 		Genre genreB = new Genre("GenreB");
@@ -346,7 +347,7 @@ public class RenamerGUI extends JFrame {
 		OriginalTitle originalTitle = new OriginalTitle("Original Title");
 		Outline outline = new Outline("Outline");
 		Plot plot = new Plot("Plot");
-		Thumb[] posters = new Thumb[0];
+		List<Thumb> posters = new ArrayList<>();
 
 		Rating rating = new Rating(6.0, "Rating");
 		ReleaseDate releaseDate = new ReleaseDate("1999-08-25");

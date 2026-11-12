@@ -221,15 +221,15 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		return scrapePostersAndFanart(cropPosters);
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		Element fanartLinks = document.select(".previewthumbs").first();
+		List<Thumb> images = new ArrayList<>();
 		if(fanartLinks != null){
-			List<Thumb> images = new ArrayList<>();
 			for(var ahref : fanartLinks.children()){
 				try {
 					images.add(new Thumb(ahref.attr("href"), false));
@@ -238,30 +238,28 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 					System.err.println(e.getMessage());
 				}
 			}
-			return images.toArray(new Thumb[images.size()]);
 		}
-		return new Thumb[0];
+		return images;
 	}
 
-	private Thumb[] scrapePostersAndFanart(boolean doCrop) {
+	private List<Thumb> scrapePostersAndFanart(boolean doCrop) {
 		Element posterElement = document.select("img#video_jacket_img").first();
-		Thumb[] posterThumbs = new Thumb[1];
-		if (posterElement != null) {
-			String posterLink = posterElement.attr("src").trim();
-			try {
-				if (doCrop)
-					//posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
-					posterThumbs[0] = new Thumb(posterLink, true);
-				else
-					posterThumbs[0] = new Thumb(posterLink);
-				return posterThumbs;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return new Thumb[0];
-			}
-		} else
-			return new Thumb[0];
+		List<Thumb> posterThumbs = new ArrayList<>(1);
+		String posterLink = posterElement.attr("src").trim();
+
+		if(posterLink.isEmpty()) return posterThumbs;
+
+		try {
+			if (doCrop)
+				//posterThumbs[0] = new Thumb(posterLink, 52.7, 0, 0, 0);
+				posterThumbs.add(new Thumb(posterLink, true));
+			else
+				posterThumbs.add(new Thumb(posterLink));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return posterThumbs;
 	}
 
 	@Nonnull
@@ -275,7 +273,7 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	public ID scrapeID() {
 		Element idElement = document.select("div#video_id tr td.header + td.text").first();
 		String idText = idElement.text();
-		if (idText.length() > 0) {
+		if (!idText.isEmpty()) {
 			return new ID(idText);
 		} else
 			return ID.BLANK_ID;
@@ -463,8 +461,8 @@ public class JavLibraryParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
-		return new Thumb[0];
+	public List<Thumb> scrapeExtraFanart() {
+		return new ArrayList<>();
 	}
 
 	@Override

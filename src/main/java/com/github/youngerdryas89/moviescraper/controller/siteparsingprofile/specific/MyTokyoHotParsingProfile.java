@@ -189,7 +189,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapePosters(boolean cropPosters) {
+	public List<Thumb> scrapePosters(boolean cropPosters) {
 		ArrayList<Thumb> posters = new ArrayList<>();
 		Element trailerBackgroundImage = document.select("video[poster]").first();
 		if (trailerBackgroundImage != null) {
@@ -217,7 +217,7 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 			}
 		}
 
-		return posters.toArray(new Thumb[posters.size()]);
+		return posters;
 	}
 
 	@Nonnull
@@ -233,12 +233,12 @@ public class MyTokyoHotParsingProfile extends SiteParsingProfile implements Spec
 	}
 
 	@Override
-	public Thumb[] scrapeFanart() {
+	public List<Thumb> scrapeFanart() {
 		return scrapePosters(false);
 	}
 
 	@Override
-	public Thumb[] scrapeExtraFanart() {
+	public List<Thumb> scrapeExtraFanart() {
 		return scrapePosters(false);
 	}
 

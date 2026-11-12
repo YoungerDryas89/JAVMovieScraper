@@ -408,7 +408,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	@Nonnull
     @Override
 	public String createSearchString(File file) {
-		String fileBaseName = cleanseFilename(file);
+		String fileBaseName = cleanseFilenameForBaseName(file);
         return fileBaseName;
 	}
 
@@ -562,7 +562,7 @@ public class ExcaliburFilmsParsingProfile extends SiteParsingProfile implements 
 	}
 
     @Override
-    public String cleanseFilename(File file){
+    public String cleanseFilenameForBaseName(File file){
         String fileBaseName;
         if (file.isFile())
             fileBaseName = FilenameUtils.getBaseName(MovieUtils.getUnstackedMovieName(file));
